@@ -1,0 +1,56 @@
+.transfersSection {
+  & #notificacoes-mercado {
+    margin-bottom: 20px;
+  }
+}
+
+.filters-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  & input::placeholder {
+    color: var(--text-muted);
+  }
+
+  & input,
+  & select {
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    color: var(--text-main);
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-size: 13px;
+  }
+
+  & select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
+
+.notification {
+  background: var(--bg-card2);
+  border-left: 3px solid var(--yellow);
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  & .icon {
+    font-size: 16px;
+  }
+
+  & button {
+    font-size: 10px;
+    padding: 5px 12px;
+  }
+
+  & .green-button {
+    margin-left: auto;
+  }
+}

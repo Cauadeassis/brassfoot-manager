@@ -1,0 +1,145 @@
+import {
+  PORTUGUESE_NAMES,
+  PORTUGUESE_LASTNAMES,
+  SPANISH_NAMES,
+  SPANISH_LASTNAMES,
+  ENGLISH_NAMES,
+  ENGLISH_LASTNAMES,
+  FRENCH_NAMES,
+  FRENCH_LASTNAMES,
+  ITALIAN_NAMES,
+  ITALIAN_LASTNAMES,
+  GERMAN_NAMES,
+  GERMAN_LASTNAMES,
+} from "./names";
+export type Nationality = keyof typeof NATIONALITIES_DATA;
+
+const NATIONALITIES_DATA = {
+  BR: {
+    flag: "/countryFlags/southAmerica/Brazil.svg",
+    name: PORTUGUESE_NAMES,
+    lastname: PORTUGUESE_LASTNAMES,
+    region: "southAmerica",
+  },
+  AR: {
+    flag: "/countryFlags/southAmerica/Argentina.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  CO: {
+    flag: "/countryFlags/southAmerica/Colombia.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  UY: {
+    flag: "/countryFlags/southAmerica/Uruguai.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  EC: {
+    flag: "/countryFlags/southAmerica/Equador.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  PY: {
+    flag: "/countryFlags/southAmerica/Paraguai.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  CL: {
+    flag: "/countryFlags/southAmerica/Chile.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  BO: {
+    flag: "/countryFlags/southAmerica/Bolivia.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  VE: {
+    flag: "/countryFlags/southAmerica/Venezuela.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  PE: {
+    flag: "/countryFlags/southAmerica/Peru.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "southAmerica",
+  },
+  PT: {
+    flag: "/countryFlags/europe/Portugal.svg",
+    name: PORTUGUESE_NAMES,
+    lastname: PORTUGUESE_LASTNAMES,
+    region: "europe",
+  },
+  ES: {
+    flag: "/countryFlags/europe/Spain.svg",
+    name: SPANISH_NAMES,
+    lastname: SPANISH_LASTNAMES,
+    region: "europe",
+  },
+  GB: {
+    flag: "/countryFlags/europe/England.svg",
+    name: ENGLISH_NAMES,
+    lastname: ENGLISH_LASTNAMES,
+    region: "europe",
+  },
+  FR: {
+    flag: "/countryFlags/europe/France.svg",
+    name: FRENCH_NAMES,
+    lastname: FRENCH_LASTNAMES,
+    region: "europe",
+  },
+  BE: {
+    flag: "/countryFlags/europe/Belgium.svg",
+    name: FRENCH_NAMES,
+    lastname: FRENCH_LASTNAMES,
+    region: "europe",
+  },
+  IT: {
+    flag: "/countryFlags/europe/Italy.svg",
+    name: ITALIAN_NAMES,
+    lastname: ITALIAN_LASTNAMES,
+    region: "europe",
+  },
+  DE: {
+    flag: "/countryFlags/europe/Germany.svg",
+    name: GERMAN_NAMES,
+    lastname: GERMAN_LASTNAMES,
+    region: "europe",
+  },
+  NL: {
+    flag: "/countryFlags/europe/Netherlands.svg",
+    name: GERMAN_NAMES,
+    lastname: GERMAN_LASTNAMES,
+    region: "europe",
+  },
+  NO: {
+    flag: "/countryFlags/europe/Norway.svg",
+    name: GERMAN_NAMES,
+    lastname: GERMAN_LASTNAMES,
+    region: "europe",
+  },
+  CH: {
+    flag: "/countryFlags/europe/Switzerland.svg",
+    name: GERMAN_NAMES,
+    lastname: GERMAN_LASTNAMES,
+    region: "europe",
+  },
+  SE: {
+    flag: "/countryFlags/europe/Sweden.svg",
+    name: GERMAN_NAMES,
+    lastname: GERMAN_LASTNAMES,
+    region: "europe",
+  },
+};
+export default NATIONALITIES_DATA;

@@ -1,0 +1,56 @@
+.nationalityFlag {
+  width: 20px;
+  height: 14px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.serie {
+  font-size: 10px;
+}
+
+.serie,
+.overall {
+  padding: 2px 8px;
+  border: 1px solid;
+  text-align: center;
+
+  &.A,
+  &.medio {
+    border-color: var(--yellow);
+    color: var(--yellow);
+  }
+
+  &.B,
+  &.baixo {
+    border-color: var(--red);
+    color: var(--red);
+  }
+}
+
+.overall {
+  font-size: 12px;
+  font-family: var(--font-mono);
+
+  &.alto {
+    border-color: var(--green);
+    color: var(--green);
+  }
+}
+
+.teamContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  & img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+  }
+
+  & p {
+    font-weight: 500;
+    font-family: sans-serif;
+  }
+}

@@ -1,0 +1,159 @@
+:root {
+  --bg-base: #0a0c0f;
+  --bg-card: #111318;
+  --bg-card2: #161920;
+  --bg-hover: #1c2028;
+  --border: #222530;
+  --border-accent: #2e3445;
+  --green: #00e676;
+  --green-dim: #00c85a;
+  --yellow: #ffd600;
+  --red: #ff3d3d;
+  --blue: #4fc3f7;
+  --pink: #f06292;
+
+  --text-main: #e8ecf5;
+  --dim-color: #7a8299;
+  --text-muted: #40475a;
+  --font-head: "Oswald", sans-serif;
+  --font-body: "Barlow", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+.elenco-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  & th {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  & td {
+    padding: 9px 10px;
+    border-bottom: 1px solid rgba(34, 37, 48, 0.5);
+    vertical-align: middle;
+    font-family: var(--font-mono);
+  }
+
+  & tr {
+    &:hover td {
+      background: var(--bg-hover);
+    }
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: var(--font-head);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 22px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.green-button {
+  background: var(--green);
+  color: #000;
+
+  &:hover {
+    background: var(--green-dim);
+  }
+}
+
+.outline-button {
+  background: transparent;
+  border: 1px solid var(--border-accent);
+  color: var(--dim-color);
+
+  &:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+}
+
+.flex-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+& .blue-color {
+  color: var(--blue);
+}
+
+& .red-color {
+  color: var(--red);
+}
+
+.green-color {
+  color: var(--green);
+}
+
+.yellow-color {
+  color: var(--yellow);
+}
+
+.red-color {
+  color: var(--red);
+}
+
+.pink-color {
+  color: var(--pink);
+}
+
+.opacity {
+  opacity: 0.6;
+}
+
+.dim-color {
+  color: var(--dim-color);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.mb16 {
+  margin-bottom: 16px;
+}
+
+.mb24 {
+  margin-bottom: 24px;
+}
