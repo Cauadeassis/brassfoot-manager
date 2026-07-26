@@ -1,130 +1,81 @@
-import type { Competition } from "../types";
+import { buildCompetitions } from "../gameEngine/generators/competitions";
+import { Competition } from "../types/competition";
+import { nationalLeagueRules, nationsCupRules } from "./rules";
 
-const COMPETITIONS: Competition[] = [
-  {
-    id: "brasileirao",
-    name: "Brasileirão",
-    description:
-      "A principal competição de clubes do Brasil, surgida em 1971, onde os melhores times disputam o título nacional em pontos corridos.",
-    shield: "/competitions/Brasileirao.svg",
-    eligibility: { nationality: "BR", teamType: "club" },
-    rules: {
-      format: "league",
-      hasGroupStage: false,
-      knockoutGamesPerRound: 1,
-      hasThirdPlaceMatch: false,
-      finalIsSingleGame: false,
-    },
+export const worldCupQualifier = {
+  id: "worldCupQualifiers",
+  name: {
+    singular: "Eliminatórias da Copa",
+    plural: "Eliminatórias da Copa",
   },
-  {
-    id: "championsLeague",
-    name: "Champions League",
-    description:
-      "A maior e mais prestigiada liga de clubes da Europa, atuando desde 1955, que reune a elite do futebol mundial.",
-    shield: "/competitions/ChampionsLeague.svg",
-    eligibility: { region: "europe", teamType: "club", minimumOverall: 80 },
-    rules: {
-      format: "tournament",
-      hasGroupStage: true,
-      knockoutGamesPerRound: 2,
-      hasThirdPlaceMatch: false,
-      finalIsSingleGame: true,
-    },
+  eligibility: { teamType: "national" },
+  rules: nationalLeagueRules,
+  input: [],
+  frequency: "quadrienal",
+  output: [{ id: "worldCup", slots: 32 }],
+} as Competition;
+export const worldCup = {
+  id: "worldCup",
+  name: {
+    singular: "Copa do Mundo",
+    plural: "Copas do Mundo",
   },
-  {
-    id: "libertadores",
-    name: "Libertadores",
-    description:
-      "O torneio de clubes mais importante da América do Sul, surgido em 1960.",
-    shield: "/competitions/Libertadores.svg",
-    eligibility: {
-      region: "southAmerica",
-      teamType: "club",
-      minimumOverall: 80,
-    },
-    rules: {
-      format: "tournament",
-      hasGroupStage: true,
-      knockoutGamesPerRound: 2,
-      hasThirdPlaceMatch: false,
-      finalIsSingleGame: true,
-    },
+
+  eligibility: { teamType: "national" },
+  rules: {
+    ...nationsCupRules,
+    hasThirdPlaceMatch: true,
   },
-  {
-    id: "worldClubs",
-    name: "Mundial de Clubes",
-    description:
-      "O palco onde os campeões continentais se enfrentam para decidir quem é o melhor clube do mundo.",
-    shield: "/competitions/WorldClubs.svg",
-    eligibility: { teamType: "club", minimumOverall: 85 },
-    rules: {
-      format: "tournament",
-      hasGroupStage: true,
-      knockoutGamesPerRound: 1,
-      hasThirdPlaceMatch: false,
-      finalIsSingleGame: true,
-    },
+  input: [{ id: "worldCupQualifiers", slots: 32 }],
+  output: [],
+} as Competition;
+export const worldClubs = {
+  id: "worldClubs",
+  name: {
+    singular: "Mundial de Clubes",
+    plural: "Mundiais do Clubes",
   },
-  {
-    id: "nationsLeague",
-    name: "Nations League",
-    description:
-      "Torneio entre seleções europeias que traz partidas competitivas entre as maiores potências do continente.",
-    shield: "/competitions/NationsLeague.svg",
-    eligibility: { region: "europe", teamType: "national" },
-    rules: {
-      format: "tournament",
-      hasGroupStage: true,
-      knockoutGamesPerRound: 1,
-      hasThirdPlaceMatch: true,
-      finalIsSingleGame: true,
-    },
+  eligibility: { teamType: "club" },
+  rules: {
+    ...nationsCupRules,
+    hasThirdPlaceMatch: false,
   },
-  {
-    id: "americanCup",
-    name: "Copa América",
-    description:
-      "O torneio de seleções mais antigo do mundo, coroando a melhor nação da América do Sul.",
-    shield: "/competitions/AmericanCup.svg",
-    eligibility: { region: "southAmerica", teamType: "national" },
-    rules: {
-      format: "tournament",
-      hasGroupStage: true,
-      knockoutGamesPerRound: 1,
-      hasThirdPlaceMatch: true,
-      finalIsSingleGame: true,
-    },
+  frequency: "quadrienal",
+  input: [
+    { id: "america_club_competition", slots: 4 },
+    { id: "european_clubs_competition", slots: 4 },
+  ],
+  output: [],
+} as Competition;
+export const europeanCupQualifiers = {
+  id: `europeanCupQualifiers`,
+  name: {
+    singular: "Eliminatórias da Eurocopa",
+    plural: "Eliminatórias da Eurocopa",
   },
-  {
-    id: "europeanCup",
-    name: "Eurocopa",
-    description:
-      "Realizada a cada quatro anos, é a competição que define a seleção dominante no futebol europeu.",
-    shield: "/competitions/EuropeanCup.svg",
-    eligibility: { region: "europe", teamType: "national" },
-    rules: {
-      format: "tournament",
-      hasGroupStage: true,
-      knockoutGamesPerRound: 1,
-      hasThirdPlaceMatch: false,
-      finalIsSingleGame: true,
-    },
+  eligibility: { region: "european", teamType: "national" },
+  rules: nationalLeagueRules,
+  input: [],
+  frequency: "quadrienal",
+  output: [{ id: "europeanCup", slots: 24 }],
+} as Competition;
+export const nationsLeague = {
+  id: "european_nations_competition",
+  name: {
+    singular: "Nations League",
+    plural: "Nations Leagues",
   },
-  {
-    id: "worldCup",
-    name: "Copa do Mundo",
-    description:
-      "O ápice do futebol mundial, onde seleções de todos os continentes lutam pela glória eterna.",
-    shield: "/competitions/WorldCup.svg",
-    eligibility: { teamType: "national" },
-    rules: {
-      format: "tournament",
-      hasGroupStage: true,
-      knockoutGamesPerRound: 1,
-      hasThirdPlaceMatch: true,
-      finalIsSingleGame: true,
-    },
+  eligibility: { region: "european", teamType: "national" },
+  frequency: "bienal",
+  rules: {
+    format: "cup",
+    hasGroupStage: true,
+    groupStageGamesPerRound: 2,
+    knockoutGamesPerRound: 1,
+    hasThirdPlaceMatch: true,
+    finalIsSingleGame: true,
   },
-];
+} as Competition;
+const COMPETITIONS: Competition[] = buildCompetitions();
 
 export default COMPETITIONS;

@@ -2,13 +2,25 @@
   :nth-child(0) {
     font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--text-muted);
     width: 28px;
+  }
+
+  td {
+    font-family: var(--font-mono);
   }
 }
 
-.destaqueMeuTime td {
+.greenHighlight td {
   background: rgba(0, 230, 118, 0.05);
   color: var(--green);
-  font-family: var(--font-mono);
+}
+
+.redHighlight td {
+  background: rgba(0, 230, 118, 0.05);
+  color: var(--red);
+}
+
+.points {
+  color: var(--green);
+  font-weight: bold;
 }

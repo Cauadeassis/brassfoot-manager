@@ -1,77 +1,84 @@
 "use client";
+
+import { memo } from "react";
 import useGameStore from "../../../stores/useGameStore";
-import type { Player, Team } from "../../../types";
-import { formatMoney, getOverallLabel } from "../../../utils";
+import { Player } from "../../../types/player";
+import { Team } from "../../../types/team";
+import { formatMoney } from "../../../utils";
 import styles from "./transferPlayer.module.css";
 import {
-    TeamBadge,
-    NationalityBadge,
-    OverallBadge,
-    PositionBadge,
+  TeamBadge,
+  NationalityBadge,
+  OverallBadge,
+  PositionBadge,
 } from "../../badges";
 
 export interface MarketPlayer extends Player {
-    marketType: "free" | "club";
-    originTeam?: Team | null;
+  marketType: "free" | "club";
+  originTeam?: Team | null;
 }
 
 interface TransferPlayerRowProps {
-    player: MarketPlayer;
-    canAfford: boolean;
+  marketPlayer: MarketPlayer;
+  canAfford: boolean;
 }
 
-export default function TransferPlayerRow({
-    player,
-    canAfford,
+function TransferPlayerRow({
+  marketPlayer,
+  canAfford,
 }: TransferPlayerRowProps) {
-    const makeTransaction = useGameStore((state) => state.makeTransaction);
-    const userTeamId = useGameStore((state) => state.userTeamId);
-    const isFreeAgent = player.marketType === "free";
-    const handleBuyClick = () => {
-        makeTransaction({
-            buyerTeamId: userTeamId,
-            sellerTeamId: isFreeAgent ? null : (player.originTeam?.id ?? null),
-            playerId: player.id,
-            value: player.value,
-        });
-    };
+  const makeTransfer = useGameStore((state) => state.makeTransfer);
+  const userTeamId = useGameStore((state) => state.userTeamId);
 
-    return (
-        <tr className={styles.transferPlayerRow}>
-            <td>
-                {" "}
-                <strong>{player.name} </strong>
-            </td>
-            <td>
-                <PositionBadge position={player.position} />
-            </td>
-            <td className="dim-color"> {player.age} </td>
-            <td>
-                <NationalityBadge nationality={player.nationality} />
-            </td>
-            <td>
-                <OverallBadge overall={player.overall} />
-            </td>
-            <td>
-                {isFreeAgent ? (
-                    <span className={styles.freeAgentTag}> FREE AGENT</span>
-                ) : (
-                    <TeamBadge
-                        teamShield={player.originTeam!.shield}
-                        teamName={player.originTeam!.name}
-                    />
-                )}
-            </td>
-            <td className="yellow-color"> {formatMoney(player.value)} </td>
-            <td>
-                {canAfford ? (
-                    <button className="green-button" onClick={handleBuyClick}>
-                        BUY
-                    </button>
-                ) : (
-                    <span className={styles.noFundsTag}>NO FUNDS</span>
-                )}
-            </td>
-        </tr>
-    );
+  const { originTeam, id, value, position, age, nationality, overall, name } =
+    marketPlayer;
+
+  const handleBuyClick = () => {
+    makeTransfer({
+      buyerTeamId: userTeamId,
+      sellerTeamId: originTeam ? originTeam.id : null,
+      playerId: id,
+      value: value,
+    });
+  };
+
+  return (
+    <tr className={styles.transferPlayerRow}>
+      <td>
+        <strong>{name}</strong>
+      </td>
+      <td>
+        <PositionBadge position={position} />
+      </td>
+      <td className="dim-color">{age}</td>
+      <td>
+        <NationalityBadge nationality={nationality} />
+      </td>
+      <td>
+        <OverallBadge overall={overall} />
+      </td>
+      <td>
+        {originTeam ? (
+          <TeamBadge
+            teamShield={originTeam.shield}
+            teamName={originTeam.name}
+          />
+        ) : (
+          <span className={styles.freeAgentTag}>LIVRE</span>
+        )}
+      </td>
+      <td className="yellow-color">{formatMoney(value)}</td>
+      <td>
+        {canAfford ? (
+          <button className="green-button" onClick={handleBuyClick}>
+            COMPRAR
+          </button>
+        ) : (
+          <span className={styles.noFundsTag}>SEM FUNDOS</span>
+        )}
+      </td>
+    </tr>
+  );
 }
+
+export default memo(TransferPlayerRow);

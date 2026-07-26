@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { Oswald, IBM_Plex_Mono, Barlow } from "next/font/google";
 import "./global.css";
-import "./animations.css";
-
+import CardModal from "../components/modals/card";
 const oswald = Oswald({ subsets: ["latin"], variable: "--font-oswald" });
 const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
@@ -16,7 +15,7 @@ const barlow = Barlow({
 });
 
 export const metadata: Metadata = {
-  title: "Football Manager",
+  title: "Futebol de bolso",
   description: "Gerencie seu clube rumo à glória",
 };
 
@@ -30,7 +29,10 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${oswald.variable} ${ibmPlexMono.variable} ${barlow.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <CardModal />
+      </body>
     </html>
   );
 }

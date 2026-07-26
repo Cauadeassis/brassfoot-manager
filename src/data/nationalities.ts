@@ -1,145 +1,203 @@
-import {
-  PORTUGUESE_NAMES,
-  PORTUGUESE_LASTNAMES,
-  SPANISH_NAMES,
-  SPANISH_LASTNAMES,
-  ENGLISH_NAMES,
-  ENGLISH_LASTNAMES,
-  FRENCH_NAMES,
-  FRENCH_LASTNAMES,
-  ITALIAN_NAMES,
-  ITALIAN_LASTNAMES,
-  GERMAN_NAMES,
-  GERMAN_LASTNAMES,
-} from "./names";
+import { Region } from "../types/competition";
 export type Nationality = keyof typeof NATIONALITIES_DATA;
 
-const NATIONALITIES_DATA = {
+export interface NationalityData {
+  flag: string;
+  region: Region;
+  language: Language;
+  demonym: {
+    masculine: string;
+    feminine: string;
+  };
+}
+
+export type Language =
+  | "portuguese"
+  | "french"
+  | "spanish"
+  | "english"
+  | "japanese"
+  | "arabic"
+  | "italian"
+  | "dutch"
+  | "german"
+  | "nordic";
+
+const NATIONALITIES_DATA: Record<string, NationalityData> = {
   BR: {
-    flag: "/countryFlags/southAmerica/Brazil.svg",
-    name: PORTUGUESE_NAMES,
-    lastname: PORTUGUESE_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Brazil.svg",
+    region: "southAmerican",
+    language: "portuguese",
+    demonym: { feminine: "brasileira", masculine: "brasileiro" },
+  },
+  CV: {
+    flag: "/flags/africa/CapeVerde.svg",
+    region: "african",
+    language: "portuguese",
+    demonym: { feminine: "cabo-verdiana", masculine: "cabo-verdiano" },
+  },
+  SN: {
+    flag: "/flags/africa/Senegal.svg",
+    region: "african",
+    language: "french",
+    demonym: { feminine: "senegalesa", masculine: "senegalês" },
+  },
+  CI: {
+    flag: "/flags/africa/IvoryCoast.svg",
+    region: "african",
+    language: "french",
+    demonym: { feminine: "marfinense", masculine: "marfinense" },
+  },
+  MA: {
+    flag: "/flags/africa/Morocco.svg",
+    region: "african",
+    language: "arabic",
+    demonym: { feminine: "marroquina", masculine: "marroquino" },
+  },
+  JP: {
+    flag: "/flags/asia/Japan.svg",
+    region: "asian",
+    language: "japanese",
+    demonym: { feminine: "japonesa", masculine: "japonês" },
+  },
+  US: {
+    flag: "/flags/northAmerica/UnitedStates.svg",
+    region: "northAmerican",
+    language: "english",
+    demonym: { feminine: "estadunidense", masculine: "estadunidense" },
+  },
+  MX: {
+    flag: "/flags/northAmerica/Mexico.svg",
+    region: "northAmerican",
+    language: "spanish",
+    demonym: { feminine: "mexicana", masculine: "mexicano" },
+  },
+  CA: {
+    flag: "/flags/northAmerica/Canada.svg",
+    region: "northAmerican",
+    language: "english",
+    demonym: { feminine: "canadense", masculine: "canadense" },
   },
   AR: {
-    flag: "/countryFlags/southAmerica/Argentina.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Argentina.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "argentina", masculine: "argentino" },
   },
   CO: {
-    flag: "/countryFlags/southAmerica/Colombia.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Colombia.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "colombiana", masculine: "colombiano" },
   },
   UY: {
-    flag: "/countryFlags/southAmerica/Uruguai.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Uruguai.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "uruguaia", masculine: "uruguaio" },
   },
   EC: {
-    flag: "/countryFlags/southAmerica/Equador.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Equador.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "equatoriana", masculine: "equatoriano" },
   },
   PY: {
-    flag: "/countryFlags/southAmerica/Paraguai.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Paraguai.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "paraguaia", masculine: "paraguaio" },
   },
   CL: {
-    flag: "/countryFlags/southAmerica/Chile.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Chile.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "chilena", masculine: "chileno" },
   },
   BO: {
-    flag: "/countryFlags/southAmerica/Bolivia.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Bolivia.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "boliviana", masculine: "boliviano" },
   },
   VE: {
-    flag: "/countryFlags/southAmerica/Venezuela.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Venezuela.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "venezuelana", masculine: "venezuelano" },
   },
   PE: {
-    flag: "/countryFlags/southAmerica/Peru.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "southAmerica",
+    flag: "/flags/southAmerica/Peru.svg",
+    region: "southAmerican",
+    language: "spanish",
+    demonym: { feminine: "peruana", masculine: "peruano" },
   },
   PT: {
-    flag: "/countryFlags/europe/Portugal.svg",
-    name: PORTUGUESE_NAMES,
-    lastname: PORTUGUESE_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Portugal.svg",
+    region: "european",
+    language: "portuguese",
+    demonym: { feminine: "portuguesa", masculine: "português" },
   },
   ES: {
-    flag: "/countryFlags/europe/Spain.svg",
-    name: SPANISH_NAMES,
-    lastname: SPANISH_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Spain.svg",
+    region: "european",
+    language: "spanish",
+    demonym: { feminine: "espanhola", masculine: "espanhol" },
   },
   GB: {
-    flag: "/countryFlags/europe/England.svg",
-    name: ENGLISH_NAMES,
-    lastname: ENGLISH_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/England.svg",
+    region: "european",
+    language: "english",
+    demonym: { feminine: "inglesa", masculine: "inglês" },
   },
   FR: {
-    flag: "/countryFlags/europe/France.svg",
-    name: FRENCH_NAMES,
-    lastname: FRENCH_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/France.svg",
+    region: "european",
+    language: "french",
+    demonym: { feminine: "francesa", masculine: "francês" },
   },
   BE: {
-    flag: "/countryFlags/europe/Belgium.svg",
-    name: FRENCH_NAMES,
-    lastname: FRENCH_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Belgium.svg",
+    region: "european",
+    language: "french",
+    demonym: { feminine: "belga", masculine: "belga" },
   },
   IT: {
-    flag: "/countryFlags/europe/Italy.svg",
-    name: ITALIAN_NAMES,
-    lastname: ITALIAN_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Italy.svg",
+    region: "european",
+    language: "italian",
+    demonym: { feminine: "italiana", masculine: "italiano" },
   },
   DE: {
-    flag: "/countryFlags/europe/Germany.svg",
-    name: GERMAN_NAMES,
-    lastname: GERMAN_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Germany.svg",
+    region: "european",
+    language: "german",
+    demonym: { feminine: "alemã", masculine: "alemão" },
   },
   NL: {
-    flag: "/countryFlags/europe/Netherlands.svg",
-    name: GERMAN_NAMES,
-    lastname: GERMAN_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Netherlands.svg",
+    region: "european",
+    language: "dutch",
+    demonym: { feminine: "holandesa", masculine: "holandês" },
   },
   NO: {
-    flag: "/countryFlags/europe/Norway.svg",
-    name: GERMAN_NAMES,
-    lastname: GERMAN_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Norway.svg",
+    region: "european",
+    language: "nordic",
+    demonym: { feminine: "norueguesa", masculine: "norueguês" },
   },
   CH: {
-    flag: "/countryFlags/europe/Switzerland.svg",
-    name: GERMAN_NAMES,
-    lastname: GERMAN_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Switzerland.svg",
+    region: "european",
+    language: "french",
+    demonym: { feminine: "suíça", masculine: "suíço" },
   },
   SE: {
-    flag: "/countryFlags/europe/Sweden.svg",
-    name: GERMAN_NAMES,
-    lastname: GERMAN_LASTNAMES,
-    region: "europe",
+    flag: "/flags/europe/Sweden.svg",
+    region: "european",
+    language: "nordic",
+    demonym: { feminine: "sueca", masculine: "sueco" },
   },
 };
+
 export default NATIONALITIES_DATA;

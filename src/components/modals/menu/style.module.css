@@ -1,0 +1,68 @@
+.modalOverlay {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 200;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.modalBox {
+  animation: drawerEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  background: var(--bg-card);
+  width: 280px;
+  height: 100vh;
+  padding: 1.5rem;
+  position: relative;
+  border-right: 1px solid var(--border-accent);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+
+    & h2 {
+      font-family: var(--font-head);
+      font-size: 16px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    & button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+      to right,
+      rgba(101, 5, 5, 0.166),
+      rgba(255, 255, 255, 0)
+    );
+    z-index: -1;
+  }
+}
+
+@keyframes drawerEnter {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

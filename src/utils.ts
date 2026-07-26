@@ -1,11 +1,10 @@
 import useGameStore from "./stores/useGameStore";
-import type { Team, Player, Competition, Position } from "./types";
+import { Position } from "./types/player";
+import { Competition } from "./types/competition";
+import { Player } from "./types/player";
+import { Team } from "./types/team";
 import COMPETITIONS from "./data/competitions";
-import POSITIONS_DATA from "./data/positions";
-
-// ---------------------------------------------------------
-// FUNÇÕES PURAS (Não dependem do estado global)
-// ---------------------------------------------------------
+import getPositionsData from "./gameEngine/generators/positions";
 
 export const getRandom = <T>(props: { array: readonly T[] }): T => {
   return props.array[Math.floor(Math.random() * props.array.length)];
@@ -23,27 +22,10 @@ export function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-export const getCompatiblePositions = (position: Position): Position[] =>
-  POSITIONS_DATA[position]?.compatible ?? [position];
-
-export function getStarters(team: Team): Player[] {
-  const starterIds = new Set(team.startersId.map(String));
-  return team.squad.filter((player) => starterIds.has(player.id));
-}
-
-export const getGK = (starters: Player[]) =>
-  starters.find((player) => player.position === "GK") || starters[0]; // Ajuste "GOL" ou "GK" de acordo com sua tipagem de posições
-
-export interface FilterPlayersByPositionProps {
-  starters: Player[];
-  array: Position[];
-}
-
-export const filterPlayersByPosition = ({
-  starters,
-  array,
-}: FilterPlayersByPositionProps) =>
-  starters.filter((player) => array.includes(player.position));
+export const getCompatiblePositions = (position: Position): Position[] => {
+  const POSITIONS_DATA = getPositionsData("masculine");
+  return [position, ...(POSITIONS_DATA[position].canBePlayedBy ?? [])];
+};
 
 export const getCompetition = (id: string): Competition | undefined =>
   COMPETITIONS.find((competition) => competition.id === id);
@@ -68,6 +50,7 @@ export function formatMoney(value: number | string): string {
     ({ divisor }) => Math.abs(numericValue) >= divisor,
   );
   if (!formatRule) return new Intl.NumberFormat("pt-BR").format(numericValue);
+
   const reducedValue = numericValue / formatRule.divisor;
 
   return (
@@ -81,34 +64,36 @@ export function formatMoney(value: number | string): string {
 // FUNÇÕES DE ACESSO AO ESTADO (Usando Zustand .getState())
 // ---------------------------------------------------------
 
-export const getTeam = (id: number): Team | undefined =>
-  useGameStore.getState().teams.find((team) => team.id === id);
-
-export const getSquad = (teamId: number) => getTeam(teamId)?.squad || [];
-
-interface GetPlayerProps {
-  playerId: string;
-  teamId: number;
-}
-
-export const getPlayer = ({
-  playerId,
-  teamId,
-}: GetPlayerProps): Player | undefined => {
-  const squad = getSquad(teamId);
-  return squad.find((player) => player.id === playerId);
-};
+export const getTeam = (id: string): Team | undefined =>
+  useGameStore.getState().teams[id];
 
 export const getUserTeam = (): Team => {
   const state = useGameStore.getState();
-
-  if (state.userTeamId === null)
+  if (!state.userTeamId)
     throw new Error("User team ID is not set in the game state.");
-
-  const userTeam = state.teams.find((t) => t.id === state.userTeamId);
-
+  const userTeam = state.teams[state.userTeamId];
   if (!userTeam)
     throw new Error(`Team with ID ${state.userTeamId} could not be found.`);
-
   return userTeam;
+};
+interface GetPlayersByPositionProps {
+  positions: Position[];
+  starters: Player[];
+}
+export function filterPlayersByPosition({
+  positions,
+  starters,
+}: GetPlayersByPositionProps): Player[] {
+  return starters.filter((player) => positions.includes(player.position));
+}
+
+export const getPlayer = (playerId: string): Player | undefined =>
+  useGameStore.getState().players[playerId];
+
+export const getSpriteId = (path: string) => {
+  const normalizedPath = path.replace(/\\/g, "/").replace(/\.svg$/, "");
+  const parts = normalizedPath.split("/");
+  const fileName = parts[parts.length - 1];
+  const parentFolder = parts[parts.length - 2];
+  return `${parentFolder}-${fileName}`.toLowerCase();
 };

@@ -1,188 +1,207 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { createMarketSlice } from "./slices/useMarketStore";
-import type { GameState, Round, Transaction, Match } from "../types";
-import { getNextMatches } from "../gameEngine/matchSimulator";
-import { shuffleArray } from "../utils";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { simulateCPUMatches } from "../gameEngine/match/orchestrator";
+import { createMarketSlice, MarketActions } from "./slices/createMarketSlice";
+import { GameState } from "../types/state";
+import { getUpcomingMatches } from "../gameEngine/match/state";
 import { toast } from "./useToastStore";
-export interface MarketActions {
-  acceptOffer: (index: number) => void;
-  rejectOffer: (index: number) => void;
-  sellPlayer: (playerId: string) => void;
-  makeTransaction: (transaction: Transaction) => void;
-  generateOffers: () => void;
-  aiManageMarket: () => void;
+import generateSeason from "../gameEngine/generators/season";
+import { processMatchResults } from "../gameEngine/match/progression";
+import useUIStore from "./useUIStore";
+import { MatchEvent } from "../types/match";
+import { Modality, PlayStyle } from "../types/team";
+import { FormationType } from "../data/formations";
+import { generateSquad, setStarters } from "../gameEngine/team";
+
+export interface LoadStateProps {
+  state: GameState;
 }
 
-interface UpdateTeamMoneyProps {
-  teamId: number;
+export interface SetModalityProps {
+  modality: Modality;
+}
+
+export interface UpdateTeamMoneyProps {
+  teamId: string;
   amount: number;
 }
 
+export interface ChangeTacticsPayload {
+  formation?: FormationType;
+  style?: PlayStyle;
+}
+
+export interface ChangeTacticsProps {
+  teamId: string;
+  payload: ChangeTacticsPayload;
+}
+
+export interface FinishMatchProps {
+  matchId: string;
+  homeGoals: number;
+  awayGoals: number;
+  events: MatchEvent[];
+}
+
 export interface GameActions {
-  setInitialState: (state: GameState) => void;
-  advanceRound: () => void;
-  updateTeamMoney: ({ teamId, amount }: UpdateTeamMoneyProps) => void;
+  loadState: (props: LoadStateProps) => void;
+  setModality: (props: SetModalityProps) => void;
+  updateTeamMoney: (props: UpdateTeamMoneyProps) => void;
   resetGame: () => void;
-  openMatchModal: (match: Match) => void;
-  closeMatchModal: () => void;
-  finishMatch: ({ matchId, homeGoals, awayGoals }: FinishMatchProps) => void;
-  generateCalendar: () => void;
+  advanceDay: () => void;
+  finishMatch: (props: FinishMatchProps) => void;
+  changeTactics: (props: ChangeTacticsProps) => void;
   simulateNextMatch: () => void;
+  startSeason: () => void;
 }
 
 export type GameStore = GameState & GameActions & MarketActions;
 
-interface FinishMatchProps {
-  matchId: string;
-  homeGoals: number;
-  awayGoals: number;
-}
-
 const initialGameState: GameState = {
-  competitionId: null,
-  userTeamId: null,
+  currentDate: "2026-01-01",
+  modality: "masculine",
   season: 2026,
-  activeMatch: null,
-  currentRound: 1,
-  teams: [],
+  status: "IDLE",
+  userTeamId: null,
+  teams: {},
+  players: {},
+  competitions: [],
   calendar: [],
-  freeAgents: [],
+  activeMatch: null,
   notifications: [],
   results: [],
 };
 
 const useGameStore = create<GameStore>()(
-  immer((...a) => {
-    const [set, get] = a;
-    return {
-      ...initialGameState,
-      ...createMarketSlice(...a),
-      setInitialState: (savedState) =>
-        set((gameState: GameState) => {
-          Object.assign(gameState, savedState);
-        }),
-      advanceRound: () =>
-        set((gameState: GameState) => {
-          gameState.currentRound += 1;
-        }),
-      updateTeamMoney: ({ teamId, amount }) =>
-        set((gameState: GameState) => {
-          const team = gameState.teams.find((team) => team.id === teamId);
-          if (team) team.money += amount;
-        }),
-      resetGame: () =>
-        set((gameState: GameState) => {
-          Object.assign(gameState, initialGameState);
-        }),
-      generateCalendar: () =>
-        set((gameState: GameState) => {
-          const divisions = [
-            ...new Set(gameState.teams.map((t) => t.division)),
-          ];
-          const allRounds: Round[] = [];
+  persist(
+    immer((...a) => {
+      const [set, get] = a;
+      return {
+        ...initialGameState,
+        ...createMarketSlice(...a),
 
-          divisions.forEach((div) => {
-            const baseTeamIds = gameState.teams
-              .filter((team) => team.division === div)
-              .map((team) => team.id);
+        loadState: ({ state: savedState }) =>
+          set(() => {
+            // Como agora as entidades são objetos puros, não precisamos instanciar classes
+            return {
+              ...savedState,
+              teams: savedState.teams,
+              players: savedState.players,
+            } as unknown as GameStore;
+          }),
+        setModality: ({ modality }) =>
+          set((state) => {
+            state.modality = modality;
+          }),
 
-            const teamIds = shuffleArray(baseTeamIds);
-            const teamCount = teamIds.length;
-            if (teamCount === 0) return;
+        updateTeamMoney: ({ teamId, amount }) =>
+          set((state) => {
+            const team = state.teams[teamId];
+            if (team) team.money += amount;
+          }),
 
-            let rotation = [...teamIds];
-            const totalDivRounds = (teamCount - 1) * 2;
-            const divRounds: Match[][] = Array.from(
-              { length: totalDivRounds },
-              () => [],
-            );
-            for (let round = 0; round < teamCount - 1; round++) {
-              for (let index = 0; index < teamCount / 2; index++) {
-                divRounds[round].push({
-                  id: `${round + 1}-${rotation[index]}-${rotation[teamCount - 1 - index]}`, // ID único gerado
-                  homeTeamId: rotation[index],
-                  awayTeamId: rotation[teamCount - 1 - index],
-                  roundNumber: round + 1,
-                  simulated: false,
-                  homeGoals: 0,
-                  awayGoals: 0,
-                  accelerated: false,
-                });
-              }
-              rotation = [
-                rotation[0],
-                rotation[teamCount - 1],
-                ...rotation.slice(1, teamCount - 1),
-              ];
-            }
-            for (let round = 0; round < teamCount - 1; round++) {
-              const returnoRoundIndex = round + teamCount - 1;
-              divRounds[returnoRoundIndex] = divRounds[round].map((game) => ({
-                id: `${returnoRoundIndex + 1}-${game.awayTeamId}-${game.homeTeamId}`,
-                homeTeamId: game.awayTeamId,
-                awayTeamId: game.homeTeamId,
-                roundNumber: returnoRoundIndex + 1,
-                simulated: false,
-                homeGoals: 0,
-                awayGoals: 0,
-                accelerated: false,
-              }));
-            }
-            divRounds.forEach((matches, rIndex) => {
-              if (!allRounds[rIndex]) {
-                allRounds[rIndex] = { roundNumber: rIndex + 1, matches: [] };
-              }
-              allRounds[rIndex].matches.push(...matches);
+        resetGame: () => set(() => ({ ...initialGameState })),
+
+        advanceDay: () => {
+          set((state) => {});
+        },
+
+        changeTactics: ({ teamId, payload }) => {
+          set((state) => {
+            const team = state.teams[teamId];
+            if (!team) return;
+
+            if (payload.formation) team.tactics.formation = payload.formation;
+            if (payload.style) team.tactics.style = payload.style;
+            state.teams[teamId] = setStarters({
+              team,
+              playersMap: state.players,
             });
           });
-          gameState.calendar = allRounds;
-        }),
-
-      openMatchModal: (match) =>
-        set((draft) => {
-          draft.activeMatch = match;
-        }),
-
-      closeMatchModal: () =>
-        set((draft) => {
-          draft.activeMatch = null;
-        }),
-
-      finishMatch: ({ matchId, homeGoals, awayGoals }) =>
-        set((gameState: GameState) => {
-          const match = gameState.calendar
-            .flatMap((round) => round.matches)
-            .find((match) => match.id === matchId);
-          if (!match) return;
-          match.simulated = true;
-          match.homeGoals = homeGoals;
-          match.awayGoals = awayGoals;
-          gameState.results.push({ ...match });
-          const matchRound = gameState.calendar.find((round) =>
-            round.matches.some((m) => m.id === matchId),
+        },
+        finishMatch: (payload) => {
+          const currentState = get();
+          const currentDay = currentState.calendar.find(
+            (c) => c.date === currentState.currentDate,
           );
-          if (matchRound) {
-            matchRound.matches.forEach((roundMatch) => {
-              if (!roundMatch.simulated) {
-              }
-            });
-            gameState.currentRound = matchRound.roundNumber + 1;
-          }
-        }),
-      simulateNextMatch: () => {
-        const nextMatches = getNextMatches({ state: get(), number: 1 });
-        if (nextMatches.length === 0) {
-          toast({
-            message: "Não há mais jogos nesta temporada!",
-            type: "info",
+          const cpuMatches = currentDay
+            ? currentDay.matches.filter(
+                (match) =>
+                  !match.simulated &&
+                  match.id !== payload.matchId &&
+                  match.homeTeamId !== currentState.userTeamId &&
+                  match.awayTeamId !== currentState.userTeamId,
+              )
+            : [];
+          const cpuResults = simulateCPUMatches({
+            pendingMatches: cpuMatches,
+            teams: currentState.teams,
           });
-          return;
-        }
-        const nextMatch = nextMatches[0];
-        set({ activeMatch: nextMatch });
-      },
-    };
-  }),
+          set((state) => {
+            const gameState = state as unknown as GameState;
+            processMatchResults({ gameState, payload });
+            cpuResults.forEach((result) => {
+              processMatchResults({
+                gameState,
+                payload: {
+                  matchId: result.matchId,
+                  homeGoals: result.homeGoals,
+                  awayGoals: result.awayGoals,
+                  events: result.events,
+                },
+              });
+            });
+            state.status = "IDLE";
+          });
+        },
+
+        startSeason: () => {
+          set((state) => {
+            state.season++;
+            const { calendar, competitions } = generateSeason({
+              teams: Object.values(state.teams),
+              season: state.season,
+            });
+
+            state.calendar = calendar;
+            state.competitions = competitions;
+            state.currentDate = `${state.season}-01-01`;
+            state.status = "IDLE";
+            state.results = [];
+            state.notifications = [];
+          });
+
+          toast({ message: `Temporada iniciada!`, type: "ok" });
+        },
+
+        simulateNextMatch: () => {
+          const gameState = get();
+          if (!gameState.userTeamId) return;
+
+          const nextMatches = getUpcomingMatches({
+            calendar: gameState.calendar,
+            targetTeamId: gameState.userTeamId,
+          });
+
+          if (nextMatches.length === 0) {
+            return;
+          }
+
+          const nextMatch = nextMatches[0];
+          if (nextMatch.date !== gameState.currentDate) {
+            return;
+          }
+
+          useUIStore.getState().openMatchModal(nextMatch);
+        },
+      };
+    }),
+    {
+      name: "game-save",
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
 );
+
 export default useGameStore;

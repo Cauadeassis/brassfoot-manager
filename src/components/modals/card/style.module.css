@@ -1,0 +1,81 @@
+.cardModal {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+
+  .modalBox {
+    animation: modalEnter 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    background: var(--bg-card);
+    width: 100%;
+    border-radius: 8px;
+    max-width: max(30%, 450px);
+    max-height: 90vh;
+    padding: 1.5rem;
+    opacity: 1;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(
+        to bottom,
+        rgba(101, 5, 5, 0.166),
+        rgba(255, 255, 255, 0)
+      );
+      z-index: -1;
+    }
+
+    & div {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      gap: 2rem;
+
+      & h2 {
+        font-family: var(--font-head);
+        font-size: 20px;
+        color: var(--text-main);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      & .shieldIcon {
+        width: 100px;
+        object-fit: contain;
+        align-self: center;
+      }
+
+      & p {
+        font-size: 1rem;
+        color: var(--dim-color);
+        line-height: 1.6;
+      }
+
+      & .buttonsContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      & > div {
+        gap: 0.2rem;
+      }
+    }
+  }
+}
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

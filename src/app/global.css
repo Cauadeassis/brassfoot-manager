@@ -36,7 +36,6 @@ table {
     font-size: 9px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--text-muted);
     padding: 8px 10px;
     text-align: left;
     border-bottom: 1px solid var(--border);
@@ -56,11 +55,12 @@ table {
     }
   }
 }
-
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 body {
@@ -69,6 +69,10 @@ body {
   font-family: var(--font-body);
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 button {

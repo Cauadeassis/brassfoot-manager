@@ -6,7 +6,7 @@ import styles from "./loading.module.css";
 export default function LoadingPage() {
   const router = useRouter();
   useEffect(() => {
-    const saveGame = localStorage.getItem("bfmgr_save");
+    const saveGame = localStorage.getItem("game-save");
     if (saveGame) router.push("/dashboard");
     else {
       const timer = setTimeout(() => router.push("/new-game"), 2200);

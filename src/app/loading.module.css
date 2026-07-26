@@ -44,3 +44,20 @@
     letter-spacing: 2px;
   }
 }
+@keyframes loadBar {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

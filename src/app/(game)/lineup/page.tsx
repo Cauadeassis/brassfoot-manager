@@ -1,113 +1,99 @@
 "use client";
-
+import React, { useMemo } from "react";
 import useGameStore from "../../../stores/useGameStore";
 import SquadPlayerRow from "../../../components/rows/squadPlayer";
-import FORMATIONS from "../../../data/formations";
-import { organizeSquad } from "../../../gameEngine/tactics";
-import type { FormationType, GameState, PlayStyle } from "../../../types";
+import FORMATIONS_DATA, {
+  PlayerSlot,
+  FormationType,
+} from "../../../data/formations";
+import { PlayStyle } from "../../../types/team";
 import styles from "./lineup.module.css";
+import { FiltersContainer, FormSelect } from "../../../filters/components";
+import {
+  formationOptions,
+  playStyleOptions,
+} from "../../../filters/selectOptions";
+import SectionHeader from "../components/sectionHeader";
+import { getSquad } from "../../../gameEngine/team";
+
+interface PlayerProps {
+  slot: PlayerSlot;
+  name: string | null;
+}
+
+const Player = React.memo(({ slot, name }: PlayerProps) => (
+  <div
+    className={styles.player}
+    style={{ top: `${slot.y}%`, left: `${slot.x}%` }}
+  >
+    <div className={styles.circle}>{slot.role || "?"}</div>
+    <div className={styles.name}>{name ? name.split(" ")[0] : "—"}</div>
+  </div>
+));
+Player.displayName = "Player";
+
 export default function Lineup() {
   const userTeamId = useGameStore((state) => state.userTeamId);
-  const teams = useGameStore((state) => state.teams);
-  const userTeam = teams.find((team) => team.id === userTeamId);
-  const squad = userTeam?.squad || [];
-
-  if (!userTeam) return <p>Carregando gerenciador tático...</p>;
-
-  const { formation, style } = userTeam.tactics;
-  const currentFormationConfig = FORMATIONS[formation];
+  const changeTactics = useGameStore((state) => state.changeTactics);
+  const userTeam = useGameStore((state) => state.teams[userTeamId!]);
+  const playersMap = useGameStore((state) => state.players);
+  const squad = useMemo(() => {
+    if (!userTeam) return [];
+    return getSquad({ team: userTeam, playersMap });
+  }, [userTeam, playersMap]);
+  const squadMap = useMemo(() => {
+    return new Map(squad.map((player) => [player.id, player]));
+  }, [squad]);
+  const benchPlayers = useMemo(() => {
+    if (!userTeam) return [];
+    const startersSet = new Set(userTeam.squad.starterIds);
+    return squad.filter((player) => !startersSet.has(player.id));
+  }, [squad, userTeam?.squad.starterIds]);
+  if (!userTeamId || !userTeam) {
+    return <p>Carregando gerenciador tático...</p>;
+  }
+  const { formation, style: playStyle } = userTeam.tactics;
+  const currentFormationConfig = FORMATIONS_DATA[formation];
+  const currentSlots = currentFormationConfig.slots[playStyle];
   const handleFormationChange = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     const newFormation = event.target.value as FormationType;
-    const newStartersId = organizeSquad({
-      squad,
-      positions: FORMATIONS[newFormation].positions,
-    });
-    useGameStore.setState((state: GameState) => {
-      const team = state.teams.find((t) => t.id === userTeamId);
-      if (team) {
-        team.tactics.formation = newFormation;
-        team.startersId = newStartersId;
-      }
-    });
+    changeTactics({ teamId: userTeamId, payload: { formation: newFormation } });
   };
-
-  const handleStyleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePlayStyleChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
     const newStyle = event.target.value as PlayStyle;
-    useGameStore.setState((state: GameState) => {
-      const team = state.teams.find((t) => t.id === userTeamId);
-      if (team) team.tactics.style = newStyle;
-    });
+    changeTactics({ teamId: userTeamId, payload: { style: newStyle } });
   };
-
-  const handleSave = () => alert("✓ Escalação e táticas salvas com sucesso!");
-  let currentStarterOffset = 0;
-  const linesWithOffsets = currentFormationConfig.lines.map((line) => {
-    const playersInLine = line[0] as number;
-    const positions = line.slice(1) as string[];
-    const startIdx = currentStarterOffset;
-    currentStarterOffset += playersInLine;
-    return { playersInLine, positions, startIdx };
-  });
-  const startersSet = new Set(userTeam.startersId);
-  const benchPlayers = squad.filter((player) => !startersSet.has(player.id));
-
   return (
     <section className={styles.lineupSection}>
-      <header>
-        <h2>
-          ESCALAÇÃO <span>& TÁTICAS</span>
-        </h2>
-      </header>
-      <div className="flex-row mb16">
-        <label>FORMAÇÃO</label>
-        <select value={formation} onChange={handleFormationChange}>
-          <option value="4-3-3">4-3-3</option>
-          <option value="4-4-2">4-4-2</option>
-          <option value="4-2-3-1">4-2-3-1</option>
-        </select>
+      <SectionHeader title="ESCALAÇÃO" meta={[` & TÁTICAS`]} />
+      <FiltersContainer>
+        <FormSelect
+          value={formation}
+          options={formationOptions}
+          onChange={handleFormationChange}
+        />
+        <FormSelect
+          value={playStyle}
+          options={playStyleOptions}
+          onChange={handlePlayStyleChange}
+        />
+      </FiltersContainer>
+      <div className={styles.footballFieldContainer}>
+        <img src="/FootballField.svg" alt="Campo de futebol" />
+        {currentSlots.map((slot, index) => {
+          const playerId = userTeam.squad.starterIds[index];
+          const player = squadMap.get(playerId);
 
-        <label>ESTILO</label>
-        <select value={style} onChange={handleStyleChange}>
-          <option value="balanced">Equilibrado</option>
-          <option value="offensive">Ofensivo</option>
-          <option value="defensive">Defensivo</option>
-        </select>
-
-        <button className="green-button" onClick={handleSave}>
-          ✓ SALVAR
-        </button>
-      </div>
-      <div className={styles.campoVisual}>
-        {linesWithOffsets.map((lineData, lineIndex) => {
-          const percentY =
-            85 - (lineIndex / (currentFormationConfig.lines.length - 1)) * 70;
           return (
-            <div
-              key={lineIndex}
-              className={styles.linhaDaFormacao}
-              style={{ top: `${percentY}%` }}
-            >
-              {Array.from({ length: lineData.playersInLine }).map((_, i) => {
-                const absoluteIndex = lineData.startIdx + i;
-                const playerId = userTeam.startersId[absoluteIndex];
-                const player = playerId
-                  ? squad.find((p) => p.id === playerId)
-                  : null;
-
-                return (
-                  <div key={i} className={styles.jogador}>
-                    <div className={styles.circuloDoJogador}>
-                      {lineData.positions[i] || "?"}
-                    </div>
-                    <div className={styles.nomeDoJogador}>
-                      {player ? player.name.split(" ")[0] : "—"}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <Player
+              key={index}
+              slot={slot}
+              name={player ? player.name : null}
+            />
           );
         })}
       </div>
