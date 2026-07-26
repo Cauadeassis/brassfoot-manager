@@ -1,0 +1,35 @@
+.notification {
+  background: var(--bg-card2);
+  border-left: 3px solid var(--yellow);
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  & .icon {
+    font-size: 16px;
+  }
+
+  & button {
+    font-size: 10px;
+    padding: 5px 12px;
+  }
+
+  & .green-button {
+    margin-left: auto;
+  }
+}
+
+.transfersSection {
+  th {
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+.message {
+  text-align: center;
+  padding: 2rem;
+}

@@ -1,0 +1,52 @@
+.rankingTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.rankingTeamRow {
+  background: var(--bg-card);
+  border-radius: 8px;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+
+  &:hover {
+    background: var(--bg-hover);
+    transform: scale(1.01);
+  }
+
+  & td {
+    padding: 20px 15px;
+    font-size: 16px;
+    font-weight: 500;
+
+    &:first-child {
+      border-radius: 8px 0 0 8px;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    &:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+  }
+
+  & .score {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: sans-serif;
+  }
+}
+
+.lastMatchesContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  span {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+}

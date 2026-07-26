@@ -1,0 +1,139 @@
+.selectContainer {
+  height: 100vh;
+  padding: 40px 20px;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  margin: 0 auto;
+
+  & header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    gap: 1.2rem;
+    position: relative;
+
+    & h1 {
+      font-family: var(--font-head);
+      font-size: 42px;
+      letter-spacing: 6px;
+      color: var(--green);
+
+      & strong {
+        color: var(--dim-color);
+      }
+    }
+
+    & p {
+      color: var(--dim-color);
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+  }
+  .gridOverflow {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+  & .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    width: 100%;
+    margin: 0 auto;
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 20px 16px;
+      width: 100%;
+      content-visibility: auto;
+      contain-intrinsic-size: 100px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+
+      &:hover {
+        border-color: var(--green);
+        transform: translateY(-5px);
+
+        & .shieldIcon {
+          transform: scale(1.1);
+        }
+
+        & h2 {
+          transform: scale(1.1);
+          text-shadow: 0 0 5px white;
+        }
+
+        &::before {
+          opacity: 1;
+        }
+      }
+
+      .shieldIcon {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        transition: 0.3s;
+      }
+
+      h2 {
+        font-family: var(--font-head);
+        font-size: 15px;
+        letter-spacing: 1px;
+        text-align: center;
+        color: var(--text-main);
+        transition: 0.3s;
+        text-transform: capitalize;
+      }
+    }
+
+    > .messageContainer {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+
+      p {
+        text-transform: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .selectContainer {
+    width: 90%;
+  }
+}
+
+.modalitySwitcher {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-family: var(--font-head);
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background: var(--green);
+    color: var(--bg-card);
+    border-color: var(--green);
+    transform: scale(1.05);
+  }
+}

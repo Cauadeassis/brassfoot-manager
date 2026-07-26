@@ -1,0 +1,19 @@
+.sectionHeader {
+  margin-bottom: 20px;
+  text-transform: uppscale;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+
+  & h2,
+  & span {
+    font-family: var(--font-head);
+    font-size: 22px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-main);
+  }
+
+  & span {
+    color: var(--green);
+  }
+}

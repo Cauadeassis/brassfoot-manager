@@ -1,0 +1,26 @@
+.standingsRow {
+  :nth-child(0) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    width: 28px;
+  }
+
+  td {
+    font-family: var(--font-mono);
+  }
+}
+
+.greenHighlight td {
+  background: rgba(0, 230, 118, 0.05);
+  color: var(--green);
+}
+
+.redHighlight td {
+  background: rgba(0, 230, 118, 0.05);
+  color: var(--red);
+}
+
+.points {
+  color: var(--green);
+  font-weight: bold;
+}

@@ -1,0 +1,50 @@
+.filtersContainer {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18px, 24%));
+  justify-content: start;
+  gap: 12px;
+  margin-bottom: 20px;
+  & input::placeholder {
+    color: var(--text-muted);
+  }
+
+  & input,
+  & select {
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    color: var(--text-main);
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  & select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  & button {
+    font-family: var(--font-head);
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 8px 22px;
+    border: 1px solid var(--border-accent);
+    background: transparent;
+    color: var(--dim-color);
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &.ativo,
+    &:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: rgba(0, 230, 118, 0.06);
+    }
+  }
+}

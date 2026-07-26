@@ -1,0 +1,203 @@
+.matchModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+  .modalBox {
+    animation: modalEnter 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    background: var(--bg-card);
+    border: 1px solid var(--border-accent);
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    & header {
+      background: var(--bg-base);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+
+      & p {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--yellow);
+        letter-spacing: 2px;
+      }
+    }
+  }
+  output {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 200px;
+    max-height: 260px;
+    overflow-y: auto;
+  }
+}
+
+.scoreboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+  }
+
+  > p {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .teamInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    & .shieldIcon {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+  }
+
+  .scoreNumbers {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+
+    & span {
+      font-family: var(--font-head);
+      font-size: 52px;
+      color: var(--green);
+      line-height: 1;
+    }
+
+    & p {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      color: var(--text-muted);
+      margin: 0 10px;
+    }
+  }
+
+  & h2 {
+    font-family: var(--font-head);
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-align: center;
+    min-width: 140px;
+  }
+
+  span {
+    display: flex;
+  }
+}
+
+.matchStats {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  padding: 14px 20px;
+  background: var(--bg-card2);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+
+  > div {
+    display: contents;
+
+    & span {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-main);
+    }
+
+    & :nth-child(1) {
+      text-align: right;
+    }
+
+    & :nth-child(3) {
+      text-align: left;
+    }
+
+    & p {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      padding: 4px 16px;
+    }
+  }
+}
+
+.logItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  animation: fadeInDown 0.3s ease;
+
+  & .minutes {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    min-width: 32px;
+    padding-top: 1px;
+  }
+
+  & .icon {
+    font-size: 14px;
+    width: 18px;
+  }
+
+  & .shieldIcon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+    object-fit: contain;
+  }
+
+  & .text {
+    color: var(--dim-color);
+    line-height: 1.4;
+
+    & strong {
+      color: var(--text-main);
+    }
+  }
+}
+
+.partidaAcoes {
+  padding: 16px 20px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--border);
+}
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

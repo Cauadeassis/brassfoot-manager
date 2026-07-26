@@ -1,0 +1,52 @@
+.playerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  transition: background 0.15s;
+
+  :hover {
+    background: var(--bg-hover);
+  }
+
+  .name {
+    flex: 1;
+    font-weight: 500;
+
+    span {
+      font-size: 9px;
+      color: var(--green);
+      margin-left: 4px;
+    }
+  }
+
+  .age {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 24px;
+    text-align: center;
+  }
+
+  .value {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 70px;
+    text-align: right;
+  }
+
+  & button {
+    background: transparent;
+    font-size: 10px;
+    border: 1px solid var(--red);
+    color: var(--red);
+
+    &:hover {
+      background: rgba(255, 61, 61, 0.1);
+    }
+  }
+}
