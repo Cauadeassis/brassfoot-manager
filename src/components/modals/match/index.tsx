@@ -9,14 +9,13 @@ import { EventLog, MatchState } from "../../../types/match";
 
 export default function MatchModal() {
   const activeMatch = useUIStore((state) => state.activeMatch);
-  if (!activeMatch) return;
   const closeMatchModal = useUIStore((state) => state.closeMatchModal);
   const processMatchResults = useGameStore((state) => state.finishMatch);
-  const homeTeam = useGameStore(
-    (state) => state.teams[activeMatch?.homeTeamId],
+  const homeTeam = useGameStore((state) =>
+    activeMatch ? state.teams[activeMatch.homeTeamId] : null,
   );
-  const awayTeam = useGameStore(
-    (state) => state.teams[activeMatch?.awayTeamId],
+  const awayTeam = useGameStore((state) =>
+    activeMatch ? state.teams[activeMatch.awayTeamId] : null,
   );
   const initialMatchState = {
     statistics: {

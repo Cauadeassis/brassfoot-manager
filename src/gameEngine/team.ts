@@ -11,6 +11,7 @@ import { Region } from "../types/competition";
 import TEMPLATES from "../data/descriptions";
 import { generatePlayer } from "./player";
 import { GeneralTeamData } from "../types/team";
+import { TeamGenerationError } from "../errors";
 
 interface GetSquadProps {
   team: Team;
@@ -53,6 +54,10 @@ export function getTeamDescription({
   nationality,
 }: GetTeamDescriptionProps): string {
   const templateType = TEMPLATES[type];
+  if (!templateType) {
+    throw TeamGenerationError.missingTemplate(type);
+  }
+
   const specific = templateType?.[region]?.[nationality];
   if (specific) return specific;
 
@@ -76,7 +81,11 @@ export const getStarters = ({ team, playersMap }: GetSquadProps): Player[] => {
 
 export const getGoalkeeper = ({ team, playersMap }: GetSquadProps): Player => {
   const starters = getStarters({ team, playersMap });
-  return starters.find((p) => p.position === "GK")!;
+  const goalkeeper = starters.find((p) => p.position === "GK");
+  if (!goalkeeper) {
+    throw TeamGenerationError.missingGoalkeeper(team.name);
+  }
+  return goalkeeper;
 };
 
 export const getStats = ({ team, season }: GetStatsProps): TeamStatistics =>
@@ -228,24 +237,41 @@ interface CreateTeamProps {
 }
 
 export const createBaseTeam = (raw: RawTeamData): GeneralTeamData => {
-  const region = NATIONALITIES_DATA[raw.nationality]?.region;
+  const {
+    nationality,
+    type,
+    name,
+    shield,
+    division,
+    overall,
+    money,
+    trophies,
+    description,
+  } = raw;
+  const nationalityData = NATIONALITIES_DATA[nationality];
+  if (!nationalityData) {
+    throw TeamGenerationError.invalidNationality({ nationality, name });
+  }
+
+  const region = nationalityData.region;
+
   return {
     id: crypto.randomUUID(),
-    name: raw.name,
-    type: raw.type,
-    nationality: raw.nationality,
-    shield: raw.shield,
-    division: raw.division,
-    overall: raw.overall,
-    money: raw.money,
+    name,
+    type,
+    nationality,
+    shield,
+    division,
+    overall,
+    money,
     description:
-      raw.description ||
+      description ||
       getTeamDescription({
-        type: raw.type,
+        type,
         region,
-        nationality: raw.nationality,
+        nationality,
       }),
-    trophies: raw.trophies ?? {},
+    trophies: trophies ?? {},
     history: { 2026: initialTeamStatistics },
     squad: { playerIds: [], starterIds: [], playerShirts: {} },
     tactics: {
@@ -270,6 +296,7 @@ export const generateSquad = async ({
   modality,
 }: GenerateSquadProps): Promise<{ updatedTeam: Team; squad: Player[] }> => {
   const POSITIONS_DATA = getPositionsData(modality);
+  if (!POSITIONS_DATA) throw TeamGenerationError.missingPositionsData(modality);
   const generatedPlayers: Player[] = [];
   let currentTeamState = team;
   const entries = Object.entries(POSITIONS_DATA) as [Position, PositionData][];
@@ -287,5 +314,6 @@ export const generateSquad = async ({
       generatedPlayers.push(newPlayer);
     }
   }
+
   return { updatedTeam: currentTeamState, squad: generatedPlayers };
 };

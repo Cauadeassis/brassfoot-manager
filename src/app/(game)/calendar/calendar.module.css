@@ -1,0 +1,138 @@
+.page {
+  --pitch-950: #0b1410;
+  --pitch-900: #12201a;
+  --panel-850: #17251e;
+  --chalk-100: #f1efe6;
+  --chalk-400: #9fb0a6;
+  --grass-500: #3fa34d;
+  --claret-500: #b23a48;
+  --line-800: #24352c;
+  --font-display: "Teko", "Oswald", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  min-height: 100dvh;
+  background: var(--pitch-950);
+  color: var(--chalk-100);
+  font-family: var(--font-body);
+  padding: 2.5rem clamp(1rem, 4vw, 3rem);
+
+  & * {
+    box-sizing: border-box;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.teamShieldImg {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.teamName {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.errorBanner {
+  background: color-mix(in srgb, var(--claret-500) 20%, transparent);
+  border: 1px solid var(--claret-500);
+  color: var(--chalk-100);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.calendarShell {
+  background: var(--panel-850);
+  border: 1px solid var(--line-800);
+  border-radius: 10px;
+  padding: 1.25rem;
+
+  &[aria-busy="true"] {
+    opacity: 0.6;
+  }
+
+  & :global(.fc) {
+    --fc-border-color: var(--line-800);
+    --fc-page-bg-color: transparent;
+    --fc-neutral-bg-color: var(--pitch-900);
+    --fc-today-bg-color: color-mix(in srgb, var(--grass-500) 12%, transparent);
+    --fc-event-bg-color: transparent;
+    --fc-event-border-color: transparent;
+    font-family: var(--font-body);
+  }
+
+  & :global(.fc .fc-toolbar-title) {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--chalk-100);
+  }
+
+  & :global(.fc .fc-button) {
+    background: var(--pitch-900);
+    border: 1px solid var(--line-800);
+    color: var(--chalk-100);
+    box-shadow: none;
+
+    &:hover {
+      background: var(--line-800);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--grass-500);
+      outline-offset: 2px;
+    }
+  }
+
+  & :global(.fc .fc-col-header-cell-cushion) {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--chalk-400);
+    text-decoration: none;
+    padding: 0.6rem 0;
+  }
+
+  & :global(.fc .fc-daygrid-day-number) {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--chalk-400);
+    padding: 0.3rem;
+  }
+
+  & :global(.fc .fc-day-other) :global(.fc-daygrid-day-frame) {
+    opacity: 0.4;
+  }
+
+  & :global(.fc .fc-daygrid-event-harness) {
+    display: flex;
+    justify-content: center;
+  }
+
+  & :global(.fc .currentDay) {
+    background-color: rgba(46, 204, 113, 0.15);
+    border: 2px solid #2ecc71;
+  }
+}
+
+.dayShield {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  cursor: default;
+}

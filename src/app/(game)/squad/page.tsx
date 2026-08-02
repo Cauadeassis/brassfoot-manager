@@ -26,10 +26,7 @@ const POSITION_GROUPS: Record<PositionGroup, Position[]> = {
 };
 
 export type PositionGroup =
-  | "attackers"
-  | "goalkeepers"
-  | "defenders"
-  | "midfielders";
+  "attackers" | "goalkeepers" | "defenders" | "midfielders";
 
 const squadSorters: Record<string, (a: Player, b: Player) => number> = {
   position: (a, b) =>

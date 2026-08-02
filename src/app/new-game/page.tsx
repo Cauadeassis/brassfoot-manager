@@ -214,8 +214,7 @@ export default function NewGame() {
               options={getNationalityOptions({ region })}
               onChange={(event) => {
                 const newNationality = event.target.value as
-                  | "all"
-                  | Nationality;
+                  "all" | Nationality;
                 setFilter("startGamePage", "nationality", newNationality);
               }}
             />

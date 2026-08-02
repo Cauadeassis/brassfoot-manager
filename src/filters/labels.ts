@@ -142,6 +142,7 @@ const COMPETITION_TYPES_MAP: Record<string, string> = {
 
 export const getCompetitionName = ({ length, key }: GetLabelProps): string => {
   const staticName = COMPETITION_NAMES[key];
+  console.log(staticName);
   if (staticName) {
     return length === 1 ? staticName.singular : staticName.plural;
   }

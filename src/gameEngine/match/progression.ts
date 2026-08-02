@@ -9,6 +9,7 @@ import { MatchEvent, EventType, Result, MatchTeams } from "../../types/match";
 import { EVENT_CONFIG } from "./events/manager";
 import { Player } from "../../types/player";
 import { Team } from "../../types/team";
+import { CompetitionId } from "../../types/competition";
 
 export interface MatchResultPayload {
   matchId: string;
@@ -28,7 +29,7 @@ interface GetPlayerStatDeltasProps {
 }
 
 interface UpdateTeamsStatisticsProps extends MatchTeams {
-  competitionId: string;
+  competitionId: CompetitionId;
   homeGoals: number;
   awayGoals: number;
 }
@@ -37,7 +38,7 @@ interface UpdatePlayerAppearances extends MatchTeams {
   players: Record<string, Player>;
   historyKey: string;
   season: number;
-  competitionId: string;
+  competitionId: CompetitionId;
 }
 
 interface ApplyPlayerDeltasProps {
@@ -46,12 +47,20 @@ interface ApplyPlayerDeltasProps {
   eventType: EventType;
   players: Record<string, Player>;
   historyKey: string;
+  season: number;
+  competitionId: CompetitionId;
+  homeTeam: Team;
+  awayTeam: Team;
 }
 
 interface ProcessMatchEventsProps {
   events: MatchEvent[];
   players: Record<string, Player>;
   historyKey: string;
+  season: number;
+  competitionId: CompetitionId;
+  homeTeam: Team;
+  awayTeam: Team;
 }
 
 interface ProcessMatchResultsProps {
@@ -183,12 +192,35 @@ const applyPlayerDeltas = ({
   eventType,
   players,
   historyKey,
+  season,
+  competitionId,
+  homeTeam,
+  awayTeam,
 }: ApplyPlayerDeltasProps): void => {
   const targetPlayer = players[playerId];
   if (!targetPlayer) throw new Error(`Invalid player Id: ${playerId}`);
+  if (!targetPlayer.history[historyKey]) {
+    const playerTeamId = (targetPlayer as any).teamId ||
+      (JSON.stringify(homeTeam).includes(playerId) ? homeTeam.id : awayTeam.id);
+
+    initPlayerHistory({
+      player: targetPlayer,
+      historyKey,
+      season,
+      competitionId,
+      teamId: playerTeamId,
+    });
+
+    const stats = targetPlayer.history[historyKey] as PlayerStatistics;
+    if (stats) {
+      stats.matchesPlayed += 1;
+    }
+  }
   const playerDeltas = getPlayerStatDeltas({ eventType, role });
   const stats = targetPlayer.history[historyKey];
+
   if (!stats) throw new Error(`Invalid historyKey for player: ${historyKey}`);
+
   Object.entries(playerDeltas).forEach(([key, value]) => {
     if (value) {
       (stats as any)[key] += value;
@@ -200,22 +232,30 @@ const processMatchEvents = ({
   events,
   players,
   historyKey,
+  season,
+  competitionId,
+  homeTeam,
+  awayTeam,
 }: ProcessMatchEventsProps): void => {
   const roles = ["shooter", "assistant", "goalkeeper"] as PlayerRole[];
   events.forEach((matchEvent) => {
     roles.forEach((role) => {
       const playerEventData = matchEvent[role];
       if (playerEventData) {
-        try 
-{        applyPlayerDeltas({
-          playerId: playerEventData.id,
-          role,
-          eventType: matchEvent.type,
-          players,
-          historyKey,
-        });}
-        catch(error) {
-          console.error(error)
+        try {
+          applyPlayerDeltas({
+            playerId: playerEventData.id,
+            role,
+            eventType: matchEvent.type,
+            players,
+            historyKey,
+            season,
+            competitionId,
+            homeTeam,
+            awayTeam,
+          });
+        } catch (error) {
+          console.error(error);
         }
       }
     });
@@ -261,6 +301,7 @@ export const processMatchResults = ({
   const awayTeam = gameState.teams[currentMatch.awayTeamId];
   if (homeTeam && awayTeam) {
     const historyKey = `${gameState.season}_${currentMatch.competitionId}`;
+
     updateTeamsStatistics({
       gameState,
       competitionId: currentMatch.competitionId,
@@ -269,6 +310,7 @@ export const processMatchResults = ({
       homeGoals,
       awayGoals,
     });
+
     updatePlayersAppearances({
       homeTeam,
       awayTeam,
@@ -277,10 +319,15 @@ export const processMatchResults = ({
       season: gameState.season,
       competitionId: currentMatch.competitionId,
     });
+
     processMatchEvents({
       events,
       players: gameState.players,
       historyKey,
+      season: gameState.season,
+      competitionId: currentMatch.competitionId,
+      homeTeam,
+      awayTeam,
     });
   }
 
@@ -305,25 +352,25 @@ const initPlayerHistory = ({
     player.history[historyKey] =
       player.position === "GK"
         ? {
-            role: "goalkeeper",
-            season,
-            competitionId,
-            teamId,
-            matchesPlayed: 0,
-            defenses: 0,
-            yellowCards: 0,
-            redCards: 0,
-          }
+          role: "goalkeeper",
+          season,
+          competitionId,
+          teamId,
+          matchesPlayed: 0,
+          defenses: 0,
+          yellowCards: 0,
+          redCards: 0,
+        }
         : {
-            role: "attacker",
-            season,
-            competitionId,
-            teamId,
-            matchesPlayed: 0,
-            goals: 0,
-            assists: 0,
-            yellowCards: 0,
-            redCards: 0,
-          };
+          role: "attacker",
+          season,
+          competitionId,
+          teamId,
+          matchesPlayed: 0,
+          goals: 0,
+          assists: 0,
+          yellowCards: 0,
+          redCards: 0,
+        };
   }
 };

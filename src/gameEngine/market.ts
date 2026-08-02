@@ -4,6 +4,7 @@ import { Player } from "../types/player";
 import { getRandom, formatMoney } from "../utils";
 import getPositionsData from "./generators/positions";
 import { Position } from "../types/player";
+import { TransferError } from "../errors";
 
 interface MakeTransferProps {
   draft: GameState;
@@ -37,28 +38,25 @@ export const makeTransfer = ({
   transferOffer,
 }: MakeTransferProps): string | null => {
   const { buyerTeamId, sellerTeamId, playerId, value } = transferOffer;
-  if (!buyerTeamId && !sellerTeamId) throw new Error("Sem origem e destino.");
-
+  if (!buyerTeamId && !sellerTeamId)
+    throw TransferError.missingBuyerAndSeller();
   const buyer = buyerTeamId ? draft.teams[buyerTeamId] : null;
   const seller = sellerTeamId ? draft.teams[sellerTeamId] : null;
-
   const player = draft.players[playerId];
   if (!player) throw new Error("Jogador não encontrado na base de dados!");
   if (!seller && player.currentTeamId !== null) {
-    throw new Error("Jogador não está livre no mercado!");
+    throw TransferError.invalidPlayer(player.name);
   }
   let playerIndex = -1;
   if (seller) {
     playerIndex = seller.squad.playerIds.findIndex(
       (id: string) => id === playerId,
     );
-    if (playerIndex === -1)
-      throw new Error("Jogador não encontrado na origem indicada!");
+    if (playerIndex === -1) throw TransferError.playerNotFound(player.name);
   }
 
   if (buyer && buyer.money < value) {
-    if (buyerTeamId === draft.userTeamId)
-      throw new Error("Saldo insuficiente!");
+    if (buyerTeamId === draft.userTeamId) throw TransferError.missingMoney();
     return null;
   }
   if (seller) {

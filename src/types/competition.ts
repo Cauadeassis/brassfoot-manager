@@ -7,11 +7,7 @@ import { type } from "os";
 import { QuantityVariation } from "../filters/labels";
 export type CompetitionFormat = "league" | "cup" | "mixed";
 export type Region =
-  | "southAmerican"
-  | "european"
-  | "northAmerican"
-  | "african"
-  | "asian";
+  "southAmerican" | "european" | "northAmerican" | "african" | "asian";
 export type CompetitionId =
   | "worldCup"
   | "worldClubs"

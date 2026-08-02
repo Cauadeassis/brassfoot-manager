@@ -70,6 +70,11 @@ function buildPosition({
   data,
   modality,
 }: BuildPositionProps): PositionData {
+  if (!data || !data.label) {
+    throw new Error(
+      `Dados de posição inválidos ou ausentes para a chave: ${key}`,
+    );
+  }
   const isFeminine = modality === "feminine";
   const singular = isFeminine
     ? getFeminineSingular(key, data.label)

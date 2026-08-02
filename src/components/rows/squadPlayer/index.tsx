@@ -18,7 +18,6 @@ export default function SquadPlayerRow({
   showAction = false,
 }: SquadPlayerRowProps) {
   const sellPlayer = useGameStore((state) => state.sellPlayer);
-  console.log(player.position);
   const handleSellClick = () => {
     if (sellPlayer) sellPlayer(player.id);
     else

@@ -1,3 +1,4 @@
+import { CompetitionId } from "./competition";
 import { Player } from "./player";
 import { Team } from "./team";
 
@@ -21,7 +22,7 @@ export type Result = "win" | "draw" | "defeat";
 
 export interface Match {
   id: string;
-  competitionId: string;
+  competitionId: CompetitionId;
   date: string;
   round: number;
   goals: MatchTeamsNumbers;

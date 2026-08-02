@@ -41,5 +41,4 @@ files.forEach((file) => {
 spriter.compile((error: unknown, result: any) => {
   if (error) throw error;
   fs.writeFileSync("public/sprite.svg", result.symbol.sprite.contents);
-  console.log("✅ Sprite SVG gerado com sucesso!");
 });

@@ -4,7 +4,7 @@ import { getTeamsModifiers } from "./orchestrator";
 import { CalendarDay } from "../../types/state";
 import { getPlayer } from "../../utils";
 
-interface CreateMatchStateProps extends MatchTeams {}
+interface CreateMatchStateProps extends MatchTeams { }
 
 export function createMatchState({
   homeTeam,
@@ -69,6 +69,29 @@ export const getUpcomingMatches = ({
     teamId: targetTeamId,
   });
   return allTeamMatches.filter((m) => !m.simulated).slice(0, desiredQuantity);
+};
+
+interface GetMatchesByMonthProps extends Omit<
+  GetMatchesProps,
+  "desiredQuantity"
+> {
+  targetMonth: string; // mm/yyyy
+}
+
+export const getMatchesByMonth = ({
+  calendar,
+  targetTeamId,
+  targetMonth,
+}: GetMatchesByMonthProps): Match[] => {
+  const monthCalendar = calendar.filter((day) => {
+    const year = day.date.slice(0, 4);
+    const month = day.date.slice(5, 7);
+    return `${month}-${year}` === targetMonth;
+  });
+  return filterMatchesByTeam({
+    calendar: monthCalendar,
+    teamId: targetTeamId,
+  });
 };
 
 export const getLastMatches = ({

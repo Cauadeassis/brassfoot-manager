@@ -1,7 +1,12 @@
 import { Match } from "../../types/match";
 import { Team } from "../../types/team";
-import { CompetitionRules, CompetitionFormat } from "../../types/competition";
+import {
+  CompetitionRules,
+  CompetitionFormat,
+  CompetitionId,
+} from "../../types/competition";
 import { shuffleArray } from "../../utils";
+import { CalendarGenerationError } from "../../errors";
 
 interface CreateMatchProps extends Pick<
   Match,
@@ -10,7 +15,7 @@ interface CreateMatchProps extends Pick<
 
 interface GenerateRoundRobinProps {
   teamIds: string[];
-  competitionId: string;
+  competitionId: CompetitionId;
   doubleLegged: boolean;
   roundLabelPrefix?: string;
 }
@@ -23,7 +28,7 @@ interface ChunkTeamsIntoGroupsProps {
 interface GenerateCalendarProps {
   teams: Team[];
   rules: CompetitionRules;
-  competitionId: string;
+  competitionId: CompetitionId;
 }
 
 const createMatch = ({
@@ -46,6 +51,9 @@ const chunkTeamsIntoGroups = ({
   teams,
   groupSize,
 }: ChunkTeamsIntoGroupsProps): Team[][] => {
+  if (!teams || teams.length === 0) {
+    throw CalendarGenerationError.missingTeams();
+  }
   const shuffledTeams = shuffleArray(teams);
   const groups: Team[][] = [];
   for (let index = 0; index < shuffledTeams.length; index += groupSize) {
@@ -60,15 +68,15 @@ const generateRoundRobinMatches = ({
   doubleLegged,
   roundLabelPrefix = "Rodada",
 }: GenerateRoundRobinProps): Match[][] => {
+  if (!teamIds || teamIds.length === 0) {
+    throw CalendarGenerationError.missingTeams();
+  }
   const shuffledTeamIds = shuffleArray(teamIds);
   const hasOddTeams = shuffledTeamIds.length % 2 !== 0;
   const normalizedTeamIds = hasOddTeams
     ? [...shuffledTeamIds, "BYE"]
     : [...shuffledTeamIds];
-
   const teamCount = normalizedTeamIds.length;
-  if (teamIds.length === 0) return [];
-
   let rotation = [...normalizedTeamIds];
   const singleTurnRounds = teamCount - 1;
   const totalRounds = doubleLegged ? singleTurnRounds * 2 : singleTurnRounds;
@@ -231,11 +239,13 @@ const CALENDAR_STRATEGIES: Record<
 };
 
 export const generateMatches = (props: GenerateCalendarProps): Match[][] => {
+  if (!props.teams || props.teams.length === 0) {
+    throw CalendarGenerationError.missingTeams();
+  }
+
   const generatorFunction = CALENDAR_STRATEGIES[props.rules.format];
   if (!generatorFunction) {
-    throw new Error(
-      `O formato de competição "${props.rules.format}" não é suportado.`,
-    );
+    throw CalendarGenerationError.unsupportedFormat(props.rules.format);
   }
 
   return generatorFunction(props);

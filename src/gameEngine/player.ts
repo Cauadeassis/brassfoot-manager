@@ -5,21 +5,7 @@ import { Team } from "../types/team";
 import NATIONALITIES_DATA from "../data/nationalities";
 import { Nationality } from "../data/nationalities";
 import { Modality } from "../types/team";
-import useGameStore from "../stores/useGameStore";
-
-export function progressPlayers(): void {
-  const currentDate = useGameStore.getState().currentDate;
-  const [_, month, day] = currentDate.split("-");
-  const isNewMonth = day === "01";
-  const isNewYear = month === "01" && day === "01";
-  if (!isNewMonth && !isNewYear) return;
-  useGameStore.setState((state) => {
-    Object.values(state.players).forEach((player) => {
-      if (isNewYear) player = advanceYear({ player });
-      if (isNewMonth) player = advanceMonth({ player });
-    });
-  });
-}
+import { PlayerGenerationError } from "../errors";
 
 export interface GeneratePlayerProps {
   position: Position;
@@ -95,7 +81,12 @@ export const calculateOverall = ({
   position,
   skills,
 }: CalculateOverallProps): number => {
-  const weights = getPositionsData("masculine")[position].skillsWeight;
+  const positionData = getPositionsData("masculine")[position];
+  if (!positionData || !positionData.skillsWeight) {
+    throw PlayerGenerationError.invalidPosition(position);
+  }
+
+  const weights = positionData.skillsWeight;
   const skillsTotal = Object.entries(weights).reduce(
     (sum, [skill, weight]) =>
       sum + getSkillValue({ skills, skill: skill as Skill }) * weight,
@@ -136,7 +127,11 @@ export const generateSkills = ({
   };
 
   const extraSkillsFn = POSITION_SKILLS_MAP[position];
-  const extraSkills = extraSkillsFn ? extraSkillsFn(base) : {};
+  if (!extraSkillsFn) {
+    throw PlayerGenerationError.invalidPosition(position);
+  }
+
+  const extraSkills = extraSkillsFn(base);
   return { ...baseSkills, ...extraSkills } as PlayerSkills;
 };
 
@@ -162,11 +157,7 @@ export const refreshPlayerStats = ({ player }: PlayerActionProps): Player => {
     skills: player.currentSkills,
   });
   const value = calculateMarketValue({ overall, age: player.age });
-  return {
-    ...player,
-    overall,
-    value,
-  };
+  return { ...player, overall, value };
 };
 
 export const advanceYear = ({ player }: PlayerActionProps): Player => {
@@ -180,31 +171,29 @@ export const advanceYear = ({ player }: PlayerActionProps): Player => {
   const updatedPlayer = {
     ...player,
     age: newAge,
-    currentSkills: {
-      ...player.currentSkills,
-      physical: newPhysical,
-    },
+    currentSkills: { ...player.currentSkills, physical: newPhysical },
   };
 
   return refreshPlayerStats({ player: updatedPlayer });
 };
 
+export const advanceDay = ({ player }: PlayerActionProps): Player => {
+  const newStamina = Math.min(player.stamina + player.currentSkills.physical / 5, 100)
+  return {
+    ...player,
+    stamina: newStamina
+  }
+}
+
 export const advanceMonth = ({ player }: PlayerActionProps): Player => {
   let newPhysical = player.currentSkills.physical;
-
   if (player.age < 24 && Math.random() > 0.7) {
     newPhysical = Math.min(100, newPhysical + 1);
   }
-
   const updatedPlayer = {
     ...player,
-    stamina: 100,
-    currentSkills: {
-      ...player.currentSkills,
-      physical: newPhysical,
-    },
+    currentSkills: { ...player.currentSkills, physical: newPhysical },
   };
-
   return refreshPlayerStats({ player: updatedPlayer });
 };
 
@@ -220,10 +209,34 @@ export const generatePlayer = async ({
     team.type === "club" && Math.random() < 0.25
       ? getRandom({ array: foreignNationalities })
       : team.nationality;
-  const language = NATIONALITIES_DATA[nationality].language;
-  const { default: names } = await import(`../data/names/${language}`);
+  const nationalityData = NATIONALITIES_DATA[nationality];
+  if (!nationalityData || !nationalityData.language) {
+    throw PlayerGenerationError.invalidNationality(nationality);
+  }
+  const language = nationalityData.language;
+  let namesModule;
+  try {
+    namesModule = await import(`../data/names/${language}`);
+  } catch (error) {
+    throw PlayerGenerationError.missingNameData(
+      `File 'names/${language}' doesn't exist.`,
+    );
+  }
+
+  const names = namesModule.default;
   const firstNames = names[modality];
   const lastnames = names.lastnames;
+  if (!firstNames || firstNames.length === 0) {
+    throw PlayerGenerationError.missingNameData(
+      `${language} doesn't have a ${modality} names array.`,
+    );
+  }
+  if (!lastnames || lastnames.length === 0) {
+    throw PlayerGenerationError.missingNameData(
+      `${language} doesn't have a lastnames array.`,
+    );
+  }
+
   const name = `${getRandom({ array: firstNames })} ${getRandom({ array: lastnames })}`;
   const age = 17 + Math.floor(Math.random() * 18);
   const currentSkills = generateSkills({
@@ -231,6 +244,7 @@ export const generatePlayer = async ({
     baseOverall: team.overall,
   });
   const overall = calculateOverall({ position, skills: currentSkills });
+
   return {
     id: crypto.randomUUID(),
     name,

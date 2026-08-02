@@ -42,11 +42,7 @@ export function simulateShot({
     : baseOpenPlayGoalChance + attributeDifference;
   const finalGoalChance = Math.min(90, Math.max(10, baseChance)) / 100;
   const isGoal = Math.random() < finalGoalChance;
-  if (isGoal) return "goal";
-  const cornerChance = 0.3;
-  const isCorner = !isPenaltyKick && Math.random() < cornerChance;
-  if (isCorner) return "corner";
-  return "defended";
+  return isGoal ? "goal" : Math.random() < 0.3 ? "corner" : "defended";
 }
 
 export function simulateCorner({
@@ -86,12 +82,8 @@ export function calculatePossession({
   homePossessionModifier = 0,
   awayPossessionModifier = 0,
 }: CalculatePossessionProps): MatchTeamsNumbers {
-  console.log(`modificador do time de casa: ${homePossessionModifier}`);
-  console.log(`modificador do time de fora: ${awayPossessionModifier}`);
-
   const overallDiff = homeTeamOverall + 3 - awayTeamOverall;
   const tacticalDiff = homePossessionModifier - awayPossessionModifier;
-  console.log(`Diferença tática de: ${tacticalDiff}`);
   const homePossession = 0.5 + overallDiff / 100 + tacticalDiff * 0.5;
   const clampedHome = clamp(homePossession, 0.1, 0.9);
   return {

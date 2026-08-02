@@ -67,7 +67,7 @@ const DEFAULT_MODIFIERS: Modifiers = {
   ownPossession: 0,
 };
 
-function getTeamBaseModifiers(team: Team): Modifiers {
+export function getTeamBaseModifiers(team: Team): Modifiers {
   const style = team.tactics.style;
   const formation = team.tactics.formation;
   const styleModifiers = playStyleModifiers[style];
@@ -84,24 +84,16 @@ function getTeamBaseModifiers(team: Team): Modifiers {
 }
 
 export function getTeamsModifiers({ homeTeam, awayTeam }: MatchTeams) {
-  console.log(
-    `${homeTeam.name} joga de ${homeTeam.tactics.formation} e ${homeTeam.tactics.style}`,
-  );
-  console.log(
-    `${awayTeam.name} joga de ${awayTeam.tactics.formation} e ${awayTeam.tactics.style}`,
-  );
   const homeBase = getTeamBaseModifiers(homeTeam);
-  console.log("modificadores do time de casa:", homeBase);
   const awayBase = getTeamBaseModifiers(awayTeam);
-  console.log("modificadores do time de fora:", awayBase);
   return {
     homeModifiers: {
       shotsModifier: homeBase.ownShots + awayBase.opponentShots,
-      possessionModifier: homeBase.ownPossession - awayBase.ownPossession,
+      possessionModifier: homeBase.ownPossession,
     },
     awayModifiers: {
       shotsModifier: awayBase.ownShots + homeBase.opponentShots,
-      possessionModifier: awayBase.ownPossession - homeBase.ownPossession,
+      possessionModifier: awayBase.ownPossession,
     },
   };
 }

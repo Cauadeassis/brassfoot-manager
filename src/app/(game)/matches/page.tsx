@@ -61,7 +61,7 @@ export default function Calendar() {
   const competitionName = useMemo(() => {
     if (!competitionId) return "Nenhuma competição selecionada";
     try {
-      getCompetitionName({ length: 1, key: competitionId });
+      return getCompetitionName({ length: 1, key: competitionId });
     } catch (error) {
       console.error(error);
     }

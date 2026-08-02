@@ -26,11 +26,11 @@ export const NAVIGATION_MENU: Section[] = [
       { href: "/dashboard", label: "Dashboard", icon: "📊" },
       { href: "/squad", label: "Elenco", icon: "👥" },
       { href: "/lineup", label: "Escalação", icon: "⚙️" },
+      { href: "/calendar", label: "Calendário", icon: "🗓️" },
     ],
   },
   {
     title: "Mundo",
-
     items: [{ href: "/transfers", label: "Transferências", icon: "💰" }],
   },
   {

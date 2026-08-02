@@ -6,10 +6,53 @@ import MatchList from "./components/matchList";
 import MiniStandings from "./components/miniStandings";
 import styles from "./dashboard.module.css";
 import SectionHeader from "../components/sectionHeader";
+import { MatchSimulationError } from "../../../errors";
+import { toast } from "../../../stores/useToastStore";
+import { useMemo } from "react";
 
 export default function Dashboard() {
   const season = useGameStore((state) => state.season);
+  const calendar = useGameStore((state) => state.calendar);
+  const currentDate = useGameStore((state) => state.currentDate);
+  const userTeamId = useGameStore((state) => state.userTeamId);
   const simulateNextMatch = useGameStore((state) => state.simulateNextMatch);
+  const advanceDay = useGameStore((state) => state.advanceDay);
+  const hasMatchToday = useMemo(() => {
+    const todaySchedule = calendar.find((day) => day.date === currentDate);
+    if (!todaySchedule) return false;
+    return todaySchedule.matches.some(
+      (m) =>
+        !m.simulated &&
+        (m.homeTeamId === userTeamId || m.awayTeamId === userTeamId)
+    );
+  }, [calendar, currentDate, userTeamId]);
+
+  function handleSimulateNextMatch() {
+    try {
+      simulateNextMatch();
+    } catch (error) {
+      if (error instanceof MatchSimulationError) {
+        toast({ message: error.message, type: "error" });
+      } else {
+        console.error("Unexpected internal error:", error);
+        toast({
+          message: "Ocorreu um erro inesperado ao tentar simular a partida.",
+          type: "error",
+        });
+      }
+    }
+  }
+
+  function handleAdvanceDay() {
+    try {
+      advanceDay();
+      toast({ message: "Dia avançado!", type: "ok" });
+    } catch (error) {
+      console.error(error);
+      toast({ message: "Erro ao avançar o dia.", type: "error" });
+    }
+  }
+
   return (
     <section className={styles.dashboard}>
       <SectionHeader title="DASHBOARD" meta={[` — ${season}`]} />
@@ -18,9 +61,17 @@ export default function Dashboard() {
         <MatchList type="upcoming" />
         <MatchList type="results" />
       </div>
-      <button className="green-button" onClick={simulateNextMatch}>
-        ▶ SIMULAR JOGO
-      </button>
+
+      {hasMatchToday ? (
+        <button className="green-button" onClick={handleSimulateNextMatch}>
+          ▶ JOGAR
+        </button>
+      ) : (
+        <button className="green-button" onClick={handleAdvanceDay}>
+          ▶ AVANÇAR DIA
+        </button>
+      )}
+
       <MiniStandings />
     </section>
   );

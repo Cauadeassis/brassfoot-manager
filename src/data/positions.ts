@@ -1,9 +1,6 @@
 import { Position, Skill } from "../types/player";
 export type PositionColor =
-  | "yellow-color"
-  | "blue-color"
-  | "pink-color"
-  | "green-color";
+  "yellow-color" | "blue-color" | "pink-color" | "green-color";
 export interface LabelData {
   singular: string;
   plural: string;

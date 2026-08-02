@@ -119,7 +119,7 @@ export default function TopScorers() {
   const competitionName = useMemo(() => {
     if (!competitionId) return "Nenhuma competição selecionada";
     try {
-      getCompetitionName({ length: 1, key: competitionId });
+      return getCompetitionName({ length: 1, key: competitionId });
     } catch (error) {
       console.error(error);
     }
@@ -129,7 +129,7 @@ export default function TopScorers() {
       <SectionHeader
         title="ARTILHARIA"
         meta={[
-          `${competitionName}`,
+          ` — ${competitionName}`,
           position !== "all"
             ? ` — ${POSITIONS_DATA[position].label.plural}`
             : null,

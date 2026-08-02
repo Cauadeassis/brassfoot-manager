@@ -20,16 +20,9 @@ export interface TransferNotification {
 }
 
 export type Style =
-  | "green-color"
-  | "yellow-color"
-  | "red-color"
-  | "blue-color"
-  | "none";
+  "green-color" | "yellow-color" | "red-color" | "blue-color" | "none";
 export type WorldStatus =
-  | "IDLE"
-  | "MATCH_DAY"
-  | "TRANSFER_WINDOW"
-  | "SEASON_END";
+  "IDLE" | "MATCH_DAY" | "TRANSFER_WINDOW" | "SEASON_END";
 
 export interface CalendarDay {
   date: string;

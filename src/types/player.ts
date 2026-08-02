@@ -2,12 +2,7 @@ import { Nationality } from "../data/nationalities";
 import { Trophies } from "./competition";
 
 export type Skill =
-  | "shooting"
-  | "vision"
-  | "physical"
-  | "dribbling"
-  | "defense"
-  | "reflexes";
+  "shooting" | "vision" | "physical" | "dribbling" | "defense" | "reflexes";
 
 export interface PlayerTournamentStatistics {
   playerId: string;
@@ -59,15 +54,9 @@ export interface GoalkeeperSkills extends BaseSkills {
   reflexes: number; // 0-90
 }
 export type PositionSkillGroup =
-  | "attacker"
-  | "defender"
-  | "mixed"
-  | "goalkeeper";
+  "attacker" | "defender" | "mixed" | "goalkeeper";
 export type PlayerSkills =
-  | AttackerSkills
-  | DefenderSkills
-  | GoalkeeperSkills
-  | MixedSkills;
+  AttackerSkills | DefenderSkills | GoalkeeperSkills | MixedSkills;
 
 export type Position =
   | "GK"

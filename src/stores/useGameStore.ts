@@ -13,6 +13,8 @@ import { MatchEvent } from "../types/match";
 import { Modality, PlayStyle } from "../types/team";
 import { FormationType } from "../data/formations";
 import { generateSquad, setStarters } from "../gameEngine/team";
+import { MatchSimulationError } from "../errors";
+import { advanceDay, advanceMonth, advanceYear } from "../gameEngine/player";
 
 export interface LoadStateProps {
   state: GameState;
@@ -73,6 +75,15 @@ const initialGameState: GameState = {
   results: [],
 };
 
+function addOneDay(dateString: string): string {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day + 1);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 const useGameStore = create<GameStore>()(
   persist(
     immer((...a) => {
@@ -83,7 +94,6 @@ const useGameStore = create<GameStore>()(
 
         loadState: ({ state: savedState }) =>
           set(() => {
-            // Como agora as entidades são objetos puros, não precisamos instanciar classes
             return {
               ...savedState,
               teams: savedState.teams,
@@ -104,7 +114,47 @@ const useGameStore = create<GameStore>()(
         resetGame: () => set(() => ({ ...initialGameState })),
 
         advanceDay: () => {
-          set((state) => {});
+          const currentState = get();
+          const currentDay = currentState.calendar.find(
+            (c) => c.date === currentState.currentDate
+          );
+          const cpuMatches = currentDay
+            ? currentDay.matches.filter(
+              (match) =>
+                !match.simulated &&
+                match.homeTeamId !== currentState.userTeamId &&
+                match.awayTeamId !== currentState.userTeamId
+            )
+            : [];
+          const cpuResults = simulateCPUMatches({
+            pendingMatches: cpuMatches,
+            teams: currentState.teams,
+          });
+          set((state) => {
+            const gameState = state as unknown as GameState;
+            cpuResults.forEach((result) => {
+              processMatchResults({
+                gameState,
+                payload: {
+                  matchId: result.matchId,
+                  homeGoals: result.homeGoals,
+                  awayGoals: result.awayGoals,
+                  events: result.events,
+                },
+              });
+            });
+            const nextDateStr = addOneDay(state.currentDate);
+            state.currentDate = nextDateStr;
+            const [_, newMonth, newDay] = nextDateStr.split("-");
+            const isNewMonth = newDay === "01";
+            const isNewYear = newMonth === "01" && newDay === "01";
+            Object.values(state.players).forEach((player) => {
+              let updatedPlayer = advanceDay({ player });
+              if (isNewYear) updatedPlayer = advanceYear({ player: updatedPlayer });
+              if (isNewMonth) updatedPlayer = advanceMonth({ player: updatedPlayer });
+              state.players[player.id] = updatedPlayer;
+            });
+          });
         },
 
         changeTactics: ({ teamId, payload }) => {
@@ -127,12 +177,12 @@ const useGameStore = create<GameStore>()(
           );
           const cpuMatches = currentDay
             ? currentDay.matches.filter(
-                (match) =>
-                  !match.simulated &&
-                  match.id !== payload.matchId &&
-                  match.homeTeamId !== currentState.userTeamId &&
-                  match.awayTeamId !== currentState.userTeamId,
-              )
+              (match) =>
+                !match.simulated &&
+                match.id !== payload.matchId &&
+                match.homeTeamId !== currentState.userTeamId &&
+                match.awayTeamId !== currentState.userTeamId,
+            )
             : [];
           const cpuResults = simulateCPUMatches({
             pendingMatches: cpuMatches,
@@ -177,7 +227,10 @@ const useGameStore = create<GameStore>()(
 
         simulateNextMatch: () => {
           const gameState = get();
-          if (!gameState.userTeamId) return;
+
+          if (!gameState.userTeamId) {
+            throw MatchSimulationError.missingUserTeam();
+          }
 
           const nextMatches = getUpcomingMatches({
             calendar: gameState.calendar,
@@ -185,12 +238,16 @@ const useGameStore = create<GameStore>()(
           });
 
           if (nextMatches.length === 0) {
-            return;
+            throw MatchSimulationError.noMatchesAvailable();
           }
 
           const nextMatch = nextMatches[0];
+
           if (nextMatch.date !== gameState.currentDate) {
-            return;
+            throw MatchSimulationError.dateMismatch(
+              nextMatch.date,
+              gameState.currentDate,
+            );
           }
 
           useUIStore.getState().openMatchModal(nextMatch);
