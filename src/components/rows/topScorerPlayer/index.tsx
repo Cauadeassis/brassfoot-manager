@@ -4,11 +4,12 @@ import { memo } from "react";
 import { ScorerPlayer } from "../../../app/(game)/topScorers/page";
 import { TeamBadge, PositionBadge } from "../../badges";
 import styles from "./topScorerPlayer.module.css";
+import { HistoryKey } from "../../../types/team";
 
 interface TopScorerRowProps {
   scorerPlayer: ScorerPlayer;
   index: number;
-  historyKey: string;
+  historyKey: HistoryKey;
 }
 
 function TopScorerRow({ scorerPlayer, index, historyKey }: TopScorerRowProps) {

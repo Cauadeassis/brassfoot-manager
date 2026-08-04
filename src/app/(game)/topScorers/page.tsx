@@ -21,6 +21,7 @@ import SectionHeader from "../components/sectionHeader";
 import useFiltersStore, { ScorerSortKey } from "../../../stores/useFilterStore";
 import { getSquad } from "../../../gameEngine/team";
 import { getCompetitionName } from "../../../filters/labels";
+import { HistoryKey } from "../../../types/team";
 
 export interface ScorerPlayer extends Player {
   teamName: string;
@@ -37,7 +38,7 @@ export default function TopScorers() {
   const competitionId = useFiltersStore(
     (state) => state.globalFilters.generalCompetitionId,
   );
-  const historyKey = `${season}_${competitionId}`;
+  const historyKey = `${season}_${competitionId}` as HistoryKey;
   const {
     searchQuery,
     position,
@@ -70,7 +71,6 @@ export default function TopScorers() {
 
   const top20Scorers = useMemo(() => {
     const queryLower = searchQuery.toLowerCase();
-    const historyKey = `${season}_${competitionId}`;
     const filtered = [];
     for (const team of Object.values(teamsDict)) {
       if (teamId !== "all" && team.id !== teamId) continue;

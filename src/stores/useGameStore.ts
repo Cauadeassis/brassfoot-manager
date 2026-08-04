@@ -116,15 +116,15 @@ const useGameStore = create<GameStore>()(
         advanceDay: () => {
           const currentState = get();
           const currentDay = currentState.calendar.find(
-            (c) => c.date === currentState.currentDate
+            (c) => c.date === currentState.currentDate,
           );
           const cpuMatches = currentDay
             ? currentDay.matches.filter(
-              (match) =>
-                !match.simulated &&
-                match.homeTeamId !== currentState.userTeamId &&
-                match.awayTeamId !== currentState.userTeamId
-            )
+                (match) =>
+                  !match.simulated &&
+                  match.homeTeamId !== currentState.userTeamId &&
+                  match.awayTeamId !== currentState.userTeamId,
+              )
             : [];
           const cpuResults = simulateCPUMatches({
             pendingMatches: cpuMatches,
@@ -150,8 +150,10 @@ const useGameStore = create<GameStore>()(
             const isNewYear = newMonth === "01" && newDay === "01";
             Object.values(state.players).forEach((player) => {
               let updatedPlayer = advanceDay({ player });
-              if (isNewYear) updatedPlayer = advanceYear({ player: updatedPlayer });
-              if (isNewMonth) updatedPlayer = advanceMonth({ player: updatedPlayer });
+              if (isNewYear)
+                updatedPlayer = advanceYear({ player: updatedPlayer });
+              if (isNewMonth)
+                updatedPlayer = advanceMonth({ player: updatedPlayer });
               state.players[player.id] = updatedPlayer;
             });
           });
@@ -177,12 +179,12 @@ const useGameStore = create<GameStore>()(
           );
           const cpuMatches = currentDay
             ? currentDay.matches.filter(
-              (match) =>
-                !match.simulated &&
-                match.id !== payload.matchId &&
-                match.homeTeamId !== currentState.userTeamId &&
-                match.awayTeamId !== currentState.userTeamId,
-            )
+                (match) =>
+                  !match.simulated &&
+                  match.id !== payload.matchId &&
+                  match.homeTeamId !== currentState.userTeamId &&
+                  match.awayTeamId !== currentState.userTeamId,
+              )
             : [];
           const cpuResults = simulateCPUMatches({
             pendingMatches: cpuMatches,

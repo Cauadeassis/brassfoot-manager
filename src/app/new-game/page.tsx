@@ -197,9 +197,11 @@ export default function NewGame() {
       </header>
 
       <FiltersContainer ariaLabel="Filtros de Equipe">
-        <FormButton isActive={true} onClick={handleChangeTeamType}>
-          {teamTypeMap[teamType]}
-        </FormButton>
+        {1 + 1 === 3 &&
+          <FormButton isActive={true} onClick={handleChangeTeamType}>
+            {teamTypeMap[teamType]}
+          </FormButton>
+        }
 
         <FormSelect
           value={region}

@@ -1,6 +1,6 @@
 import { FormationType } from "../data/formations";
 import { Nationality } from "../data/nationalities";
-import { Trophies } from "./competition";
+import { CompetitionId, Trophies } from "./competition";
 
 export type Modality = "masculine" | "feminine";
 export type Division = "A" | "B";
@@ -16,6 +16,8 @@ export interface TeamStatistics {
   goalsAgainst: number;
   matchesPlayed: number;
 }
+export type HistoryKey = `${number}_${CompetitionId}`; // 2026_ES_league
+export type TeamHistoryMap = Record<HistoryKey, TeamStatistics>;
 export interface Team {
   id: string;
   name: string;
@@ -32,7 +34,7 @@ export interface Team {
     starterIds: string[];
     playerShirts: Record<string, number>;
   };
-  history: Record<number, TeamStatistics>;
+  history: TeamHistoryMap;
   trophies: Trophies;
   tactics: {
     formation: FormationType;

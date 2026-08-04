@@ -12,10 +12,10 @@ export type CompetitionId =
   | "worldCup"
   | "worldClubs"
   | "worldCupQualifiers"
-  | "europeanCupQualifiers"
+  | "european_cupQualifiers"
   | `${Region}_clubs_competition`
   | `${Region}_nations_competition`
-  | `${Region}Cup`
+  | `${Region}_cup`
   | `${Nationality}_league`
   | `${Nationality}_cup`
   | `${Nationality}_supercup`;

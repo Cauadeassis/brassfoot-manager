@@ -9,12 +9,16 @@ import SectionHeader from "../components/sectionHeader";
 import { MatchSimulationError } from "../../../errors";
 import { toast } from "../../../stores/useToastStore";
 import { useMemo } from "react";
+import { getCompetitionName } from "../../../filters/labels";
+import { CompetitionId } from "../../../types/competition";
+import { HistoryKey } from "../../../types/team";
 
 export default function Dashboard() {
   const season = useGameStore((state) => state.season);
   const calendar = useGameStore((state) => state.calendar);
   const currentDate = useGameStore((state) => state.currentDate);
   const userTeamId = useGameStore((state) => state.userTeamId);
+  const userTeam = useGameStore((state) => state.teams[userTeamId!]);
   const simulateNextMatch = useGameStore((state) => state.simulateNextMatch);
   const advanceDay = useGameStore((state) => state.advanceDay);
   const hasMatchToday = useMemo(() => {
@@ -23,7 +27,7 @@ export default function Dashboard() {
     return todaySchedule.matches.some(
       (m) =>
         !m.simulated &&
-        (m.homeTeamId === userTeamId || m.awayTeamId === userTeamId)
+        (m.homeTeamId === userTeamId || m.awayTeamId === userTeamId),
     );
   }, [calendar, currentDate, userTeamId]);
 
@@ -53,10 +57,33 @@ export default function Dashboard() {
     }
   }
 
+  if (!userTeam) {
+    return (
+      <div className={styles.dashboard}>
+        <p>Carregando dados do time...</p>
+      </div>
+    );
+  }
+
+  const nationalLeagueId = `${userTeam.nationality}_league` as CompetitionId;
+  const historyKey = `${season}_${nationalLeagueId}` as HistoryKey;
+  const getNationalLeagueName = () => {
+    try {
+      return getCompetitionName({ length: 1, key: nationalLeagueId });
+    } catch (error) {
+      console.error(error);
+      return "Liga Nacional";
+    }
+  }
+  const nationalLeagueName = getNationalLeagueName()
   return (
     <section className={styles.dashboard}>
       <SectionHeader title="DASHBOARD" meta={[` — ${season}`]} />
-      <UserTeamStats />
+      <UserTeamStats
+        nationalLeagueId={nationalLeagueId}
+        historyKey={historyKey}
+        nationalLeagueName={nationalLeagueName}
+      />
       <div className={styles.articlesContainer}>
         <MatchList type="upcoming" />
         <MatchList type="results" />
@@ -72,7 +99,13 @@ export default function Dashboard() {
         </button>
       )}
 
-      <MiniStandings />
+      {userTeam.type === "club" &&
+        <MiniStandings
+          nationalLeagueId={nationalLeagueId}
+          historyKey={historyKey}
+          nationalLeagueName={nationalLeagueName}
+        />
+      }
     </section>
   );
 }

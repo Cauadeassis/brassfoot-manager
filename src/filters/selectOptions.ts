@@ -3,12 +3,10 @@ import NATIONALITIES_DATA from "../data/nationalities";
 import { Region } from "../types/competition";
 import { Position } from "../types/player";
 import { PositionGroup } from "../app/(game)/squad/page";
-import COMPETITIONS from "../data/competitions";
 import FORMATIONS_DATA from "../data/formations";
-import useGameStore from "../stores/useGameStore";
-import { useMemo } from "react";
-import { getCompetitionName, GROUP_LABELS, REGION_LABELS } from "./labels";
+import { COMPETITION_TYPES_MAP, COMPETITIONS_SCOPE_MAP, GROUP_LABELS, REGION_LABELS } from "./labels";
 import { Modality } from "../types/team";
+import { CompetitionScope } from "../stores/useFilterStore";
 
 export interface SelectOption {
   value: string | number | "all";
@@ -21,6 +19,28 @@ export const regionOptions: SelectOption[] = [
   ...regionKeys.map((region) => ({
     value: region,
     label: REGION_LABELS[region],
+  })),
+];
+
+export const competitionTypes = Object.keys(COMPETITION_TYPES_MAP)
+
+export const COMPETITION_TYPE_OPTIONS: SelectOption[] = [
+  { value: "all", label: "Todas" },
+  ...competitionTypes.map((competition) => ({
+    value: competition,
+    label: COMPETITION_TYPES_MAP[competition],
+  })),
+];
+
+const COMPETITIONS_SCOPE = Object.keys(
+  COMPETITIONS_SCOPE_MAP,
+) as CompetitionScope[];
+
+export const COMPETITION_SCOPE_OPTIONS: SelectOption[] = [
+  { value: "all", label: "Todas competições" },
+  ...COMPETITIONS_SCOPE.map((competitionType) => ({
+    value: competitionType,
+    label: COMPETITIONS_SCOPE_MAP[competitionType],
   })),
 ];
 

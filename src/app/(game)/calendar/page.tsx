@@ -24,11 +24,9 @@ export default function CalendarPage() {
   const userTeamId = useGameStore((state) => state.userTeamId!);
   const currentGameDate = useGameStore((state) => state.currentDate);
   const { shield: userTeamShield, name: userTeamName } = teams[userTeamId];
-  console.log(currentGameDate)
   const [visibleMonth, setVisibleMonth] = useState(() =>
     parseGameDate(currentGameDate),
   );
-  console.log(visibleMonth)
   const monthKey = useMemo(() => formatMonthKey(visibleMonth), [visibleMonth]);
   const { matches, error } = useMemo<{
     matches: Match[];
@@ -50,8 +48,6 @@ export default function CalendarPage() {
       };
     }
   }, [calendar, userTeamId, monthKey]);
-  console.log(matches)
-
   const events: EventInput[] = useMemo(
     () =>
       matches.map((match) => {

@@ -7,7 +7,7 @@ import getPositionsData from "./generators/positions";
 import { Position } from "../types/player";
 import { PositionData } from "../data/positions";
 import NATIONALITIES_DATA, { Nationality } from "../data/nationalities";
-import { Region } from "../types/competition";
+import { CompetitionId, Region } from "../types/competition";
 import TEMPLATES from "../data/descriptions";
 import { generatePlayer } from "./player";
 import { GeneralTeamData } from "../types/team";
@@ -24,10 +24,50 @@ interface GetTeamDescriptionProps {
   nationality: Nationality;
 }
 
+export const EMPTY_TEAM_STATISTICS: TeamStatistics = {
+  points: 0,
+  wins: 0,
+  draws: 0,
+  losses: 0,
+  goalsFor: 0,
+  goalsAgainst: 0,
+  matchesPlayed: 0,
+};
+
 interface GetStatsProps {
   team: Team;
-  season: number;
+  season?: number;
+  competitionId?: string;
 }
+
+export const getStats = ({
+  team,
+  season,
+  competitionId,
+}: GetStatsProps): TeamStatistics => {
+  const entries = Object.entries(team.history ?? {});
+  const filteredStats = entries
+    .filter(([historyKey]) => {
+      const matchesSeason =
+        season === undefined || historyKey.startsWith(`${season}_`);
+      const matchesCompetition =
+        competitionId === undefined || historyKey.includes(`_${competitionId}`);
+      return matchesSeason && matchesCompetition;
+    })
+    .map(([, stats]) => stats);
+  return filteredStats.reduce<TeamStatistics>(
+    (acc, curr) => ({
+      points: acc.points + curr.points,
+      wins: acc.wins + curr.wins,
+      draws: acc.draws + curr.draws,
+      losses: acc.losses + curr.losses,
+      goalsFor: acc.goalsFor + curr.goalsFor,
+      goalsAgainst: acc.goalsAgainst + curr.goalsAgainst,
+      matchesPlayed: acc.matchesPlayed + curr.matchesPlayed,
+    }),
+    { ...EMPTY_TEAM_STATISTICS },
+  );
+};
 
 interface MovePlayerProps {
   team: Team;
@@ -87,9 +127,6 @@ export const getGoalkeeper = ({ team, playersMap }: GetSquadProps): Player => {
   }
   return goalkeeper;
 };
-
-export const getStats = ({ team, season }: GetStatsProps): TeamStatistics =>
-  team.history[season] ?? initialTeamStatistics;
 
 export const addPlayer = ({ team, playerId }: MovePlayerProps): Team => {
   if (team.squad.playerIds.includes(playerId)) return team;
@@ -272,7 +309,7 @@ export const createBaseTeam = (raw: RawTeamData): GeneralTeamData => {
         nationality,
       }),
     trophies: trophies ?? {},
-    history: { 2026: initialTeamStatistics },
+    history: {},
     squad: { playerIds: [], starterIds: [], playerShirts: {} },
     tactics: {
       formation: "4-3-3",

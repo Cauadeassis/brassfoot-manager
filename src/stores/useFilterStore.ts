@@ -22,21 +22,23 @@ export interface Filters {
   teamId: string | "all";
   nationality: Nationality | "all";
   competitionId: CompetitionId | "all";
+  competitionScope: CompetitionScope | "all";
   competitionType: CompetitionType | "all";
   generalCompetitionId: CompetitionId | null;
   sortKey: ScorerSortKey | TransferPlayerSortKey;
   sortDirection: "asc" | "desc";
 }
 
-export type CompetitionType = "national" | "continental" | "world";
+export type CompetitionScope = "national" | "continental" | "world";
+export type CompetitionType = "legue" | "cup" | "supercup"
 
-interface GlobalFilters extends Pick<Filters, "generalCompetitionId"> {}
+interface GlobalFilters extends Pick<Filters, "generalCompetitionId"> { }
 
-interface CalendarFilters extends Pick<Filters, "month" | "teamId"> {}
+interface CalendarFilters extends Pick<Filters, "month" | "teamId"> { }
 interface SquadFilters extends Pick<
   Filters,
   "searchQuery" | "positionGroup" | "lineupStatus" | "playerSort"
-> {}
+> { }
 interface TransferFilters extends Pick<
   Filters,
   | "searchQuery"
@@ -45,7 +47,7 @@ interface TransferFilters extends Pick<
   | "sortKey"
   | "sortDirection"
   | "nationality"
-> {}
+> { }
 
 interface TopScorersFilters extends Pick<
   Filters,
@@ -55,16 +57,16 @@ interface TopScorersFilters extends Pick<
   | "sortKey"
   | "sortDirection"
   | "nationality"
-> {}
+> { }
 interface StartGameFilters extends Pick<
   Filters,
   "teamType" | "region" | "nationality" | "division"
-> {}
+> { }
 
 interface CompetitionsModalFilters extends Pick<
   Filters,
-  "teamType" | "competitionType"
-> {}
+  "teamType" | "competitionScope" | "competitionType"
+> { }
 
 export interface FiltersState {
   globalFilters: GlobalFilters;
@@ -78,7 +80,7 @@ export interface FiltersState {
 
 const initialFiltersState: FiltersState = {
   globalFilters: { generalCompetitionId: null },
-  competitionsModal: { teamType: "national", competitionType: "all" },
+  competitionsModal: { teamType: "club", competitionScope: "all", competitionType: "all" },
   calendarPage: { teamId: "all", month: "all" },
   squadPage: {
     searchQuery: "",
@@ -103,7 +105,7 @@ const initialFiltersState: FiltersState = {
     sortDirection: "desc",
   },
   startGamePage: {
-    teamType: "national",
+    teamType: "club",
     region: "all",
     nationality: "all",
     division: "A",

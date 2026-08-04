@@ -1,5 +1,6 @@
 import { Nationality } from "../data/nationalities";
 import { Trophies } from "./competition";
+import { HistoryKey } from "./team";
 
 export type Skill =
   "shooting" | "vision" | "physical" | "dribbling" | "defense" | "reflexes";
@@ -27,7 +28,7 @@ export interface Player {
   trophies: Trophies;
 }
 
-export type PlayerHistoryMap = Record<string, PlayerStatistics>;
+export type PlayerHistoryMap = Record<HistoryKey, PlayerStatistics>;
 
 export interface BaseSkills {
   shooting: number;

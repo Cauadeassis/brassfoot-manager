@@ -26,7 +26,7 @@ describe("Team Management", () => {
       money: 1000,
       overall: 0,
       rankingScore: 0,
-      history: { 2026: initialTeamStatistics },
+      history: {},
       trophies: {},
       squad: {
         playerIds: ["LionelMessi", "DibuMartinez"],

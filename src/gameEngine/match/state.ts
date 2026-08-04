@@ -4,7 +4,7 @@ import { getTeamsModifiers } from "./orchestrator";
 import { CalendarDay } from "../../types/state";
 import { getPlayer } from "../../utils";
 
-interface CreateMatchStateProps extends MatchTeams { }
+interface CreateMatchStateProps extends MatchTeams {}
 
 export function createMatchState({
   homeTeam,

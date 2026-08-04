@@ -1,14 +1,16 @@
 "use client";
 
 import useGameStore from "../../../stores/useGameStore";
-import { Team } from "../../../types/team";
+import { HistoryKey, Team } from "../../../types/team";
 import styles from "./standings.module.css";
 import { TeamBadge } from "../../badges";
+import { getStats } from "../../../gameEngine/team";
 type StandingsVariant = "full" | "mini";
 
 interface StandingsRowProps {
   team: Team;
   index: number;
+  historyKey: HistoryKey;
   variant?: StandingsVariant;
 }
 
@@ -22,11 +24,15 @@ export default function StandingsRow({
   team,
   index,
   variant = "full",
+  historyKey,
 }: StandingsRowProps) {
   const userTeamId = useGameStore((state) => state.userTeamId);
-  const season = useGameStore((state) => state.season);
-  const { wins, draws, losses, goalsFor, goalsAgainst, points } =
-    team.history[season];
+  const [season, competitionId] = historyKey.split("_");
+  const { wins, draws, losses, goalsFor, goalsAgainst, points } = getStats({
+    team,
+    season: Number(season),
+    competitionId,
+  });
   const goalDifference = goalsFor - goalsAgainst;
   const isUserTeam = team.id === userTeamId;
   const sign = Math.sign(goalDifference) as 1 | 0 | -1;

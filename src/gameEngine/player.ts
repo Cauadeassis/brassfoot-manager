@@ -178,12 +178,15 @@ export const advanceYear = ({ player }: PlayerActionProps): Player => {
 };
 
 export const advanceDay = ({ player }: PlayerActionProps): Player => {
-  const newStamina = Math.min(player.stamina + player.currentSkills.physical / 5, 100)
+  const newStamina = Math.min(
+    player.stamina + player.currentSkills.physical / 5,
+    100,
+  );
   return {
     ...player,
-    stamina: newStamina
-  }
-}
+    stamina: newStamina,
+  };
+};
 
 export const advanceMonth = ({ player }: PlayerActionProps): Player => {
   let newPhysical = player.currentSkills.physical;

@@ -2,21 +2,31 @@ import React, { useMemo } from "react";
 import useGameStore from "../../../../stores/useGameStore";
 import { getTeamPosition } from "../../../../gameEngine/managers/standings";
 import { overallLimits } from "../../../../utils";
-
 import styles from "../dashboard.module.css";
+import { DashBoardComponentProps } from "./miniStandings";
+import { getStats } from "../../../../gameEngine/team";
 
-const UserTeamStats = () => {
+const UserTeamStats = ({
+  nationalLeagueName,
+  historyKey,
+}: DashBoardComponentProps) => {
   const userTeamId = useGameStore((state) => state.userTeamId);
-  const season = useGameStore((state) => state.season);
   const teams = useGameStore((state) => state.teams);
   const userTeam = teams[userTeamId!];
   const stats = useMemo(() => {
     if (!userTeam) return null;
-    const goalDifference =
-      userTeam.history[season].goalsFor - userTeam.history[season].goalsAgainst;
+    const [season, nationalLeagueId] = historyKey.split("_");
+    const teamStats = getStats({
+      team: userTeam,
+      season: Number(season),
+      competitionId: nationalLeagueId,
+    });
+    const goalDifference = teamStats.goalsFor - teamStats.goalsAgainst;
     const position = getTeamPosition({
       teams: Object.values(teams),
       teamId: userTeam.id,
+      competitionId: nationalLeagueId,
+      season: Number(season),
     });
     const positionColor = [1, 2, 3].includes(position)
       ? "green-color"
@@ -31,7 +41,6 @@ const UserTeamStats = () => {
       overallColor,
     };
   }, [userTeam, teams]);
-
   if (!userTeam || !stats) return <p>Carregando dados do treinador...</p>;
 
   return (
@@ -40,24 +49,13 @@ const UserTeamStats = () => {
         <p>Overall</p>
         <span className={stats.overallColor}>{userTeam.overall}</span>
       </div>
-      <div>
-        <p>Posição</p>
-        <span className={stats.positionColor}>{stats.position}°</span>
-      </div>
-      <div>
-        <p>Pontos</p>
-        <span className="green-color">{userTeam.history[season].points}</span>
-      </div>
-      <div>
-        <p>Saldo Gols</p>
-        <span
-          className={stats.goalDifference >= 0 ? "green-color" : "red-color"}
-        >
-          {stats.goalDifference >= 0
-            ? `+${stats.goalDifference}`
-            : stats.goalDifference}
-        </span>
-      </div>
+
+      {userTeam.type === "club" &&
+        <div>
+          <p>Posição ({nationalLeagueName})</p>
+          <span className={stats.positionColor}>{stats.position}°</span>
+        </div>
+      }
       <div>
         <p>Finanças</p>
         <span className={userTeam.money >= 0 ? "green-color" : "red-color"}>

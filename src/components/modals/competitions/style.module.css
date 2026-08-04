@@ -94,24 +94,25 @@
   }
 }
 
-/* Área de Rolagem do Grid */
 .gridContainer {
   flex: 1;
   overflow-y: auto;
   padding-right: 6px;
   margin-top: 0.5rem;
 
-  /* Estilização da Barra de Rolagem */
   &::-webkit-scrollbar {
     width: 6px;
   }
+
   &::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.15);
   }
+
   &::-webkit-scrollbar-thumb {
     background: var(--border);
     border-radius: 3px;
   }
+
   &::-webkit-scrollbar-thumb:hover {
     background: var(--green);
   }
@@ -119,7 +120,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 12px;
   width: 100%;
 
@@ -143,7 +144,8 @@
       transform: translateY(-4px);
       background: rgba(255, 255, 255, 0.04);
 
-      & .cardIcon {
+      & .cardIcon,
+      & .flag {
         transform: scale(1.15);
       }
 
@@ -154,7 +156,19 @@
     }
 
     & .cardIcon {
-      font-size: 26px;
+      font-size: 2rem;
+      margin-bottom: 0.2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+
+    & .flag {
+      width: 2rem;
+      height: 2rem;
+      object-fit: contain;
       transition: transform 0.3s ease;
     }
 
@@ -175,7 +189,7 @@
     }
   }
 
-  > .messageContainer {
+  >.messageContainer {
     grid-column: 1 / -1;
     display: flex;
     justify-content: center;

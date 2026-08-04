@@ -1,10 +1,11 @@
 .filtersContainer {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18px, 24%));
-  justify-content: start;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 24%));
+  justify-content: center;
   gap: 12px;
   margin-bottom: 20px;
+
   & input::placeholder {
     color: var(--text-muted);
   }

@@ -31,15 +31,13 @@ export const NAVIGATION_MENU: Section[] = [
   },
   {
     title: "Mundo",
-    items: [{ href: "/transfers", label: "Transferências", icon: "💰" }],
+    items: [{ href: "/transfers", label: "Transferências", icon: "💰" }, { href: "/ranking", label: "Ranking", icon: "🚀" }, { href: "/topScorers", label: "Artilharia", icon: "⚽" },],
   },
   {
     title: "Competição",
     items: [
       { href: "/standings", label: "Tabela", icon: "📋" },
       { href: "/matches", label: "Jogos", icon: "📅" },
-      { href: "/topScorers", label: "Artilharia", icon: "⚽" },
-      { href: "/ranking", label: "Ranking", icon: "🚀" },
     ],
   },
 ];

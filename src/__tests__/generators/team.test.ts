@@ -2,6 +2,7 @@ import {
   getTeamDescription,
   createBaseTeam,
   generateTeam,
+  getStats,
 } from "../../gameEngine/team";
 import { RawTeamData } from "../../types/team";
 
@@ -56,7 +57,6 @@ const rawMock = {
 describe("createTeam", () => {
   it("Should create base team", () => {
     const team = createBaseTeam(rawMock);
-    expect(team.history[2026].points).toBe(0);
     expect(team.squad.playerIds).toEqual([]);
   });
   it("Should throw error if nationality is invalid", () => {

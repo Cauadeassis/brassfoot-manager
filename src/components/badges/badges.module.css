@@ -86,7 +86,7 @@
 
   .serie,
   .overall {
-    padding: 2px 4px;
-    font-size: 11px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
   }
 }

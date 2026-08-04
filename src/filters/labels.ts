@@ -1,6 +1,8 @@
 import { PositionGroup } from "../app/(game)/squad/page";
 import NATIONALITIES_DATA, { Nationality } from "../data/nationalities";
+import { CompetitionScope } from "../stores/useFilterStore";
 import { CompetitionId, Region } from "../types/competition";
+import { TeamType } from "../types/team";
 
 const NATIONAL_LEAGUES: Partial<Record<CompetitionId, QuantityVariation>> = {
   BR_league: {
@@ -35,12 +37,12 @@ const NATIONAL_LEAGUES: Partial<Record<CompetitionId, QuantityVariation>> = {
 
 const REGIONAL_CUPS: Partial<Record<CompetitionId, QuantityVariation>> = {
   worldCup: { singular: "Copa do Mundo", plural: "Copas do Mundo" },
-  europeanCup: { singular: "Eurocopa", plural: "Eurocopas" },
-  northAmericanCup: {
+  european_cup: { singular: "Eurocopa", plural: "Eurocopas" },
+  northAmerican_cup: {
     singular: "Copa Ouro",
     plural: "Copas Ouro",
   },
-  southAmericanCup: {
+  southAmerican_cup: {
     singular: "Copa América",
     plural: "Copas América",
   },
@@ -90,7 +92,7 @@ export const COMPETITION_NAMES: Partial<
     singular: "Qualificatórias da Copa",
     plural: "Qualificatórias da Copa",
   },
-  europeanCupQualifiers: {
+  european_cupQualifiers: {
     singular: "Qualificatórias da Eurocopa",
     plural: "Qualificatórias da Eurocopa",
   },
@@ -134,15 +136,25 @@ interface GenderVariation {
   masculine: string;
   feminine: string;
 }
-const COMPETITION_TYPES_MAP: Record<string, string> = {
-  league: "liga",
-  cup: "copa",
-  supercup: "supercopa",
+export const COMPETITION_TYPES_MAP: Record<string, string> = {
+  league: "Liga",
+  cup: "Copa",
+  supercup: "Supercopa",
+};
+
+export const TEAMTYPES_NAMES: Record<TeamType, string> = {
+  club: "clubes",
+  national: "seleções",
+};
+
+export const COMPETITIONS_SCOPE_MAP: Record<CompetitionScope, string> = {
+  national: "Nacionais",
+  continental: "Continentais",
+  world: "Mundiais",
 };
 
 export const getCompetitionName = ({ length, key }: GetLabelProps): string => {
   const staticName = COMPETITION_NAMES[key];
-  console.log(staticName);
   if (staticName) {
     return length === 1 ? staticName.singular : staticName.plural;
   }

@@ -9,12 +9,14 @@ import useFiltersStore from "../../../stores/useFilterStore";
 import COMPETITIONS from "../../../data/competitions";
 import { useMemo } from "react";
 import { isEligible } from "../../../gameEngine/generators/season";
+import { HistoryKey } from "../../../types/team";
 
 export default function Standings() {
   const teams = useGameStore((state) => state.teams);
   const competitionId = useFiltersStore(
     (state) => state.globalFilters.generalCompetitionId,
   );
+  const season = useGameStore((state) => state.season);
   const competition = COMPETITIONS.find((c) => c.id === competitionId);
   const filteredTeams = useMemo(() => {
     let eligibleTeams = Object.values(teams);
@@ -27,7 +29,13 @@ export default function Standings() {
     }
     return eligibleTeams;
   }, [teams, competitionId]);
-  const divisionAStandings = getStandings({ teams: filteredTeams });
+  if (!competitionId) return (
+    <div>
+      <p>Carregando...</p>
+    </div>
+  )
+  const divisionAStandings = getStandings({ teams: filteredTeams, season, competitionId });
+  const historyKey = `${season}_${competitionId}` as HistoryKey;
   return (
     <section className={styles.standingsSection}>
       <SectionHeader title="CLASSIFICAÇÕES" />
@@ -56,6 +64,7 @@ export default function Standings() {
                 key={team.id}
                 team={team}
                 index={index}
+                historyKey={historyKey}
                 variant="full"
               />
             ))

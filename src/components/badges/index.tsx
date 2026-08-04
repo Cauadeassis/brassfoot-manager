@@ -42,7 +42,7 @@ export function PositionBadge({ position }: PositionBadgeProps) {
 export function SerieBadge({ serie }: SerieBadgeProps) {
   return (
     <span className={`${styles.serie} ${styles[serie]}`}>
-      <span className={styles.desktopText}>Série </span>
+      <span>Série </span>
       {serie}
     </span>
   );

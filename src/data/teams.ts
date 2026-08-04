@@ -5,7 +5,519 @@ const richTeamPatch = 220_000_000;
 const mediumTeamPatch = 120_000_000;
 const poorTeamPatch = 50_000_000;
 
-const RAWTEAMS: RawTeamData[] = [
+const NATIONAL_TEAMS: RawTeamData[] = [
+  {
+    name: "Colômbia",
+    shield: "/flags/southAmerica/Colombia.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 80,
+      feminine: 78,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "CO",
+    trophies: {
+      southAmerican_cup: [2001],
+    },
+  },
+  {
+    name: "Equador",
+    shield: "/flags/southAmerica/Equador.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 76,
+      feminine: 58,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "EC",
+  },
+  {
+    name: "Paraguai",
+    shield: "/flags/southAmerica/Paraguai.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 74,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "PY",
+    trophies: {
+      southAmerican_cup: [1953, 1979],
+    },
+  },
+  {
+    name: "Peru",
+    shield: "/flags/southAmerica/Peru.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 70,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "PE",
+    trophies: {
+      southAmerican_cup: [1939, 1975],
+    },
+  },
+  {
+    name: "Uruguai",
+    shield: "/flags/southAmerica/Uruguai.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 82,
+      feminine: 58,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "UY",
+    trophies: {
+      worldCup: [1930, 1950],
+      southAmerican_cup: [
+        1916, 1917, 1920, 1923, 1924, 1926, 1935, 1942, 1956, 1959, 1967, 1983,
+        1987, 1995, 2011,
+      ],
+    },
+  },
+  {
+    name: "Venezuela",
+    shield: "/flags/southAmerica/Venezuela.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 74,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "VE",
+  },
+  {
+    name: "Inglaterra",
+    shield: "/flags/europe/England.svg",
+    description:
+      "Quebre a seca de 1966 e traga o segundo título mundial para os ingleses!",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 95,
+      feminine: 92,
+    },
+    money: richTeamPatch,
+    type: "national",
+    nationality: "GB",
+    trophies: {
+      worldCup: [1966],
+    },
+  },
+  {
+    name: "França",
+    shield: "/flags/europe/France.svg",
+    description:
+      "Bicampeã mundial, com um craque pra cada posição... você quer jogar no modo fácil, né?",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 96,
+      feminine: 80,
+    },
+    money: richTeamPatch,
+    type: "national",
+    nationality: "FR",
+    trophies: {
+      worldCup: [1998, 2018],
+      european_cup: [1984, 2000],
+      european_nations_competition: [2021],
+    },
+  },
+  {
+    name: "Alemanha",
+    shield: "/flags/europe/Germany.svg",
+    description: "Tetracampeã mundial, em busca do penta",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 84,
+      feminine: 90,
+    },
+    money: richTeamPatch,
+    type: "national",
+    nationality: "DE",
+    trophies: {
+      worldCup: [1954, 1974, 1990, 2014],
+      european_cup: [1972, 1980, 1996],
+    },
+  },
+  {
+    name: "Itália",
+    shield: "/flags/europe/Italy.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 78,
+      feminine: 68,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "IT",
+    trophies: {
+      worldCup: [1934, 1938, 1982, 2006],
+      european_cup: [1968, 2020],
+    },
+  },
+  {
+    name: "Noruega",
+    shield: "/flags/europe/Norway.svg",
+    description: "Temos um fã do Haaland aqui!",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 82,
+      feminine: 74,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "NO",
+  },
+  {
+    name: "Portugal",
+    shield: "/flags/europe/Portugal.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 94,
+      feminine: 62,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "PT",
+    trophies: {
+      european_cup: [2016],
+      european_nations_competition: [2019],
+    },
+  },
+  {
+    name: "Espanha",
+    shield: "/flags/europe/Spain.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 100,
+      feminine: 96,
+    },
+    money: richTeamPatch,
+    type: "national",
+    nationality: "ES",
+    trophies: {
+      worldCup: [2010, 2026],
+      european_cup: [1964, 2008, 2012, 2024],
+      european_nations_competition: [2023],
+    },
+  },
+  {
+    name: "Suécia",
+    shield: "/flags/europe/Sweden.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 74,
+      feminine: 80,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "SE",
+  },
+  {
+    name: "Suíça",
+    shield: "/flags/europe/Switzerland.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 76,
+      feminine: 66,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "CH",
+  },
+  {
+    name: "Bélgica",
+    shield: "/flags/europe/Belgium.svg",
+    description:
+      "Lidere a Bélgica sem geração belga, sem copas, sem favoritismo e sem craques. Boa sorte!",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 78,
+      feminine: 62,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "BE",
+  },
+  {
+    name: "Holanda",
+    shield: "/flags/europe/Netherlands.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 90,
+      feminine: 82,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "NL",
+    trophies: {
+      european_cup: [1988],
+    },
+  },
+  {
+    name: "Marrocos",
+    shield: "/flags/africa/Morocco.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 90,
+      feminine: 62,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "MA",
+  },
+  {
+    name: "Cabo Verde",
+    shield: "/flags/africa/CapeVerde.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 68,
+      feminine: 50,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "CV",
+  },
+  {
+    name: "Costa do Marfim",
+    shield: "/flags/africa/IvoryCoast.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 82,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "CI",
+  },
+  {
+    name: "Senegal",
+    shield: "/flags/africa/Senegal.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 81,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "SN",
+  },
+  {
+    name: "Japão",
+    shield: "/flags/asia/Japan.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 90,
+      feminine: 88,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "JP",
+  },
+  {
+    name: "Estados Unidos",
+    shield: "/flags/northAmerica/UnitedStates.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 77,
+      feminine: 96,
+    },
+    money: richTeamPatch,
+    type: "national",
+    nationality: "US",
+    trophies: {
+      european_nations_competition: [2021, 2023, 2024],
+    },
+  },
+  {
+    name: "Canadá",
+    shield: "/flags/northAmerica/Canada.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 72,
+      feminine: 82,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "CA",
+  },
+  {
+    name: "México",
+    shield: "/flags/northAmerica/Mexico.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 78,
+      feminine: 68,
+    },
+    money: mediumTeamPatch,
+    type: "national",
+    nationality: "MX",
+  },
+  {
+    name: "Argentina",
+    shield: "/flags/southAmerica/Argentina.svg",
+    description: "Vai jogar de Argentina? Isso que não pode",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 92,
+      feminine: 65,
+    },
+    money: richTeamPatch,
+    type: "national",
+    nationality: "AR",
+    trophies: {
+      worldCup: [1978, 1986, 2022],
+      southAmerican_cup: [
+        1921, 1925, 1927, 1929, 1937, 1941, 1945, 1946, 1947, 1955, 1957, 1959,
+        1991, 1993, 2021, 2024,
+      ],
+    },
+  },
+  {
+    name: "Bolívia",
+    shield: "/flags/southAmerica/Bolivia.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 62,
+      feminine: 50,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "BO",
+    trophies: {
+      southAmerican_cup: [1963],
+    },
+  },
+  {
+    name: "Brasil",
+    shield: "/flags/southAmerica/Brazil.svg",
+    description: "Pronto pra trazer o hexa pra casa, guerreiro?",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 93,
+      feminine: 82,
+    },
+    money: richTeamPatch,
+    type: "national",
+    nationality: "BR",
+    trophies: {
+      worldCup: [2002, 1994, 1970, 1962, 1958],
+      southAmerican_cup: [1919, 1922, 1949, 1989, 1997, 1999, 2004, 2007, 2019],
+    },
+  },
+  {
+    name: "Chile",
+    shield: "/flags/southAmerica/Chile.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 74,
+      feminine: 62,
+    },
+    money: poorTeamPatch,
+    type: "national",
+    nationality: "CL",
+    trophies: {
+      southAmerican_cup: [2015, 2016],
+    },
+  },
+]
+
+const CLUBS: RawTeamData[] = [
   {
     name: "Arsenal",
     shield: "/clubs/europe/GB/Arsenal.svg",
@@ -879,129 +1391,7 @@ const RAWTEAMS: RawTeamData[] = [
     type: "club",
     nationality: "BR",
   },
-  {
-    name: "Marrocos",
-    shield: "/flags/africa/Morocco.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 84,
-      feminine: 62,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "MA",
-  },
-  {
-    name: "Cabo Verde",
-    shield: "/flags/africa/CapeVerde.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 68,
-      feminine: 50,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "CV",
-  },
-  {
-    name: "Costa do Marfim",
-    shield: "/flags/africa/IvoryCoast.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 82,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "CI",
-  },
-  {
-    name: "Senegal",
-    shield: "/flags/africa/Senegal.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 81,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "SN",
-  },
-  {
-    name: "Japão",
-    shield: "/flags/asia/Japan.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 79,
-      feminine: 88,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "JP",
-  },
-  {
-    name: "Estados Unidos",
-    shield: "/flags/northAmerica/UnitedStates.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 77,
-      feminine: 96,
-    },
-    money: richTeamPatch,
-    type: "national",
-    nationality: "US",
-    trophies: {
-      european_nations_competition: [2021, 2023, 2024],
-    },
-  },
-  {
-    name: "Canadá",
-    shield: "/flags/northAmerica/Canada.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 72,
-      feminine: 82,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "CA",
-  },
-  {
-    name: "México",
-    shield: "/flags/northAmerica/Mexico.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 78,
-      feminine: 68,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "MX",
-  },
+
   {
     name: "Ponte Preta",
     shield: "/clubs/southAmerica/BR/PontePreta.svg",
@@ -1018,85 +1408,7 @@ const RAWTEAMS: RawTeamData[] = [
     type: "club",
     nationality: "BR",
   },
-  {
-    name: "Argentina",
-    shield: "/flags/southAmerica/Argentina.svg",
-    description: "Vai jogar de Argentina? Isso que não pode",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 97,
-      feminine: 65,
-    },
-    money: richTeamPatch,
-    type: "national",
-    nationality: "AR",
-    trophies: {
-      worldCup: [1978, 1986, 2022],
-      southAmericanCup: [
-        1921, 1925, 1927, 1929, 1937, 1941, 1945, 1946, 1947, 1955, 1957, 1959,
-        1991, 1993, 2021, 2024,
-      ],
-    },
-  },
-  {
-    name: "Bolívia",
-    shield: "/flags/southAmerica/Bolivia.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 62,
-      feminine: 50,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "BO",
-    trophies: {
-      southAmericanCup: [1963],
-    },
-  },
-  {
-    name: "Brasil",
-    shield: "/flags/southAmerica/Brazil.svg",
-    description: "Pronto pra trazer o hexa pra casa, guerreiro?",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 90,
-      feminine: 82,
-    },
-    money: richTeamPatch,
-    type: "national",
-    nationality: "BR",
-    trophies: {
-      worldCup: [2002, 1994, 1970, 1962, 1958],
-      southAmericanCup: [1919, 1922, 1949, 1989, 1997, 1999, 2004, 2007, 2019],
-    },
-  },
-  {
-    name: "Chile",
-    shield: "/flags/southAmerica/Chile.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 74,
-      feminine: 62,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "CL",
-    trophies: {
-      southAmericanCup: [2015, 2016],
-    },
-  },
+
   {
     name: "Colo-colo",
     shield: "/clubs/southAmerica/CL/Colo-Colo.svg",
@@ -1185,313 +1497,10 @@ const RAWTEAMS: RawTeamData[] = [
       southAmerican_clubs_competition: [2008],
     },
   },
-  {
-    name: "Colômbia",
-    shield: "/flags/southAmerica/Colombia.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 80,
-      feminine: 78,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "CO",
-    trophies: {
-      southAmericanCup: [2001],
-    },
-  },
-  {
-    name: "Equador",
-    shield: "/flags/southAmerica/Equador.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 76,
-      feminine: 58,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "EC",
-  },
-  {
-    name: "Paraguai",
-    shield: "/flags/southAmerica/Paraguai.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 74,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "PY",
-    trophies: {
-      southAmericanCup: [1953, 1979],
-    },
-  },
-  {
-    name: "Peru",
-    shield: "/flags/southAmerica/Peru.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 70,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "PE",
-    trophies: {
-      southAmericanCup: [1939, 1975],
-    },
-  },
-  {
-    name: "Uruguai",
-    shield: "/flags/southAmerica/Uruguai.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 82,
-      feminine: 58,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "UY",
-    trophies: {
-      worldCup: [1930, 1950],
-      southAmericanCup: [
-        1916, 1917, 1920, 1923, 1924, 1926, 1935, 1942, 1956, 1959, 1967, 1983,
-        1987, 1995, 2011,
-      ],
-    },
-  },
-  {
-    name: "Venezuela",
-    shield: "/flags/southAmerica/Venezuela.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 74,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "VE",
-  },
-  {
-    name: "Inglaterra",
-    shield: "/flags/europe/England.svg",
-    description:
-      "Quebre a seca de 1966 e traga o segundo título mundial para os ingleses!",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 90,
-      feminine: 92,
-    },
-    money: richTeamPatch,
-    type: "national",
-    nationality: "GB",
-    trophies: {
-      worldCup: [1966],
-    },
-  },
-  {
-    name: "França",
-    shield: "/flags/europe/France.svg",
-    description:
-      "Bicampeã mundial, com um craque pra cada posição... você quer jogar no modo fácil, né?",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 96,
-      feminine: 80,
-    },
-    money: richTeamPatch,
-    type: "national",
-    nationality: "FR",
-    trophies: {
-      worldCup: [1998, 2018],
-      europeanCup: [1984, 2000],
-      european_nations_competition: [2021],
-    },
-  },
-  {
-    name: "Alemanha",
-    shield: "/flags/europe/Germany.svg",
-    description: "Tetracampeã mundial, em busca do penta",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 84,
-      feminine: 90,
-    },
-    money: richTeamPatch,
-    type: "national",
-    nationality: "DE",
-    trophies: {
-      worldCup: [1954, 1974, 1990, 2014],
-      europeanCup: [1972, 1980, 1996],
-    },
-  },
-  {
-    name: "Itália",
-    shield: "/flags/europe/Italy.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 78,
-      feminine: 68,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "IT",
-    trophies: {
-      worldCup: [1934, 1938, 1982, 2006],
-      europeanCup: [1968, 2020],
-    },
-  },
-  {
-    name: "Noruega",
-    shield: "/flags/europe/Norway.svg",
-    description: "Temos um fã do Haaland aqui!",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 82,
-      feminine: 74,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "NO",
-  },
-  {
-    name: "Portugal",
-    shield: "/flags/europe/Portugal.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 88,
-      feminine: 62,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "PT",
-    trophies: {
-      europeanCup: [2016],
-      european_nations_competition: [2019],
-    },
-  },
-  {
-    name: "Espanha",
-    shield: "/flags/europe/Spain.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 94,
-      feminine: 96,
-    },
-    money: richTeamPatch,
-    type: "national",
-    nationality: "ES",
-    trophies: {
-      worldCup: [2010],
-      europeanCup: [1964, 2008, 2012, 2024],
-      european_nations_competition: [2023],
-    },
-  },
-  {
-    name: "Suécia",
-    shield: "/flags/europe/Sweden.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 74,
-      feminine: 80,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "SE",
-  },
-  {
-    name: "Suíça",
-    shield: "/flags/europe/Switzerland.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 76,
-      feminine: 66,
-    },
-    money: poorTeamPatch,
-    type: "national",
-    nationality: "CH",
-  },
-  {
-    name: "Bélgica",
-    shield: "/flags/europe/Belgium.svg",
-    description:
-      "Lidere a Bélgica sem geração belga, sem copas, sem favoritismo e sem craques. Boa sorte!",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 78,
-      feminine: 62,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "BE",
-  },
-  {
-    name: "Holanda",
-    shield: "/flags/europe/Netherlands.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 84,
-      feminine: 82,
-    },
-    money: mediumTeamPatch,
-    type: "national",
-    nationality: "NL",
-    trophies: {
-      europeanCup: [1988],
-    },
-  },
+]
+
+const RAWTEAMS: RawTeamData[] = [
+  ...CLUBS,
 ];
 const getTeamsMap = (): Record<string, GeneralTeamData> => {
   return RAWTEAMS.reduce(
