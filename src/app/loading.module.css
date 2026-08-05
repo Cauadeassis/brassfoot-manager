@@ -9,19 +9,6 @@
   z-index: 10;
   gap: 24px;
 
-  h1 {
-    font-family: var(--font-head);
-    font-size: 52px;
-    letter-spacing: 8px;
-    color: var(--green);
-    text-transform: uppercase;
-    animation: pulse 1.5s ease-in-out infinite;
-
-    strong {
-      color: var(--dim-color);
-    }
-  }
-
   .loadingBarWrap {
     width: 260px;
     height: 3px;
@@ -44,19 +31,24 @@
     letter-spacing: 2px;
   }
 }
+
 @keyframes loadBar {
   from {
     width: 0;
   }
+
   to {
     width: 100%;
   }
 }
+
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }

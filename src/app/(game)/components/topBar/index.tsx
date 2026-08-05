@@ -2,6 +2,7 @@ import useGameStore from "../../../../stores/useGameStore";
 import styles from "./topBar.module.css";
 import useUIStore from "../../../../stores/useUIStore";
 import React from "react";
+import { formatMoney } from "../../../../utils";
 interface TopBarProps {
   isMobile: boolean;
 }
@@ -30,7 +31,7 @@ const TopBar = ({ isMobile }: TopBarProps) => {
       </div>
       <div className={styles.info}>
         <DateDisplay />
-        <MoneyDisplay />
+        <MoneyDisplay money={userTeam.money} />
       </div>
     </header>
   );
@@ -41,16 +42,22 @@ const DateDisplay = () => {
   const currentDate = useGameStore((state) => state.currentDate);
   return (
     <span>
-      <strong>{currentDate}</strong>
+      <strong>{formatDate(currentDate)}</strong>
     </span>
   );
 };
 
-const MoneyDisplay = () => {
-  const money = useGameStore((state) => {
-    const userTeam = state.teams[state.userTeamId!];
-    return userTeam?.money || 0;
-  });
+function formatDate(isoDate: string): string {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  const formattedDay = day >= 10 ? day : `0${day}`;
+  const formattedMonth = month >= 10 ? month : `0${month}`;
+  return `${formattedDay}/${formattedMonth}/${year}`
+}
 
-  return <p>R$ {money.toLocaleString("pt-BR")}</p>;
+interface MoneyDisplayProps {
+  money: number
+}
+
+const MoneyDisplay = ({ money }: MoneyDisplayProps) => {
+  return <p>R$ {formatMoney(money)}</p>;
 };

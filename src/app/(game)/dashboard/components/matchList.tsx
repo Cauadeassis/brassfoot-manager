@@ -12,22 +12,53 @@ const MatchList = ({ type }: MatchListProps) => {
   const userTeamId = useGameStore((state) => state.userTeamId);
   const calendar = useGameStore((state) => state.calendar);
   const results = useGameStore((state) => state.results);
+  const activeCompetitions = useGameStore((state) => state.competitions);
 
   const matches = useMemo(() => {
-    if (type === "upcoming" && userTeamId) {
-      const gameState = useGameStore.getState();
-      return getUpcomingMatches({
-        calendar: gameState.calendar,
-        targetTeamId: userTeamId,
-        desiredQuantity: 3,
-      });
+    if (!userTeamId) return [];
+    const gameState = useGameStore.getState();
+    const upcomingMatches = getUpcomingMatches({
+      calendar: gameState.calendar,
+      targetTeamId: userTeamId,
+      desiredQuantity: 3,
+    });
+
+    if (type === "upcoming") {
+      return upcomingMatches;
     }
-    return [...results].slice(-4).reverse();
+
+    if (type === "results") {
+      const opponentIds = upcomingMatches.map((m) =>
+        m.homeTeamId === userTeamId ? m.awayTeamId : m.homeTeamId
+      );
+
+      const opponentsRecentMatches = opponentIds
+        .map((opponentId) => {
+          for (let i = results.length - 1; i >= 0; i--) {
+            const match = results[i];
+            if (
+              match.homeTeamId === opponentId ||
+              match.awayTeamId === opponentId
+            ) {
+              return match;
+            }
+          }
+          return null;
+        })
+        .filter((match) => match !== null);
+      const uniqueMatches = opponentsRecentMatches.filter(
+        (match, index, self) => index === self.findIndex((m) => m.id === match?.id)
+      );
+
+      return uniqueMatches;
+    }
+
+    return [];
   }, [type, calendar, results, userTeamId]);
-  const activeCompetitions = useGameStore((state) => state.competitions);
+
   return (
     <article>
-      <h3>{type === "upcoming" ? "Próximos Jogos" : "Últimos Resultados"}</h3>
+      <h3>{type === "upcoming" ? "Próximos Jogos" : "Resultados dos adversários"}</h3>
       <ul>
         {matches.length === 0 ? (
           <div className="text-muted">
@@ -48,7 +79,7 @@ const MatchList = ({ type }: MatchListProps) => {
               rules: matchCompetition!.rules,
               matchesInThisRoundCount,
             });
-            return <MatchRow key={match.id} match={match} roundLabel={label} />;
+            return <MatchRow key={match.id} match={match} roundLabel={label} compact={true} widthThatNameDisappears={550} />;
           })
         )}
       </ul>

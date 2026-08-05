@@ -67,6 +67,12 @@ export default function Calendar() {
     }
   }, [competitionId]);
 
+  if (!competitionId) return (
+    <div>
+      <p>Selecione uma competição, por favor.</p>
+    </div>
+  )
+
   return (
     <section>
       <SectionHeader

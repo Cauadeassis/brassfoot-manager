@@ -23,7 +23,6 @@ export default function CalendarPage() {
   const teams = useGameStore((state) => state.teams);
   const userTeamId = useGameStore((state) => state.userTeamId!);
   const currentGameDate = useGameStore((state) => state.currentDate);
-  const { shield: userTeamShield, name: userTeamName } = teams[userTeamId];
   const [visibleMonth, setVisibleMonth] = useState(() =>
     parseGameDate(currentGameDate),
   );
@@ -87,38 +86,27 @@ export default function CalendarPage() {
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <img src={userTeamShield} alt="" className={styles.teamShieldImg} />
-        <h1 className={styles.teamName}>{userTeamName}</h1>
-      </header>
-
       {error && <p className={styles.errorBanner}>{error}</p>}
-
-      <div className={styles.calendarShell}>
-        <FullCalendar
-          plugins={[dayGridPlugin]}
-          initialView="dayGridMonth"
-          initialDate={visibleMonth}
-          locale="pt-br"
-          headerToolbar={{ left: "prev", center: "title", right: "next" }}
-          height="auto"
-          fixedWeekCount={false}
-          events={events}
-          eventContent={renderEventContent}
-          datesSet={(arg) => setVisibleMonth(arg.view.currentStart)}
-          dayMaxEventRows={1}
-          dayCellClassNames={(arg) => {
-            const year = arg.date.getFullYear();
-            const month = String(arg.date.getMonth() + 1).padStart(2, "0");
-            const day = String(arg.date.getDate()).padStart(2, "0");
-            const cellDateString = `${year}-${month}-${day}`;
-            if (cellDateString === currentGameDate) {
-              return ["currentDay"];
-            }
-            return [];
-          }}
-        />
-      </div>
+      <FullCalendar
+        plugins={[dayGridPlugin]}
+        initialView="dayGridMonth"
+        initialDate={visibleMonth}
+        locale="pt-br"
+        headerToolbar={{ left: "prev", center: "title", right: "next" }}
+        height="auto"
+        fixedWeekCount={false}
+        events={events}
+        eventContent={renderEventContent}
+        datesSet={(arg) => setVisibleMonth(arg.view.currentStart)}
+        dayMaxEventRows={1}
+        dayCellClassNames={(arg) => {
+          const year = arg.date.getFullYear();
+          const month = String(arg.date.getMonth() + 1).padStart(2, "0");
+          const day = String(arg.date.getDate()).padStart(2, "0");
+          const cellDateString = `${year}-${month}-${day}`;
+          return cellDateString === currentGameDate ? ["currentDay"] : [];
+        }}
+      />
     </div>
   );
 }

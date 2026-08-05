@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import useGameStore from "../../../../stores/useGameStore";
 import { getTeamPosition } from "../../../../gameEngine/managers/standings";
-import { overallLimits } from "../../../../utils";
+import { formatMoney, overallLimits } from "../../../../utils";
 import styles from "../dashboard.module.css";
 import { DashBoardComponentProps } from "./miniStandings";
 import { getStats } from "../../../../gameEngine/team";
@@ -59,7 +59,7 @@ const UserTeamStats = ({
       <div>
         <p>Finanças</p>
         <span className={userTeam.money >= 0 ? "green-color" : "red-color"}>
-          R$ {userTeam.money.toLocaleString("pt-BR")}
+          R$ {formatMoney(userTeam.money)}
         </span>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { Division } from "../../types/team";
 import { Nationality } from "../../data/nationalities";
 import styles from "./badges.module.css";
 import useGameStore from "../../stores/useGameStore";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Icon } from "../../app/components";
 interface PositionBadgeProps {
   position: Position;
@@ -18,6 +18,7 @@ interface NationalityBadgeProps {
   nationality: Nationality;
 }
 interface TeamBadgeProps {
+  widthThatNameDisappears?: number;
   teamShield: string;
   teamName: string;
 }
@@ -63,9 +64,23 @@ export function NationalityBadge({ nationality }: NationalityBadgeProps) {
   return <Icon name={flag} className={styles.nationalityFlag} />;
 }
 
-export function TeamBadge({ teamShield, teamName }: TeamBadgeProps) {
+export function TeamBadge({
+  teamShield,
+  teamName,
+  widthThatNameDisappears = 100,
+}: TeamBadgeProps) {
+  const [isNameHidden, setIsNameHidden] = useState(false);
+  useEffect(() => {
+    function checkWidth() {
+      setIsNameHidden(window.innerWidth <= widthThatNameDisappears);
+    }
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, [widthThatNameDisappears]);
+
   return (
-    <div className={styles.teamContainer}>
+    <div className={`${styles.teamContainer} ${isNameHidden ? styles.hideName : ""}`}>
       <Icon name={teamShield} className={styles.shieldIcon} />
       <span className={styles.teamName}>{teamName}</span>
     </div>

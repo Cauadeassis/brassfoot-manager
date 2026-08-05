@@ -15,9 +15,6 @@ export default function LoadingPage() {
   }, [router]);
   return (
     <section className={styles.loadingScreen}>
-      <h1>
-        BRASFOOT <strong>MGR</strong>
-      </h1>
       <div className={styles.loadingBarWrap}>
         <span></span>
       </div>

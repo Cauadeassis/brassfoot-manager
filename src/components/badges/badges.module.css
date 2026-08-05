@@ -51,6 +51,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  overflow: hidden;
 
   & .shieldIcon {
     width: 18px;
@@ -61,22 +62,36 @@
 
 .teamName {
   font-weight: 500;
+  white-space: nowrap;
   font-family: sans-serif;
   display: inline;
 }
 
-@media (max-width: 1000px) {
-  .desktopText {
+.teamContainer.hideName {
+  justify-content: center;
+
+  .shieldIcon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .teamName {
     display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+
+  .desktopText {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    pointer-events: none;
   }
 
   .mobileText {
     display: inline;
     font-weight: bold;
-  }
-
-  .teamName {
-    display: none;
   }
 
   .teamContainer {

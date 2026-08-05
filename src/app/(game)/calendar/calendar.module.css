@@ -1,138 +1,182 @@
 .page {
-  --pitch-950: #0b1410;
-  --pitch-900: #12201a;
-  --panel-850: #17251e;
-  --chalk-100: #f1efe6;
-  --chalk-400: #9fb0a6;
-  --grass-500: #3fa34d;
-  --claret-500: #b23a48;
-  --line-800: #24352c;
-  --font-display: "Teko", "Oswald", sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --white: #ffffff;
+  --sky-50: #f4faff;
+  --sky-100: #e4f2fc;
+  --sky-200: #cfe9fa;
+  --sky-400: #9bcdf0;
+  --sky-500: #6fb3e6;
+  --ink: #33404a;
+  --ink-faint: #9aa8b1;
   min-height: 100dvh;
-  background: var(--pitch-950);
-  color: var(--chalk-100);
-  font-family: var(--font-body);
-  padding: 2.5rem clamp(1rem, 4vw, 3rem);
+  width: 100%;
+  color: var(--ink);
+  font-family: "Inter", system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
 
   & * {
     box-sizing: border-box;
   }
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  margin-bottom: 1.5rem;
-}
-
-.teamShieldImg {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-.teamName {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-  letter-spacing: 0.01em;
-  line-height: 1;
-}
-
 .errorBanner {
-  background: color-mix(in srgb, var(--claret-500) 20%, transparent);
-  border: 1px solid var(--claret-500);
-  color: var(--chalk-100);
+  color: #d32f2f;
+  background: #ffebee;
   padding: 0.75rem 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 0.85rem;
   margin-bottom: 1rem;
-  font-size: 0.9rem;
+  width: 100%;
+  text-align: center;
 }
 
-.calendarShell {
-  background: var(--panel-850);
-  border: 1px solid var(--line-800);
-  border-radius: 10px;
-  padding: 1.25rem;
+.page :global(.fc) {
+  background: var(--white);
+  --fc-border-color: var(--sky-100);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: var(--sky-50);
+  --fc-today-bg-color: transparent;
+  --fc-event-bg-color: transparent;
+  --fc-event-border-color: transparent;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  width: 100%;
+  max-width: 900px;
 
-  &[aria-busy="true"] {
-    opacity: 0.6;
+  border-radius: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(51, 64, 74, 0.08), 0 8px 10px -6px rgba(51, 64, 74, 0.04);
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.page :global(.fc .fc-toolbar) {
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.page :global(.fc .fc-toolbar-title) {
+  font-size: clamp(1rem, 1.5vw + 0.5rem, 1.15rem);
+  font-weight: 600;
+  color: var(--ink);
+  text-transform: capitalize;
+  letter-spacing: -0.01em;
+}
+
+.page :global(.fc .fc-button) {
+  background: var(--sky-50);
+  border: 1px solid var(--sky-200);
+  color: var(--sky-500);
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--sky-100);
+    color: var(--ink);
+    border-color: var(--sky-400);
   }
 
-  & :global(.fc) {
-    --fc-border-color: var(--line-800);
-    --fc-page-bg-color: transparent;
-    --fc-neutral-bg-color: var(--pitch-900);
-    --fc-today-bg-color: color-mix(in srgb, var(--grass-500) 12%, transparent);
-    --fc-event-bg-color: transparent;
-    --fc-event-border-color: transparent;
-    font-family: var(--font-body);
+  &:focus-visible {
+    outline: 2px solid var(--sky-400);
+    outline-offset: 2px;
   }
+}
 
-  & :global(.fc .fc-toolbar-title) {
-    font-family: var(--font-display);
-    font-size: 1.7rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    text-transform: uppercase;
-    color: var(--chalk-100);
-  }
+.page :global(.fc .fc-col-header-cell-cushion) {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-decoration: none;
+  padding: 0.5rem 0;
+}
 
-  & :global(.fc .fc-button) {
-    background: var(--pitch-900);
-    border: 1px solid var(--line-800);
-    color: var(--chalk-100);
-    box-shadow: none;
+.page :global(.fc .fc-daygrid-day-number) {
+  font-size: clamp(0.75rem, 1vw + 0.3rem, 0.85rem);
+  font-weight: 500;
+  color: var(--ink);
+  padding: 0.4rem;
+  text-decoration: none;
+}
 
-    &:hover {
-      background: var(--line-800);
-    }
+.page :global(.fc .fc-day-other .fc-daygrid-day-number) {
+  color: var(--ink-faint);
+  opacity: 0.4;
+}
 
-    &:focus-visible {
-      outline: 2px solid var(--grass-500);
-      outline-offset: 2px;
-    }
-  }
+.page :global(.fc .fc-daygrid-day-frame) {
+  padding: 0.15rem;
+  min-height: clamp(55px, 10vw, 85px);
+  display: flex;
+  flex-direction: column;
+}
 
-  & :global(.fc .fc-col-header-cell-cushion) {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--chalk-400);
-    text-decoration: none;
-    padding: 0.6rem 0;
-  }
+.page :global(.fc .fc-daygrid-day-top) {
+  flex-direction: row;
+  justify-content: flex-end;
+}
 
-  & :global(.fc .fc-daygrid-day-number) {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--chalk-400);
-    padding: 0.3rem;
-  }
+.page :global(.fc .fc-daygrid-event-harness) {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
 
-  & :global(.fc .fc-day-other) :global(.fc-daygrid-day-frame) {
-    opacity: 0.4;
-  }
+.page :global(.fc td),
+.page :global(.fc th) {
+  border-color: var(--sky-100) !important;
+}
 
-  & :global(.fc .fc-daygrid-event-harness) {
-    display: flex;
+.page :global(.fc .currentDay) {
+  background: var(--sky-50);
+
+  & :global(.fc-daygrid-day-number) {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-  }
-
-  & :global(.fc .currentDay) {
-    background-color: rgba(46, 204, 113, 0.15);
-    border: 2px solid #2ecc71;
+    width: clamp(1.4rem, 2vw + 0.5rem, 1.8rem);
+    height: clamp(1.4rem, 2vw + 0.5rem, 1.8rem);
+    margin: 0.2rem;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--sky-500);
+    color: var(--white);
+    font-weight: 600;
+    font-size: clamp(0.75rem, 1vw + 0.3rem, 0.85rem);
+    box-shadow: 0 2px 6px rgba(111, 179, 230, 0.4);
   }
 }
 
 .dayShield {
-  width: 2rem;
-  height: 2rem;
+  width: clamp(1.5rem, 3vw, 2.2rem);
+  height: clamp(1.5rem, 3vw, 2.2rem);
   object-fit: contain;
+  margin-bottom: 0.25rem;
   cursor: default;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    justify-content: flex-start;
+  }
+
+  .page :global(.fc) {
+    aspect-ratio: unset;
+    max-height: none;
+  }
 }

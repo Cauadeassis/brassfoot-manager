@@ -31,7 +31,7 @@ export default function Standings() {
   }, [teams, competitionId]);
   if (!competitionId) return (
     <div>
-      <p>Carregando...</p>
+      <p>Selecione uma competição, por favor.</p>
     </div>
   )
   const divisionAStandings = getStandings({ teams: filteredTeams, season, competitionId });

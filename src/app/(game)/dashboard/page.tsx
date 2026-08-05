@@ -91,11 +91,11 @@ export default function Dashboard() {
 
       {hasMatchToday ? (
         <button className="green-button" onClick={handleSimulateNextMatch}>
-          ▶ JOGAR
+          JOGAR
         </button>
       ) : (
         <button className="green-button" onClick={handleAdvanceDay}>
-          ▶ AVANÇAR DIA
+          AVANÇAR DIA
         </button>
       )}
 
