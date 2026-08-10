@@ -1,15 +1,33 @@
 .playerRow {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  width: 100%;
+  max-width: 60%;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  transition: background 0.15s;
+  box-sizing: border-box;
 
-  :hover {
+  @media (max-width: 1100px) {
+    max-width: 70%;
+  }
+
+  @media (max-width: 950px) {
+    max-width: 85%;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+
+  &:hover {
     background: var(--bg-hover);
+  }
+
+  &.starterMobile {
+    border: 1px solid var(--green);
+    box-shadow: 0 0 3px var(--green);
   }
 
   .name {
@@ -39,11 +57,35 @@
     text-align: right;
   }
 
+  .mobileSellAction {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--red);
+    background: rgba(255, 61, 61, 0.05);
+    border: 1px solid var(--red);
+    padding: 6px 10px;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    width: auto;
+
+    &:active {
+      background: rgba(255, 61, 61, 0.2);
+    }
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
   & button {
     background: transparent;
     font-size: 10px;
     border: 1px solid var(--red);
     color: var(--red);
+    padding: 4px 8px;
+    cursor: pointer;
 
     &:hover {
       background: rgba(255, 61, 61, 0.1);

@@ -4,7 +4,7 @@ import useFiltersStore, {
   ScorerSortKey,
   TransferPlayerSortKey,
 } from "./stores/useFilterStore";
-export function useIsMobile(breakpoint = 768) {
+export function useIsMobile(breakpoint = 768): boolean {
   const [isMobile, setIsMobile] = useState<boolean>(
     typeof window !== "undefined" ? window.innerWidth <= breakpoint : false,
   );

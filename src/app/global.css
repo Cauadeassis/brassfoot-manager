@@ -21,9 +21,12 @@
 }
 
 .elenco-lista {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 table {
@@ -55,6 +58,7 @@ table {
     }
   }
 }
+
 * {
   box-sizing: border-box;
   margin: 0;

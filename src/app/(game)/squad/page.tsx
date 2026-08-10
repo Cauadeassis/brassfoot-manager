@@ -17,6 +17,9 @@ import { playerSortOptions } from "../../../filters/selectOptions";
 import SectionHeader from "../components/sectionHeader";
 import useFiltersStore from "../../../stores/useFilterStore";
 import { getSquad } from "../../../gameEngine/team";
+import styles from "./squad.module.css";
+import { useIsMobile } from "../../../hooks";
+
 const POSITION_ORDER = ["GOL", "ZAG", "LD", "LE", "VOL", "MEI", "ATA"];
 const POSITION_GROUPS: Record<PositionGroup, Position[]> = {
   attackers: ["CA", "PE", "PD"],
@@ -88,6 +91,8 @@ export default function Squad() {
     positionGroup === "all" ? "jogadores" : GROUP_LABELS[positionGroup];
   const additionalH3 = `${filteredAndSortedSquad.length} ${numbersHelper}`;
 
+  const isMobile = useIsMobile(768);
+
   return (
     <section>
       <SectionHeader
@@ -148,6 +153,7 @@ export default function Squad() {
               player={player}
               isStarter={startersId.has(player.id)}
               showAction={true}
+              isMobile={isMobile}
             />
           ))
         )}

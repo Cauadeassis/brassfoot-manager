@@ -12,6 +12,8 @@ import useFiltersStore from "../../../stores/useFilterStore";
 import { isEligible } from "../../../gameEngine/generators/season";
 import { getCompetition } from "../../../utils";
 import { getCompetitionName } from "../../../filters/labels";
+import { useIsMobile } from "../../../hooks";
+import styles from "./matches.module.css"
 
 export default function Calendar() {
   const calendar = useGameStore((state) => state.calendar);
@@ -67,6 +69,8 @@ export default function Calendar() {
     }
   }, [competitionId]);
 
+  const isMobile = useIsMobile(450);
+
   if (!competitionId) return (
     <div>
       <p>Selecione uma competição, por favor.</p>
@@ -106,7 +110,7 @@ export default function Calendar() {
         />
       </FiltersContainer>
 
-      <div>
+      <div className={styles.matchesContainer}>
         {filteredMatches.length === 0 ? (
           <div className="text-muted">
             Nenhum jogo encontrado para estes filtros.
@@ -126,7 +130,7 @@ export default function Calendar() {
               matchesInThisRoundCount,
             });
 
-            return <MatchRow key={match.id} match={match} roundLabel={label} />;
+            return <MatchRow key={match.id} match={match} roundLabel={label} compact={isMobile} widthThatNameDisappears={724} />;
           })
         )}
       </div>

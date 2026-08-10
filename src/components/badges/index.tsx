@@ -10,6 +10,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Icon } from "../../app/components";
 interface PositionBadgeProps {
   position: Position;
+  isMobile?: boolean;
 }
 interface OverallBadgeProps {
   overall: number;
@@ -27,19 +28,20 @@ interface SerieBadgeProps {
   serie: Division;
 }
 
-export function PositionBadge({ position }: PositionBadgeProps) {
+export function PositionBadge({ position, isMobile = false }: PositionBadgeProps) {
   const modality = useGameStore((state) => state.modality);
-  if (!modality) return;
-  const POSITIONS_DATA = useMemo(() => getPositionsData(modality), [modality]);
+  const POSITIONS_DATA = useMemo(() => {
+    return getPositionsData(modality);
+  }, [modality]);
+  if (!modality) return null;
   const data = POSITIONS_DATA[position];
+  if (!data) return null;
   return (
     <span className={`${data.color} ${styles.positionBadge}`}>
-      <span className={styles.desktopText}>{data.label.singular}</span>
-      <span className={styles.mobileText}>{position}</span>
+      <span>{isMobile ? position : data.label.singular}</span>
     </span>
   );
 }
-
 export function SerieBadge({ serie }: SerieBadgeProps) {
   return (
     <span className={`${styles.serie} ${styles[serie]}`}>
@@ -71,9 +73,7 @@ export function TeamBadge({
 }: TeamBadgeProps) {
   const [isNameHidden, setIsNameHidden] = useState(false);
   useEffect(() => {
-    function checkWidth() {
-      setIsNameHidden(window.innerWidth <= widthThatNameDisappears);
-    }
+    const checkWidth = () => setIsNameHidden(window.innerWidth <= widthThatNameDisappears);
     checkWidth();
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);

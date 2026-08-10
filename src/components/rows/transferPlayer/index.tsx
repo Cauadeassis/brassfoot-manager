@@ -21,11 +21,13 @@ export interface MarketPlayer extends Player {
 interface TransferPlayerRowProps {
   marketPlayer: MarketPlayer;
   canAfford: boolean;
+  isMobile?: boolean;
 }
 
 function TransferPlayerRow({
   marketPlayer,
   canAfford,
+  isMobile = false
 }: TransferPlayerRowProps) {
   const makeTransfer = useGameStore((state) => state.makeTransfer);
   const userTeamId = useGameStore((state) => state.userTeamId);
@@ -48,7 +50,7 @@ function TransferPlayerRow({
         <strong>{name}</strong>
       </td>
       <td>
-        <PositionBadge position={position} />
+        <PositionBadge position={position} isMobile={isMobile} />
       </td>
       <td className="dim-color">{age}</td>
       <td>

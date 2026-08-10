@@ -10,9 +10,10 @@ interface TopScorerRowProps {
   scorerPlayer: ScorerPlayer;
   index: number;
   historyKey: HistoryKey;
+  isMobile?: boolean;
 }
 
-function TopScorerRow({ scorerPlayer, index, historyKey }: TopScorerRowProps) {
+function TopScorerRow({ scorerPlayer, index, historyKey, isMobile = false }: TopScorerRowProps) {
   const stats = scorerPlayer.history[historyKey];
   const isAttacker = stats.role === "attacker";
   return (
@@ -26,7 +27,7 @@ function TopScorerRow({ scorerPlayer, index, historyKey }: TopScorerRowProps) {
         />
       </td>
       <td>
-        <PositionBadge position={scorerPlayer.position} />
+        <PositionBadge position={scorerPlayer.position} isMobile={isMobile} />
       </td>
       <td>{stats.matchesPlayed}</td>
       {stats.role === "attacker" && (
