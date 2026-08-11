@@ -12,6 +12,7 @@ import {
   OverallBadge,
   PositionBadge,
 } from "../../badges";
+import MobilePlayerCard from "../mobilePlayer";
 
 export interface MarketPlayer extends Player {
   marketType: "free" | "club";
@@ -33,6 +34,7 @@ function TransferPlayerRow({
   const userTeamId = useGameStore((state) => state.userTeamId);
   const { originTeam, id, value, position, age, nationality, overall, name } =
     marketPlayer;
+
   const handleBuyClick = () => {
     if (!canAfford) return;
     makeTransfer({
@@ -45,45 +47,31 @@ function TransferPlayerRow({
 
   if (layoutMode === "card") {
     return (
-      <div className={styles.mobileCard}>
-        <div className={styles.cardHeader}>
-          <div className={styles.playerInfo}>
-            <strong className={styles.name}>{name}</strong>
-            <div className={styles.badgesGroup}>
-              <PositionBadge position={position} isMobile={true} />
-              <OverallBadge overall={overall} />
-              <NationalityBadge nationality={nationality} />
-              <span className={styles.age}>{age} anos</span>
-            </div>
-          </div>
-
-          <div className={styles.teamAndValue}>
-            {originTeam ? (
-              <TeamBadge
-                teamShield={originTeam.shield}
-                teamName={originTeam.name}
-                isMobile={true}
-              />
-            ) : (
-              <span className={styles.freeAgentTag}>LIVRE</span>
-            )}
-            <span
-              className={`${styles.valueTag} ${canAfford ? styles.canBuy : styles.noFunds}`}
-            >
-              {formatMoney(value)}
-            </span>
-          </div>
-        </div>
-        {canAfford && (
-          <button
-            className={`green-button ${styles.mobileBuyBtn}`}
-            onClick={canAfford ? handleBuyClick : undefined}
-            disabled={!canAfford}
-          >
-            COMPRAR
-          </button>
-        )}
-      </div>
+      <MobilePlayerCard
+        player={marketPlayer}
+        isDisabled={!canAfford}
+        topRightContent={
+          originTeam ? (
+            <TeamBadge
+              teamShield={originTeam.shield}
+              teamName={originTeam.name}
+              isMobile={true}
+            />
+          ) : (
+            <span className={styles.freeAgentTag}>LIVRE</span>
+          )
+        }
+        customValue={
+          <span className={`${styles.valueTag} ${!canAfford ? styles.noFunds : ""}`}>
+            {formatMoney(value)}
+          </span>
+        }
+        actionButton={
+          canAfford
+            ? { action: handleBuyClick, type: "buy" }
+            : undefined
+        }
+      />
     );
   }
 

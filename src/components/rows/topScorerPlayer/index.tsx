@@ -5,6 +5,7 @@ import { ScorerPlayer } from "../../../app/(game)/topScorers/page";
 import { TeamBadge, PositionBadge } from "../../badges";
 import styles from "./topScorerPlayer.module.css";
 import { HistoryKey } from "../../../types/team";
+import MobilePlayerCard from "../mobilePlayer";
 
 interface TopScorerRowProps {
   scorerPlayer: ScorerPlayer;
@@ -21,6 +22,34 @@ function TopScorerRow({
 }: TopScorerRowProps) {
   const stats = scorerPlayer.history[historyKey];
   const isAttacker = stats.role === "attacker";
+  if (isMobile) {
+    return (
+      <MobilePlayerCard
+        player={scorerPlayer}
+        topRightContent={
+          <TeamBadge
+            teamShield={scorerPlayer.teamShield}
+            teamName={scorerPlayer.teamName}
+            isMobile={true}
+          />
+        }
+        customValue={
+          <div className={styles.mobileStatsGroup}>
+            {isAttacker ? (
+              <>
+                <span className={styles.playerGoals}>{stats.goals} Gols</span>
+                <span className={styles.playerAssists}>{stats.assists} Assists</span>
+              </>
+            ) : (
+              <span className={styles.playerGoals}>{stats.defenses} Defesas</span>
+            )}
+          </div>
+        }
+      />
+    );
+  }
+
+  // --- RENDERIZAÇÃO DESKTOP ---
   return (
     <tr>
       <td className="dim-color">{index + 1}</td>
@@ -32,10 +61,10 @@ function TopScorerRow({
         />
       </td>
       <td>
-        <PositionBadge position={scorerPlayer.position} isMobile={isMobile} />
+        <PositionBadge position={scorerPlayer.position} isMobile={false} />
       </td>
       <td>{stats.matchesPlayed}</td>
-      {stats.role === "attacker" && (
+      {isAttacker && (
         <>
           <td className={styles.playerGoals}>{stats.goals}</td>
           <td>{stats.assists}</td>

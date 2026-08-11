@@ -40,13 +40,13 @@
 }
 
 .serie.A,
-.serie.medio {
+.overall.medio {
   border-color: var(--yellow);
   color: var(--yellow);
 }
 
 .serie.B,
-.serie.baixo {
+.overall.baixo {
   border-color: var(--red);
   color: var(--red);
 }

@@ -38,6 +38,5 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* Espaço entre cada card de jogador */
   width: 100%;
 }
