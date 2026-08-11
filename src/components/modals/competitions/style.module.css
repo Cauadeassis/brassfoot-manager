@@ -189,7 +189,7 @@
     }
   }
 
-  >.messageContainer {
+  > .messageContainer {
     grid-column: 1 / -1;
     display: flex;
     justify-content: center;

@@ -4,7 +4,12 @@ import { Region } from "../types/competition";
 import { Position } from "../types/player";
 import { PositionGroup } from "../app/(game)/squad/page";
 import FORMATIONS_DATA from "../data/formations";
-import { COMPETITION_TYPES_MAP, COMPETITIONS_SCOPE_MAP, GROUP_LABELS, REGION_LABELS } from "./labels";
+import {
+  COMPETITION_TYPES_MAP,
+  COMPETITIONS_SCOPE_MAP,
+  GROUP_LABELS,
+  REGION_LABELS,
+} from "./labels";
 import { Modality } from "../types/team";
 import { CompetitionScope } from "../stores/useFilterStore";
 
@@ -22,7 +27,7 @@ export const regionOptions: SelectOption[] = [
   })),
 ];
 
-export const competitionTypes = Object.keys(COMPETITION_TYPES_MAP)
+export const competitionTypes = Object.keys(COMPETITION_TYPES_MAP);
 
 export const COMPETITION_TYPE_OPTIONS: SelectOption[] = [
   { value: "all", label: "Todas" },

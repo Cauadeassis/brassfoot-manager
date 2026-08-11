@@ -52,7 +52,7 @@
     }
   }
 
-  >button {
+  > button {
     width: 25%;
     display: block;
     font-weight: 500;
@@ -66,8 +66,7 @@
   }
 
   @media (max-width: 630px) {
-
-    >button {
+    > button {
       align-self: center;
       width: 90%;
     }

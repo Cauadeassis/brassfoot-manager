@@ -7,12 +7,12 @@ import { getCompetition } from "../../../utils";
 import { CompetitionRules } from "../../../types/competition";
 import { getCompetitionName } from "../../../filters/labels";
 import { TeamBadge } from "../../badges";
+import { LayoutMode } from "../../../app/(game)/transfers/page";
 
 interface MatchRowProps {
   match: Match;
   roundLabel: string;
-  compact?: boolean;
-  widthThatNameDisappears?: number;
+  layoutMode?: LayoutMode;
 }
 
 const competitionsClassesMap: Partial<Record<string, string>> = {
@@ -79,9 +79,14 @@ const getResultClass = ({ match, teamId }: GetResultClass) => {
 
   return classMap[result];
 };
-export default function MatchRow({ match, roundLabel, compact = false, widthThatNameDisappears = 684 }: MatchRowProps) {
+export default function MatchRow({
+  match,
+  roundLabel,
+  layoutMode = "desktop",
+}: MatchRowProps) {
   const homeTeam = useGameStore((state) => state.teams[match.homeTeamId]);
   const awayTeam = useGameStore((state) => state.teams[match.awayTeamId]);
+  const isCompact = layoutMode !== "desktop";
   const userTeamId = useGameStore((state) => state.userTeamId);
   const matchCompetition = getCompetition(match.competitionId);
   if (!homeTeam || !awayTeam || !matchCompetition) return null;
@@ -92,9 +97,9 @@ export default function MatchRow({ match, roundLabel, compact = false, widthThat
   const competitionClass = competitionColor ? competitionColor : "default";
   const [, month, day] = match.date.split("-");
   const formattedDate = `${day}/${month}`;
-  const shouldShowRound = !compact;
-  const shouldShowLocalTag = isUserInvolved && !compact;
-  const shouldShowPending = !compact && !match.simulated;
+  const shouldShowRound = !isCompact;
+  const shouldShowLocalTag = isUserInvolved && !isCompact;
+  const shouldShowPending = !isCompact && !match.simulated;
   return (
     <div className={styles.matchRow}>
       <div className={styles.matchMeta}>
@@ -109,7 +114,7 @@ export default function MatchRow({ match, roundLabel, compact = false, widthThat
         <TeamBadge
           teamShield={homeTeam.shield}
           teamName={homeTeam.name}
-          widthThatNameDisappears={widthThatNameDisappears}
+          isMobile={layoutMode === "card" ? true : false}
         />
         <p>
           {match.simulated ? `${match.goals.home} – ${match.goals.away}` : "×"}
@@ -117,7 +122,7 @@ export default function MatchRow({ match, roundLabel, compact = false, widthThat
         <TeamBadge
           teamShield={awayTeam.shield}
           teamName={awayTeam.name}
-          widthThatNameDisappears={widthThatNameDisappears}
+          isMobile={layoutMode === "card" ? true : false}
         />
       </div>
       {shouldShowLocalTag && (

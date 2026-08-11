@@ -47,7 +47,9 @@
   max-width: 900px;
 
   border-radius: 1rem;
-  box-shadow: 0 10px 25px -5px rgba(51, 64, 74, 0.08), 0 8px 10px -6px rgba(51, 64, 74, 0.04);
+  box-shadow:
+    0 10px 25px -5px rgba(51, 64, 74, 0.08),
+    0 8px 10px -6px rgba(51, 64, 74, 0.04);
   padding: clamp(0.75rem, 2vw, 1.5rem);
 
   font-family: inherit;

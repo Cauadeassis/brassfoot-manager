@@ -22,7 +22,9 @@ export function getStandings({
       const matchesDivision = division ? team.division === division : true;
       const isNationalLeague = nationality === prefix && type === "club";
       const isSameRegion = NATIONALITIES_DATA[nationality].region === prefix;
-      const expectedTeamType = competitionId.includes("clubs") ? "club" : "national";
+      const expectedTeamType = competitionId.includes("clubs")
+        ? "club"
+        : "national";
       const isRegionalCompetition = isSameRegion && type === expectedTeamType;
       const matchesLocation = isNationalLeague || isRegionalCompetition;
       return matchesDivision && matchesLocation;
@@ -45,8 +47,6 @@ export function getStandings({
     });
 }
 
-
-
 interface GetTeamPositionProps {
   teams: Team[];
   teamId: string;
@@ -63,7 +63,7 @@ export const getTeamPosition = ({
   division,
 }: GetTeamPositionProps): number => {
   const standings = getStandings({ teams, competitionId, season, division });
-  console.log(standings)
+  console.log(standings);
   const index = standings.findIndex((team) => team.id === teamId);
   return index !== -1 ? index + 1 : 0;
 };

@@ -13,7 +13,12 @@ interface TopScorerRowProps {
   isMobile?: boolean;
 }
 
-function TopScorerRow({ scorerPlayer, index, historyKey, isMobile = false }: TopScorerRowProps) {
+function TopScorerRow({
+  scorerPlayer,
+  index,
+  historyKey,
+  isMobile = false,
+}: TopScorerRowProps) {
   const stats = scorerPlayer.history[historyKey];
   const isAttacker = stats.role === "attacker";
   return (

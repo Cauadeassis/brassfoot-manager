@@ -19,7 +19,7 @@ interface NationalityBadgeProps {
   nationality: Nationality;
 }
 interface TeamBadgeProps {
-  widthThatNameDisappears?: number;
+  isMobile?: boolean;
   teamShield: string;
   teamName: string;
 }
@@ -28,7 +28,10 @@ interface SerieBadgeProps {
   serie: Division;
 }
 
-export function PositionBadge({ position, isMobile = false }: PositionBadgeProps) {
+export function PositionBadge({
+  position,
+  isMobile = false,
+}: PositionBadgeProps) {
   const modality = useGameStore((state) => state.modality);
   const POSITIONS_DATA = useMemo(() => {
     return getPositionsData(modality);
@@ -69,20 +72,12 @@ export function NationalityBadge({ nationality }: NationalityBadgeProps) {
 export function TeamBadge({
   teamShield,
   teamName,
-  widthThatNameDisappears = 100,
+  isMobile = false,
 }: TeamBadgeProps) {
-  const [isNameHidden, setIsNameHidden] = useState(false);
-  useEffect(() => {
-    const checkWidth = () => setIsNameHidden(window.innerWidth <= widthThatNameDisappears);
-    checkWidth();
-    window.addEventListener("resize", checkWidth);
-    return () => window.removeEventListener("resize", checkWidth);
-  }, [widthThatNameDisappears]);
-
   return (
-    <div className={`${styles.teamContainer} ${isNameHidden ? styles.hideName : ""}`}>
+    <div className={`${styles.teamContainer}`}>
       <Icon name={teamShield} className={styles.shieldIcon} />
-      <span className={styles.teamName}>{teamName}</span>
+      {!isMobile && <span className={styles.teamName}>{teamName}</span>}
     </div>
   );
 }

@@ -13,7 +13,8 @@ import { isEligible } from "../../../gameEngine/generators/season";
 import { getCompetition } from "../../../utils";
 import { getCompetitionName } from "../../../filters/labels";
 import { useIsMobile } from "../../../hooks";
-import styles from "./matches.module.css"
+import styles from "./matches.module.css";
+import { getLayoutMode } from "../dashboard/components/matchList";
 
 export default function Calendar() {
   const calendar = useGameStore((state) => state.calendar);
@@ -69,13 +70,14 @@ export default function Calendar() {
     }
   }, [competitionId]);
 
-  const isMobile = useIsMobile(450);
+  const layoutMode = getLayoutMode();
 
-  if (!competitionId) return (
-    <div>
-      <p>Selecione uma competição, por favor.</p>
-    </div>
-  )
+  if (!competitionId)
+    return (
+      <div>
+        <p>Selecione uma competição, por favor.</p>
+      </div>
+    );
 
   return (
     <section>
@@ -130,7 +132,14 @@ export default function Calendar() {
               matchesInThisRoundCount,
             });
 
-            return <MatchRow key={match.id} match={match} roundLabel={label} compact={isMobile} widthThatNameDisappears={724} />;
+            return (
+              <MatchRow
+                key={match.id}
+                match={match}
+                roundLabel={label}
+                layoutMode={layoutMode}
+              />
+            );
           })
         )}
       </div>

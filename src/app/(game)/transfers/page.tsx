@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTableFilters } from "../../../hooks";
+import { useIsMobile, useTableFilters, useWindowWidth } from "../../../hooks";
 import useGameStore from "../../../stores/useGameStore";
 import TransferPlayerRow, {
   MarketPlayer,
@@ -23,6 +23,8 @@ import useFiltersStore, {
   TransferPlayerSortKey,
 } from "../../../stores/useFilterStore";
 import { Nationality } from "../../../data/nationalities";
+import { getLayoutMode } from "../dashboard/components/matchList";
+export type LayoutMode = "card" | "compact" | "desktop";
 
 export default function Transfers() {
   const userTeamId = useGameStore((state) => state.userTeamId);
@@ -72,7 +74,7 @@ export default function Transfers() {
 
   const filteredPlayers = useMemo(() => {
     if (!userTeam || !playersDict) return [];
-    const availablePlayers: MarketPlayer[] = [];
+    const availablePlayers: any[] = [];
     const queryLower = searchQuery.toLowerCase();
     const isClubUser = userTeam.type === "club";
     for (const player of Object.values(playersDict)) {
@@ -122,7 +124,8 @@ export default function Transfers() {
   ]);
 
   if (!modality || !userTeamId || !POSITIONS_DATA) return null;
-
+  const layoutMode = getLayoutMode();
+  const isCompact = layoutMode === "compact";
   return (
     <section className={styles.transfersSection}>
       <SectionHeader
@@ -183,43 +186,17 @@ export default function Transfers() {
           }
         />
       </FiltersContainer>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Jogador</th>
-            <th>Pos</th>
-            <th onClick={() => handleSort("age")} style={{ cursor: "pointer" }}>
-              Idd{getSortIcon("age")}
-            </th>
-            <th>Nac</th>
-            <th
-              onClick={() => handleSort("overall")}
-              style={{ cursor: "pointer" }}
-            >
-              Ovr{getSortIcon("overall")}
-            </th>
-            <th>Origem</th>
-            <th
-              onClick={() => handleSort("value")}
-              style={{ cursor: "pointer" }}
-            >
-              Valor{getSortIcon("value")}
-            </th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody>
+      {layoutMode === "card" ? (
+        <div className={styles.cardsContainer}>
           {filteredPlayers.length === 0 ? (
-            <tr>
-              <td colSpan={8} className={styles.message}>
-                Não há jogadores à venda com estes filtros.
-              </td>
-            </tr>
+            <div className={styles.message}>
+              Não há jogadores à venda com estes filtros.
+            </div>
           ) : (
             filteredPlayers.map((marketPlayer) => (
               <TransferPlayerRow
                 key={marketPlayer.id}
+                layoutMode={layoutMode}
                 marketPlayer={marketPlayer}
                 canAfford={
                   userTeam ? userTeam.money >= marketPlayer.value : false
@@ -227,8 +204,62 @@ export default function Transfers() {
               />
             ))
           )}
-        </tbody>
-      </table>
+        </div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Jogador</th>
+              <th>Pos</th>
+              <th
+                onClick={() => handleSort("age")}
+                style={{ cursor: "pointer" }}
+              >
+                Idd{getSortIcon("age")}
+              </th>
+              <th>Nac</th>
+              <th
+                onClick={() => handleSort("overall")}
+                style={{ cursor: "pointer" }}
+              >
+                Ovr{getSortIcon("overall")}
+              </th>
+              <th>Origem</th>
+              <th
+                onClick={() => handleSort("value")}
+                style={{ cursor: "pointer" }}
+              >
+                {isCompact ? "Comprar " : "Valor"}
+                {getSortIcon("value")}
+              </th>
+              {layoutMode === "desktop" && <th>Ação</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPlayers.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={layoutMode === "desktop" ? 8 : 7}
+                  className={styles.message}
+                >
+                  Não há jogadores à venda com estes filtros.
+                </td>
+              </tr>
+            ) : (
+              filteredPlayers.map((marketPlayer) => (
+                <TransferPlayerRow
+                  key={marketPlayer.id}
+                  layoutMode={layoutMode}
+                  marketPlayer={marketPlayer}
+                  canAfford={
+                    userTeam ? userTeam.money >= marketPlayer.value : false
+                  }
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
     </section>
   );
 }

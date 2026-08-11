@@ -4,6 +4,20 @@ import useFiltersStore, {
   ScorerSortKey,
   TransferPlayerSortKey,
 } from "./stores/useFilterStore";
+
+export function useWindowWidth() {
+  const [width, setWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024,
+  );
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return width;
+}
+
 export function useIsMobile(breakpoint = 768): boolean {
   const [isMobile, setIsMobile] = useState<boolean>(
     typeof window !== "undefined" ? window.innerWidth <= breakpoint : false,

@@ -51,11 +51,11 @@ function formatDate(isoDate: string): string {
   const [year, month, day] = isoDate.split("-").map(Number);
   const formattedDay = day >= 10 ? day : `0${day}`;
   const formattedMonth = month >= 10 ? month : `0${month}`;
-  return `${formattedDay}/${formattedMonth}/${year}`
+  return `${formattedDay}/${formattedMonth}/${year}`;
 }
 
 interface MoneyDisplayProps {
-  money: number
+  money: number;
 }
 
 const MoneyDisplay = ({ money }: MoneyDisplayProps) => {

@@ -29,12 +29,17 @@ export default function Standings() {
     }
     return eligibleTeams;
   }, [teams, competitionId]);
-  if (!competitionId) return (
-    <div>
-      <p>Selecione uma competição, por favor.</p>
-    </div>
-  )
-  const divisionAStandings = getStandings({ teams: filteredTeams, season, competitionId });
+  if (!competitionId)
+    return (
+      <div>
+        <p>Selecione uma competição, por favor.</p>
+      </div>
+    );
+  const divisionAStandings = getStandings({
+    teams: filteredTeams,
+    season,
+    competitionId,
+  });
   const historyKey = `${season}_${competitionId}` as HistoryKey;
   return (
     <section className={styles.standingsSection}>

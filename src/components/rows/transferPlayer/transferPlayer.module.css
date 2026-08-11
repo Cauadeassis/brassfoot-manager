@@ -1,16 +1,132 @@
-.transferPlayerRow {
-  .freeAgentTag {
+/* =========================================
+   ESTILOS COMPARTILHADOS (Card e Tabela)
+========================================= */
+
+.freeAgentTag {
+  color: var(--green);
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.noFundsTag {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.age {
+  color: #ffffff;
+}
+
+.valueTag {
+  display: inline-block;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 11px;
+  transition: 0.2s;
+
+  &.canBuy {
     color: var(--green);
-    font-size: 11px;
+    border: 1px solid var(--green);
+    background: rgba(0, 230, 118, 0.05);
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    &:active {
+      background: rgba(0, 230, 118, 0.2);
+    }
   }
 
-  .noFundsTag {
-    color: var(--text-muted);
-    font-size: 11px;
+  &.noFunds {
+    color: #888888;
+    border: 1px solid #888888;
+    background: transparent;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* =========================================
+   MODO TABELA (Desktop / Compact)
+========================================= */
+
+.transferPlayerRow button {
+  font-size: 10px;
+  padding: 5px 12px;
+}
+
+/* =========================================
+   MODO CARD (Mobile)
+========================================= */
+
+.mobileCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+
+    .playerInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+
+      .name {
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .badgesGroup {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        .age {
+          font-size: 10px;
+          font-family: var(--font-mono);
+        }
+      }
+    }
+
+    .teamAndValue {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+
+      .cardValue {
+        font-size: 12px;
+        font-weight: bold;
+        color: var(--yellow, #ffd700);
+      }
+    }
   }
 
-  button {
-    font-size: 10px;
-    padding: 5px 12px;
+  .mobileBuyBtn {
+    width: 100%;
+    padding: 7px 0;
+    font-size: 11px;
+    text-align: center;
   }
 }

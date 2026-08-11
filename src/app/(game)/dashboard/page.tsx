@@ -74,8 +74,8 @@ export default function Dashboard() {
       console.error(error);
       return "Liga Nacional";
     }
-  }
-  const nationalLeagueName = getNationalLeagueName()
+  };
+  const nationalLeagueName = getNationalLeagueName();
   return (
     <section className={styles.dashboard}>
       <SectionHeader title="DASHBOARD" meta={[` — ${season}`]} />
@@ -99,13 +99,13 @@ export default function Dashboard() {
         </button>
       )}
 
-      {userTeam.type === "club" &&
+      {userTeam.type === "club" && (
         <MiniStandings
           nationalLeagueId={nationalLeagueId}
           historyKey={historyKey}
           nationalLeagueName={nationalLeagueName}
         />
-      }
+      )}
     </section>
   );
 }

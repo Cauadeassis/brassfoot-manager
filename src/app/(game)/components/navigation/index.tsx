@@ -31,7 +31,11 @@ export const NAVIGATION_MENU: Section[] = [
   },
   {
     title: "Mundo",
-    items: [{ href: "/transfers", label: "Transferências", icon: "💰" }, { href: "/ranking", label: "Ranking", icon: "🚀" }, { href: "/topScorers", label: "Artilharia", icon: "⚽" },],
+    items: [
+      { href: "/transfers", label: "Transferências", icon: "💰" },
+      { href: "/ranking", label: "Ranking", icon: "🚀" },
+      { href: "/topScorers", label: "Artilharia", icon: "⚽" },
+    ],
   },
   {
     title: "Competição",

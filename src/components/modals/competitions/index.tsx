@@ -9,7 +9,11 @@ import COMPETITIONS from "../../../data/competitions";
 import { FiltersContainer, FormSelect } from "../../../filters/components";
 import { FormButton } from "../../../filters/components";
 import { CompetitionId } from "../../../types/competition";
-import { COMPETITION_SCOPE_OPTIONS, COMPETITION_TYPE_OPTIONS, competitionTypes } from "../../../filters/selectOptions";
+import {
+  COMPETITION_SCOPE_OPTIONS,
+  COMPETITION_TYPE_OPTIONS,
+  competitionTypes,
+} from "../../../filters/selectOptions";
 import { Icon } from "../../../app/components";
 import NATIONALITIES_DATA, { Nationality } from "../../../data/nationalities";
 
@@ -29,7 +33,7 @@ const getCompetitionScope = (id: CompetitionId): CompetitionScope => {
 
 function getCompetitionFlag(id: CompetitionId): string {
   const [nationality, _] = id.split("_");
-  return NATIONALITIES_DATA[nationality as Nationality].flag
+  return NATIONALITIES_DATA[nationality as Nationality].flag;
 }
 
 const isClubsCompetition = (id: CompetitionId): boolean => {
@@ -42,8 +46,8 @@ const isClubsCompetition = (id: CompetitionId): boolean => {
 
 const getCompetitionType = (id: CompetitionId): CompetitionType | null => {
   const [_, suffix] = id.split("_");
-  return competitionTypes.includes(suffix) ? suffix as CompetitionType : null
-}
+  return competitionTypes.includes(suffix) ? (suffix as CompetitionType) : null;
+};
 export default function CompetitionsModal({
   isOpen,
   onClose,
@@ -53,7 +57,7 @@ export default function CompetitionsModal({
     (state) => state.competitionsModal,
   );
   const setFilter = useFiltersStore((state) => state.setFilter);
-  console.log(`Escopo atual: ${competitionScope}`)
+  console.log(`Escopo atual: ${competitionScope}`);
 
   const filteredCompetitions = useMemo(() => {
     return Object.values(COMPETITIONS)
@@ -62,15 +66,16 @@ export default function CompetitionsModal({
         name: getCompetitionName({ length: 1, key: comp.id }),
         scope: getCompetitionScope(comp.id),
         isClub: isClubsCompetition(comp.id),
-        type: getCompetitionType(comp.id)
+        type: getCompetitionType(comp.id),
       }))
       .filter((comp) => {
-        console.log(`Escopo de ${comp.id}: ${comp.scope}`)
+        console.log(`Escopo de ${comp.id}: ${comp.scope}`);
         if (competitionScope !== "all" && comp.scope !== competitionScope)
           return false;
         if (comp.isClub && teamType === "national") return false;
         if (!comp.isClub && teamType === "club") return false;
-        if (competitionType !== "all" && comp.type !== competitionType) return false;
+        if (competitionType !== "all" && comp.type !== competitionType)
+          return false;
         return true;
       })
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -120,11 +125,11 @@ export default function CompetitionsModal({
           </button>
         </header>
         <FiltersContainer ariaLabel="Filtros de Categoria">
-          {1 + 1 === 3 &&
+          {1 + 1 === 3 && (
             <FormButton isActive={true} onClick={handleChangeTeamType}>
               {TEAMTYPES_NAMES[teamType]}
             </FormButton>
-          }
+          )}
           <FormSelect
             value={competitionScope}
             options={COMPETITION_SCOPE_OPTIONS}
@@ -145,12 +150,15 @@ export default function CompetitionsModal({
                   className={styles.competitionCard}
                   onClick={() => handleSelect(comp.id)}
                 >
-                  {comp.scope === "national" &&
-                    <Icon name={getCompetitionFlag(comp.id)} className={styles.flag} />
-                  }
-                  {comp.scope !== "national" &&
+                  {comp.scope === "national" && (
+                    <Icon
+                      name={getCompetitionFlag(comp.id)}
+                      className={styles.flag}
+                    />
+                  )}
+                  {comp.scope !== "national" && (
                     <div className={styles.cardIcon}>🏆</div>
-                  }
+                  )}
 
                   <div className={styles.cardInfo}>
                     <strong>{comp.name}</strong>

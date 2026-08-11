@@ -3,17 +3,24 @@ import useGameStore from "../../../../stores/useGameStore";
 import MatchRow, { getRoundLabel } from "../../../../components/rows/match";
 import { getUpcomingMatches } from "../../../../gameEngine/match/state";
 import { getCompetition } from "../../../../utils";
+import { useWindowWidth } from "../../../../hooks";
+import { LayoutMode } from "../../transfers/page";
 
 interface MatchListProps {
   type: "upcoming" | "results";
 }
+
+export const getLayoutMode = (): LayoutMode => {
+  const width = useWindowWidth();
+  return width <= 500 ? "card" : width <= 768 ? "compact" : "desktop";
+};
 
 const MatchList = ({ type }: MatchListProps) => {
   const userTeamId = useGameStore((state) => state.userTeamId);
   const calendar = useGameStore((state) => state.calendar);
   const results = useGameStore((state) => state.results);
   const activeCompetitions = useGameStore((state) => state.competitions);
-
+  const layoutMode = getLayoutMode();
   const matches = useMemo(() => {
     if (!userTeamId) return [];
     const gameState = useGameStore.getState();
@@ -29,7 +36,7 @@ const MatchList = ({ type }: MatchListProps) => {
 
     if (type === "results") {
       const opponentIds = upcomingMatches.map((m) =>
-        m.homeTeamId === userTeamId ? m.awayTeamId : m.homeTeamId
+        m.homeTeamId === userTeamId ? m.awayTeamId : m.homeTeamId,
       );
 
       const opponentsRecentMatches = opponentIds
@@ -47,7 +54,8 @@ const MatchList = ({ type }: MatchListProps) => {
         })
         .filter((match) => match !== null);
       const uniqueMatches = opponentsRecentMatches.filter(
-        (match, index, self) => index === self.findIndex((m) => m.id === match?.id)
+        (match, index, self) =>
+          index === self.findIndex((m) => m.id === match?.id),
       );
 
       return uniqueMatches;
@@ -58,7 +66,9 @@ const MatchList = ({ type }: MatchListProps) => {
 
   return (
     <article>
-      <h3>{type === "upcoming" ? "Próximos Jogos" : "Resultados dos adversários"}</h3>
+      <h3>
+        {type === "upcoming" ? "Próximos Jogos" : "Resultados dos adversários"}
+      </h3>
       <ul>
         {matches.length === 0 ? (
           <div className="text-muted">
@@ -79,7 +89,14 @@ const MatchList = ({ type }: MatchListProps) => {
               rules: matchCompetition!.rules,
               matchesInThisRoundCount,
             });
-            return <MatchRow key={match.id} match={match} roundLabel={label} compact={true} widthThatNameDisappears={550} />;
+            return (
+              <MatchRow
+                key={match.id}
+                match={match}
+                roundLabel={label}
+                layoutMode={layoutMode !== "desktop" ? layoutMode : "compact"}
+              />
+            );
           })
         )}
       </ul>

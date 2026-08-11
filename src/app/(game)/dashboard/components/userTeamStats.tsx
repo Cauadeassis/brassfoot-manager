@@ -50,12 +50,12 @@ const UserTeamStats = ({
         <span className={stats.overallColor}>{userTeam.overall}</span>
       </div>
 
-      {userTeam.type === "club" &&
+      {userTeam.type === "club" && (
         <div>
           <p>Posição ({nationalLeagueName})</p>
           <span className={stats.positionColor}>{stats.position}°</span>
         </div>
-      }
+      )}
       <div>
         <p>Finanças</p>
         <span className={userTeam.money >= 0 ? "green-color" : "red-color"}>

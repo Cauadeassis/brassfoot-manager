@@ -515,7 +515,7 @@ const NATIONAL_TEAMS: RawTeamData[] = [
       southAmerican_cup: [2015, 2016],
     },
   },
-]
+];
 
 const CLUBS: RawTeamData[] = [
   {
@@ -1497,11 +1497,9 @@ const CLUBS: RawTeamData[] = [
       southAmerican_clubs_competition: [2008],
     },
   },
-]
-
-const RAWTEAMS: RawTeamData[] = [
-  ...CLUBS,
 ];
+
+const RAWTEAMS: RawTeamData[] = [...CLUBS];
 const getTeamsMap = (): Record<string, GeneralTeamData> => {
   return RAWTEAMS.reduce(
     (acc, rawTeam) => {

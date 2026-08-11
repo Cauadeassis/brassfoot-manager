@@ -17,7 +17,7 @@ export default function SquadPlayerRow({
   player,
   isStarter = false,
   showAction = false,
-  isMobile = false
+  isMobile = false,
 }: SquadPlayerRowProps) {
   const sellPlayer = useGameStore((state) => state.sellPlayer);
 
@@ -26,11 +26,9 @@ export default function SquadPlayerRow({
     else
       console.warn(`Ação de venda não mapeada para o jogador: ${player.name}`);
   };
-
-  // Se for mobile e titular, aplica a classe de destaque na borda da linha
-  const rowClasses = `${styles.playerRow} ${isMobile && isStarter ? styles.starterMobile : ""
-    }`;
-
+  const rowClasses = `${styles.playerRow} ${
+    isMobile && isStarter ? styles.starterMobile : ""
+  }`;
   return (
     <div className={rowClasses}>
       <span>
@@ -38,13 +36,11 @@ export default function SquadPlayerRow({
       </span>
       <p className={styles.name}>
         {player.name}
-        {/* Se for mobile, o texto "TITULAR" não aparece */}
         {!isMobile && isStarter && <span>TITULAR</span>}
       </p>
       <span className={styles.age}>{player.age}</span>
       <NationalityBadge nationality={player.nationality} />
       <OverallBadge overall={player.overall} />
-
       {showAction && (
         <>
           <span
@@ -54,9 +50,7 @@ export default function SquadPlayerRow({
           >
             {formatMoney(player.value)}
           </span>
-          {!isMobile && (
-            <button onClick={handleSellClick}>VENDER</button>
-          )}
+          {!isMobile && <button onClick={handleSellClick}>VENDER</button>}
         </>
       )}
     </div>
