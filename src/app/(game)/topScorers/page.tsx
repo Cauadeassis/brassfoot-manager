@@ -22,6 +22,7 @@ import useFiltersStore, { ScorerSortKey } from "../../../stores/useFilterStore";
 import { getSquad } from "../../../gameEngine/team";
 import { getCompetitionName } from "../../../filters/labels";
 import { HistoryKey } from "../../../types/team";
+import { getLayoutMode } from "../dashboard/components/matchList";
 
 export interface ScorerPlayer extends Player {
   teamName: string;
@@ -35,6 +36,7 @@ export default function TopScorers() {
   const modality = useGameStore((state) => state.modality);
   const playersMap = useGameStore((state) => state.players);
   const setFilter = useFiltersStore((state) => state.setFilter);
+  const layoutMode = getLayoutMode({ cardWidth: 550, compactWidth: 950 });
   const competitionId = useFiltersStore(
     (state) => state.globalFilters.generalCompetitionId,
   );
@@ -76,6 +78,7 @@ export default function TopScorers() {
       if (teamId !== "all" && team.id !== teamId) continue;
       for (const player of getSquad({ team, playersMap })) {
         if (position !== "all" && player.position !== position) continue;
+        if (position !== "GK" && player.position === "GK") continue;
         if (queryLower && !player.name.toLowerCase().includes(queryLower))
           continue;
         const statEntry = player.history[historyKey];
@@ -124,6 +127,10 @@ export default function TopScorers() {
       console.error(error);
     }
   }, [competitionId]);
+
+  // Textos dinâmicos baseados na posição
+  const emptyMessage = position === "GK" ? "Nenhuma defesa registrada ainda." : "Nenhum gol marcado ainda.";
+
   return (
     <section>
       <SectionHeader
@@ -164,40 +171,12 @@ export default function TopScorers() {
         </FormButton>
       </FiltersContainer>
 
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Jogador</th>
-            <th>Time</th>
-            <th>Posição</th>
-            <th
-              onClick={() => handleSort("matchesPlayed")}
-              style={{ cursor: "pointer" }}
-            >
-              Partidas {getSortIcon("matchesPlayed")}
-            </th>
-            <th
-              onClick={() => handleSort("goals")}
-              style={{ cursor: "pointer" }}
-            >
-              Gols {getSortIcon("goals")}
-            </th>
-            <th
-              onClick={() => handleSort("assists")}
-              style={{ cursor: "pointer" }}
-            >
-              Assistências {getSortIcon("assists")}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
+      {layoutMode === "card" ? (
+        <div className={styles?.mobileList || "mobile-scorers-list"}>
           {top20Scorers.length === 0 ? (
-            <tr>
-              <td colSpan={7} className={styles?.message || "text-muted"}>
-                Nenhum gol marcado ainda.
-              </td>
-            </tr>
+            <p className={styles?.message || "text-muted"}>
+              {emptyMessage}
+            </p>
           ) : (
             top20Scorers.map((scorerPlayer, index) => (
               <TopScorerRow
@@ -205,11 +184,76 @@ export default function TopScorers() {
                 scorerPlayer={scorerPlayer}
                 index={index}
                 historyKey={historyKey}
+                layoutMode={layoutMode}
               />
             ))
           )}
-        </tbody>
-      </table>
+        </div>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Jogador</th>
+              <th>Time</th>
+              <th>Posição</th>
+              <th
+                onClick={() => handleSort("matchesPlayed")}
+                style={{ cursor: "pointer" }}
+              >
+                Partidas {getSortIcon("matchesPlayed")}
+              </th>
+
+              {/* REGRA ADICIONADA: Renderiza Defesas se for 'gk', senão Gols e Assistências */}
+              {position === "GK" ? (
+                <th
+                  onClick={() => handleSort("defenses")}
+                  style={{ cursor: "pointer" }}
+                >
+                  Defesas {getSortIcon("defenses")}
+                </th>
+              ) : (
+                <>
+                  <th
+                    onClick={() => handleSort("goals")}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Gols {getSortIcon("goals")}
+                  </th>
+                  <th
+                    onClick={() => handleSort("assists")}
+                    style={{ cursor: "pointer" }}
+                  >
+                    Assistências {getSortIcon("assists")}
+                  </th>
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {top20Scorers.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={position === "GK" ? 6 : 7} // Ajuste dinâmico do colSpan
+                  className={styles?.message || "text-muted"}
+                >
+                  {emptyMessage}
+                </td>
+              </tr>
+            ) : (
+              top20Scorers.map((scorerPlayer, index) => (
+                <TopScorerRow
+                  key={scorerPlayer.id}
+                  scorerPlayer={scorerPlayer}
+                  index={index}
+                  historyKey={historyKey}
+                  layoutMode={layoutMode}
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
     </section>
   );
 }

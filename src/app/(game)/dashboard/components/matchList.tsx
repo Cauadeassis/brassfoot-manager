@@ -10,9 +10,14 @@ interface MatchListProps {
   type: "upcoming" | "results";
 }
 
-export const getLayoutMode = (): LayoutMode => {
+interface GetLayoutModeProps {
+  cardWidth?: number;
+  compactWidth?: number
+}
+
+export const getLayoutMode = ({ cardWidth = 500, compactWidth = 768 }: GetLayoutModeProps): LayoutMode => {
   const width = useWindowWidth();
-  return width <= 500 ? "card" : width <= 768 ? "compact" : "desktop";
+  return width <= cardWidth ? "card" : width <= compactWidth ? "compact" : "desktop";
 };
 
 const MatchList = ({ type }: MatchListProps) => {
@@ -20,12 +25,12 @@ const MatchList = ({ type }: MatchListProps) => {
   const calendar = useGameStore((state) => state.calendar);
   const results = useGameStore((state) => state.results);
   const activeCompetitions = useGameStore((state) => state.competitions);
-  const layoutMode = getLayoutMode();
+  const layoutMode = getLayoutMode({});
+  console.log(layoutMode)
   const matches = useMemo(() => {
     if (!userTeamId) return [];
-    const gameState = useGameStore.getState();
     const upcomingMatches = getUpcomingMatches({
-      calendar: gameState.calendar,
+      calendar,
       targetTeamId: userTeamId,
       desiredQuantity: 3,
     });
@@ -94,7 +99,7 @@ const MatchList = ({ type }: MatchListProps) => {
                 key={match.id}
                 match={match}
                 roundLabel={label}
-                layoutMode={layoutMode !== "desktop" ? layoutMode : "compact"}
+                layoutMode={layoutMode === "desktop" ? "compact" : layoutMode}
               />
             );
           })

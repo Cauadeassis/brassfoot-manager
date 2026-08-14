@@ -101,7 +101,7 @@ export default function MatchRow({
   const shouldShowLocalTag = isUserInvolved && !isCompact;
   const shouldShowPending = !isCompact && !match.simulated;
   return (
-    <div className={styles.matchRow}>
+    <div className={`${styles.matchRow} ${styles[layoutMode]}`}>
       <div className={styles.matchMeta}>
         <span className={`${styles.competition} ${styles[competitionClass]}`}>
           {getCompetitionName({ length: 1, key: matchCompetition.id })}

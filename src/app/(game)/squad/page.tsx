@@ -92,7 +92,7 @@ export default function Squad() {
     positionGroup === "all" ? "jogadores" : GROUP_LABELS[positionGroup];
   const additionalH3 = `${filteredAndSortedSquad.length} ${numbersHelper}`;
 
-  const layoutMode = getLayoutMode();
+  const layoutMode = getLayoutMode({ cardWidth: 400 });
 
   return (
     <section>

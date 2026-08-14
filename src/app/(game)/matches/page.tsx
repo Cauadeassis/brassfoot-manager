@@ -12,7 +12,6 @@ import useFiltersStore from "../../../stores/useFilterStore";
 import { isEligible } from "../../../gameEngine/generators/season";
 import { getCompetition } from "../../../utils";
 import { getCompetitionName } from "../../../filters/labels";
-import { useIsMobile } from "../../../hooks";
 import styles from "./matches.module.css";
 import { getLayoutMode } from "../dashboard/components/matchList";
 
@@ -70,8 +69,8 @@ export default function Calendar() {
     }
   }, [competitionId]);
 
-  const layoutMode = getLayoutMode();
-
+  const layoutMode = getLayoutMode({ compactWidth: 850 });
+  console.log(layoutMode)
   if (!competitionId)
     return (
       <div>

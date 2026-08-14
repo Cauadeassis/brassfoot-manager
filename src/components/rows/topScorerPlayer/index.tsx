@@ -6,23 +6,24 @@ import { TeamBadge, PositionBadge } from "../../badges";
 import styles from "./topScorerPlayer.module.css";
 import { HistoryKey } from "../../../types/team";
 import MobilePlayerCard from "../mobilePlayer";
+import { LayoutMode } from "../../../app/(game)/transfers/page";
 
 interface TopScorerRowProps {
   scorerPlayer: ScorerPlayer;
   index: number;
   historyKey: HistoryKey;
-  isMobile?: boolean;
+  layoutMode?: LayoutMode;
 }
 
 function TopScorerRow({
   scorerPlayer,
   index,
   historyKey,
-  isMobile = false,
+  layoutMode = "desktop",
 }: TopScorerRowProps) {
   const stats = scorerPlayer.history[historyKey];
   const isAttacker = stats.role === "attacker";
-  if (isMobile) {
+  if (layoutMode === "card") {
     return (
       <MobilePlayerCard
         player={scorerPlayer}
@@ -48,8 +49,6 @@ function TopScorerRow({
       />
     );
   }
-
-  // --- RENDERIZAÇÃO DESKTOP ---
   return (
     <tr>
       <td className="dim-color">{index + 1}</td>
@@ -58,10 +57,11 @@ function TopScorerRow({
         <TeamBadge
           teamShield={scorerPlayer.teamShield}
           teamName={scorerPlayer.teamName}
+          isMobile={layoutMode !== "desktop"}
         />
       </td>
       <td>
-        <PositionBadge position={scorerPlayer.position} isMobile={false} />
+        <PositionBadge position={scorerPlayer.position} isMobile={layoutMode !== "desktop"} />
       </td>
       <td>{stats.matchesPlayed}</td>
       {isAttacker && (

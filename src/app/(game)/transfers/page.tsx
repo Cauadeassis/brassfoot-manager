@@ -77,6 +77,7 @@ export default function Transfers() {
     const availablePlayers: any[] = [];
     const queryLower = searchQuery.toLowerCase();
     const isClubUser = userTeam.type === "club";
+
     for (const player of Object.values(playersDict)) {
       if (position !== "all" && player.position !== position) continue;
       if (nationality !== "all" && player.nationality !== nationality) continue;
@@ -109,6 +110,20 @@ export default function Transfers() {
         }
       }
     }
+
+    // --- CORREÇÃO: APLICANDO A ORDENAÇÃO (SORT) AQUI ---
+    if (sortConfig && sortConfig.key) {
+      availablePlayers.sort((a, b) => {
+        const valA = a[sortConfig.key] || 0;
+        const valB = b[sortConfig.key] || 0;
+
+        if (sortConfig.direction === "asc") {
+          return valA - valB; // Crescente
+        } else {
+          return valB - valA; // Decrescente
+        }
+      });
+    }
     return availablePlayers.slice(0, 20);
   }, [
     playersDict,
@@ -119,12 +134,12 @@ export default function Transfers() {
     position,
     teamId,
     nationality,
-    sortConfig,
+    sortConfig, // Como sortConfig já está aqui, o useMemo será disparado ao clicar nas setas
     season,
   ]);
 
   if (!modality || !userTeamId || !POSITIONS_DATA) return null;
-  const layoutMode = getLayoutMode();
+  const layoutMode = getLayoutMode({ compactWidth: 1000 });
   const isCompact = layoutMode === "compact";
   return (
     <section className={styles.transfersSection}>
