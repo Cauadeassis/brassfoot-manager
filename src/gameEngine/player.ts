@@ -1,11 +1,13 @@
 import getPositionsData from "./generators/positions";
 import { getRandom } from "../utils";
-import { Position, PlayerSkills, Skill, Player } from "../types/player";
+import { Position, PlayerSkills, Skill, Player, PlayerStatistics } from "../types/player";
 import { Team } from "../types/team";
 import NATIONALITIES_DATA from "../data/nationalities";
 import { Nationality } from "../data/nationalities";
 import { Modality } from "../types/team";
 import { PlayerGenerationError } from "../errors";
+import { CompetitionId } from "../types/competition";
+import { emptyBaseStatistics } from "./match/progression";
 
 export interface GeneratePlayerProps {
   position: Position;
@@ -13,6 +15,61 @@ export interface GeneratePlayerProps {
   modality: Modality;
 }
 
+interface GetPlayerStatsProps {
+  player: Player;
+  season?: number;
+  competitionId?: CompetitionId | "all";
+}
+
+export const getPlayerStats = ({
+  player,
+  season,
+  competitionId,
+}: GetPlayerStatsProps): PlayerStatistics => {
+  let { matchesPlayed, yellowCards, redCards } = emptyBaseStatistics;
+  let goals = 0, assists = 0, defenses = 0;
+  Object.entries(player.history ?? {}).forEach(([historyKey, rawStats]) => {
+    const matchesSeason = season === undefined || historyKey.startsWith(`${season}_`);
+    const matchesCompetition =
+      competitionId === "all" || !competitionId || historyKey.endsWith(`_${competitionId}`);
+    if (matchesSeason && matchesCompetition) {
+      const stats = rawStats as PlayerStatistics;
+      matchesPlayed += stats.matchesPlayed || 0;
+      yellowCards += stats.yellowCards || 0;
+      redCards += stats.redCards || 0;
+      if (stats.role === "attacker") {
+        goals += stats.goals || 0;
+        assists += stats.assists || 0;
+      } else if (stats.role === "goalkeeper") {
+        defenses += stats.defenses || 0;
+      }
+    }
+  });
+
+  const baseStats = {
+    teamId: player.currentTeamId ?? "",
+    season: season ?? 0,
+    competitionId: competitionId === "all" ? "all" : (competitionId ?? "all"),
+    matchesPlayed,
+    yellowCards,
+    redCards,
+  };
+
+  if (player.position === "GK") {
+    return {
+      ...baseStats,
+      role: "goalkeeper",
+      defenses,
+    };
+  }
+
+  return {
+    ...baseStats,
+    role: "attacker",
+    goals,
+    assists,
+  };
+};
 export interface GenerateSkillsProps {
   position: Position;
   baseOverall: number;

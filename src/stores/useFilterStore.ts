@@ -32,13 +32,13 @@ export interface Filters {
 export type CompetitionScope = "national" | "continental" | "world";
 export type CompetitionType = "legue" | "cup" | "supercup";
 
-interface GlobalFilters extends Pick<Filters, "generalCompetitionId"> {}
+interface GlobalFilters extends Pick<Filters, "generalCompetitionId"> { }
 
-interface CalendarFilters extends Pick<Filters, "month" | "teamId"> {}
+interface CalendarFilters extends Pick<Filters, "month" | "teamId"> { }
 interface SquadFilters extends Pick<
   Filters,
   "searchQuery" | "positionGroup" | "lineupStatus" | "playerSort"
-> {}
+> { }
 interface TransferFilters extends Pick<
   Filters,
   | "searchQuery"
@@ -47,7 +47,7 @@ interface TransferFilters extends Pick<
   | "sortKey"
   | "sortDirection"
   | "nationality"
-> {}
+> { }
 
 interface TopScorersFilters extends Pick<
   Filters,
@@ -57,16 +57,17 @@ interface TopScorersFilters extends Pick<
   | "sortKey"
   | "sortDirection"
   | "nationality"
-> {}
+  | 'competitionId'
+> { }
 interface StartGameFilters extends Pick<
   Filters,
   "teamType" | "region" | "nationality" | "division"
-> {}
+> { }
 
 interface CompetitionsModalFilters extends Pick<
   Filters,
   "teamType" | "competitionScope" | "competitionType"
-> {}
+> { }
 
 export interface FiltersState {
   globalFilters: GlobalFilters;
@@ -107,6 +108,7 @@ const initialFiltersState: FiltersState = {
     nationality: "all",
     sortKey: "goals",
     sortDirection: "desc",
+    competitionId: "all"
   },
   startGamePage: {
     teamType: "club",

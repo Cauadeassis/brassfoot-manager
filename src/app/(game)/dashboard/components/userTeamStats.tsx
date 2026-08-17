@@ -4,7 +4,8 @@ import { getTeamPosition } from "../../../../gameEngine/managers/standings";
 import { formatMoney, overallLimits } from "../../../../utils";
 import styles from "../dashboard.module.css";
 import { DashBoardComponentProps } from "./miniStandings";
-import { getStats } from "../../../../gameEngine/team";
+import { getTeamStats } from "../../../../gameEngine/team";
+import { CompetitionId } from "../../../../types/competition";
 
 const UserTeamStats = ({
   nationalLeagueName,
@@ -16,16 +17,16 @@ const UserTeamStats = ({
   const stats = useMemo(() => {
     if (!userTeam) return null;
     const [season, nationalLeagueId] = historyKey.split("_");
-    const teamStats = getStats({
+    const teamStats = getTeamStats({
       team: userTeam,
       season: Number(season),
-      competitionId: nationalLeagueId,
+      competitionId: nationalLeagueId as CompetitionId,
     });
     const goalDifference = teamStats.goalsFor - teamStats.goalsAgainst;
     const position = getTeamPosition({
       teams: Object.values(teams),
       teamId: userTeam.id,
-      competitionId: nationalLeagueId,
+      competitionId: nationalLeagueId as CompetitionId,
       season: Number(season),
     });
     const positionColor = [1, 2, 3].includes(position)

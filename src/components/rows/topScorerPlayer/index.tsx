@@ -4,24 +4,21 @@ import { memo } from "react";
 import { ScorerPlayer } from "../../../app/(game)/topScorers/page";
 import { TeamBadge, PositionBadge } from "../../badges";
 import styles from "./topScorerPlayer.module.css";
-import { HistoryKey } from "../../../types/team";
 import MobilePlayerCard from "../mobilePlayer";
 import { LayoutMode } from "../../../app/(game)/transfers/page";
 
 interface TopScorerRowProps {
   scorerPlayer: ScorerPlayer;
   index: number;
-  historyKey: HistoryKey;
   layoutMode?: LayoutMode;
 }
 
 function TopScorerRow({
   scorerPlayer,
   index,
-  historyKey,
   layoutMode = "desktop",
 }: TopScorerRowProps) {
-  const stats = scorerPlayer.history[historyKey];
+  const stats = scorerPlayer.activeStats;
   const isAttacker = stats.role === "attacker";
   if (layoutMode === "card") {
     return (
@@ -38,8 +35,12 @@ function TopScorerRow({
           <div className={styles.mobileStatsGroup}>
             {isAttacker ? (
               <>
-                <span className={styles.playerGoals}>{stats.goals} Gols</span>
-                <span className={styles.playerAssists}>{stats.assists} Assists</span>
+                {stats.goals > 0 &&
+                  <span className={styles.playerGoals}>{stats.goals} {stats.goals === 1 ? "Gol" : "Gols"}</span>
+                }
+                {stats.assists > 0 &&
+                  <span className={styles.playerAssists}>{stats.assists} {stats.assists === 1 ? "Assist" : "Assists"}</span>
+                }
               </>
             ) : (
               <span className={styles.playerGoals}>{stats.defenses} Defesas</span>
@@ -49,6 +50,7 @@ function TopScorerRow({
       />
     );
   }
+
   return (
     <tr>
       <td className="dim-color">{index + 1}</td>
@@ -57,11 +59,11 @@ function TopScorerRow({
         <TeamBadge
           teamShield={scorerPlayer.teamShield}
           teamName={scorerPlayer.teamName}
-          isMobile={layoutMode !== "desktop"}
+          isMobile={layoutMode === "desktop" ? false : true}
         />
       </td>
       <td>
-        <PositionBadge position={scorerPlayer.position} isMobile={layoutMode !== "desktop"} />
+        <PositionBadge position={scorerPlayer.position} isMobile={layoutMode === "desktop" ? false : true} />
       </td>
       <td>{stats.matchesPlayed}</td>
       {isAttacker && (
@@ -70,7 +72,7 @@ function TopScorerRow({
           <td>{stats.assists}</td>
         </>
       )}
-      {stats.role === "goalkeeper" && <td>{stats.defenses}</td>}
+      {!isAttacker && <td>{stats.defenses}</td>}
     </tr>
   );
 }

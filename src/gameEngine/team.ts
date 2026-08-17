@@ -1,6 +1,6 @@
-import { getPositionsByFormation } from "../data/formations";
-import { Division, Modality, TeamStatistics, TeamType } from "../types/team";
-import { getCompatiblePositions } from "../utils";
+import { FormationType, getPositionsByFormation } from "../data/formations";
+import { Division, Modality, PlayStyle, TeamStatistics, TeamType } from "../types/team";
+import { getCompatiblePositions, getRandom } from "../utils";
 import { Player } from "../types/player";
 import { Team, RawTeamData } from "../types/team";
 import getPositionsData from "./generators/positions";
@@ -37,38 +37,43 @@ export const EMPTY_TEAM_STATISTICS: TeamStatistics = {
 interface GetStatsProps {
   team: Team;
   season?: number;
-  competitionId?: string;
+  competitionId?: CompetitionId;
 }
 
-export const getStats = ({
+export const getTeamStats = ({
   team,
   season,
   competitionId,
 }: GetStatsProps): TeamStatistics => {
   const entries = Object.entries(team.history ?? {});
+
   const filteredStats = entries
     .filter(([historyKey]) => {
       const matchesSeason =
         season === undefined || historyKey.startsWith(`${season}_`);
       const matchesCompetition =
-        competitionId === undefined || historyKey.includes(`_${competitionId}`);
+        !competitionId ||
+        historyKey === competitionId ||
+        historyKey.endsWith(`_${competitionId}`) ||
+        historyKey.includes(`_${competitionId}_`);
+
       return matchesSeason && matchesCompetition;
     })
     .map(([, stats]) => stats);
+
   return filteredStats.reduce<TeamStatistics>(
     (acc, curr) => ({
-      points: acc.points + curr.points,
-      wins: acc.wins + curr.wins,
-      draws: acc.draws + curr.draws,
-      losses: acc.losses + curr.losses,
-      goalsFor: acc.goalsFor + curr.goalsFor,
-      goalsAgainst: acc.goalsAgainst + curr.goalsAgainst,
-      matchesPlayed: acc.matchesPlayed + curr.matchesPlayed,
+      points: acc.points + (curr.points || 0),
+      wins: acc.wins + (curr.wins || 0),
+      draws: acc.draws + (curr.draws || 0),
+      losses: acc.losses + (curr.losses || 0),
+      goalsFor: acc.goalsFor + (curr.goalsFor || 0),
+      goalsAgainst: acc.goalsAgainst + (curr.goalsAgainst || 0),
+      matchesPlayed: acc.matchesPlayed + (curr.matchesPlayed || 0),
     }),
     { ...EMPTY_TEAM_STATISTICS },
   );
 };
-
 interface MovePlayerProps {
   team: Team;
   playerId: string;
@@ -312,13 +317,15 @@ export const createBaseTeam = (raw: RawTeamData): GeneralTeamData => {
     history: {},
     squad: { playerIds: [], starterIds: [], playerShirts: {} },
     tactics: {
-      formation: "4-3-3",
-      style: "balanced",
+      formation: getRandom({ array: formations }),
+      style: getRandom({ array: styles }),
       captainId: null,
       takers: { penalty: null, freeKick: null, corner: null },
     },
   };
 };
+const formations = ["4-4-2", "4-2-3-1", "4-3-3"] as FormationType[]
+const styles = ["offensive", "balanced", "defensive"] as PlayStyle[]
 export const generateTeam = ({ baseData, modality }: CreateTeamProps): Team => {
   const overall = baseData.overall[modality];
   return {
