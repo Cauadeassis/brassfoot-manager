@@ -40,7 +40,7 @@ export default function TopScorers() {
   const setFilter = useFiltersStore((state) => state.setFilter);
   const layoutMode = getLayoutMode({ cardWidth: 550, compactWidth: 950 });
   const competitionId = useFiltersStore(
-    (state) => state.topScorersPage.competitionId || "all"
+    (state) => state.topScorersPage.competitionId || "all",
   );
 
   const {
@@ -75,7 +75,7 @@ export default function TopScorers() {
   const competitionOptions = useMemo(() => {
     const opts = Object.values(competitionsDict).map((c) => ({
       value: c.id,
-      label: getCompetitionName({ length: 1, key: c.id })
+      label: getCompetitionName({ length: 1, key: c.id }),
     }));
     return [{ value: "all", label: "Todas as Competições" }, ...opts];
   }, [competitionsDict]);
@@ -87,8 +87,13 @@ export default function TopScorers() {
       for (const player of getSquad({ team, playersMap })) {
         if (position !== "all" && player.position !== position) continue;
         if (position !== "GK" && player.position === "GK") continue;
-        if (queryLower && !player.name.toLowerCase().includes(queryLower)) continue;
-        const aggregatedStats = getPlayerStats({ player, season, competitionId });
+        if (queryLower && !player.name.toLowerCase().includes(queryLower))
+          continue;
+        const aggregatedStats = getPlayerStats({
+          player,
+          season,
+          competitionId,
+        });
         const isRelevant =
           aggregatedStats.role === "attacker"
             ? aggregatedStats.goals > 0 || aggregatedStats.assists > 0
@@ -137,7 +142,10 @@ export default function TopScorers() {
     }
   }, [competitionId]);
 
-  const emptyMessage = position === "GK" ? "Nenhuma defesa registrada ainda." : "Nenhum gol marcado ainda.";
+  const emptyMessage =
+    position === "GK"
+      ? "Nenhuma defesa registrada ainda."
+      : "Nenhum gol marcado ainda.";
 
   return (
     <section>
@@ -145,7 +153,9 @@ export default function TopScorers() {
         title="ARTILHARIA"
         meta={[
           ` — ${competitionName}`,
-          position !== "all" ? ` — ${POSITIONS_DATA[position].label.plural}` : null,
+          position !== "all"
+            ? ` — ${POSITIONS_DATA[position].label.plural}`
+            : null,
           teamId !== "all" ? ` — ${teamsDict[teamId]?.name}` : null,
         ].filter(Boolean)}
         defaultMeta=" — top 20"
@@ -155,7 +165,9 @@ export default function TopScorers() {
         <FormInput
           placeholder="Buscar jogador..."
           value={searchQuery}
-          onChange={(e) => setFilter("topScorersPage", "searchQuery", e.target.value)}
+          onChange={(e) =>
+            setFilter("topScorersPage", "searchQuery", e.target.value)
+          }
         />
         <FormSelect
           value={position}
@@ -170,9 +182,18 @@ export default function TopScorers() {
         <FormSelect
           value={competitionId}
           options={competitionOptions}
-          onChange={(e) => setFilter("topScorersPage", "competitionId", e.target.value as CompetitionId | "all")}
+          onChange={(e) =>
+            setFilter(
+              "topScorersPage",
+              "competitionId",
+              e.target.value as CompetitionId | "all",
+            )
+          }
         />
-        <FormButton isActive={isUserTeamSelected} onClick={handleToggleTeamFilter}>
+        <FormButton
+          isActive={isUserTeamSelected}
+          onClick={handleToggleTeamFilter}
+        >
           {isUserTeamSelected ? "Todos os times" : "Meu time"}
         </FormButton>
       </FiltersContainer>
@@ -199,19 +220,31 @@ export default function TopScorers() {
               <th>Jogador</th>
               <th>Time</th>
               <th>Posição</th>
-              <th onClick={() => handleSort("matchesPlayed")} style={{ cursor: "pointer" }}>
+              <th
+                onClick={() => handleSort("matchesPlayed")}
+                style={{ cursor: "pointer" }}
+              >
                 Partidas {getSortIcon("matchesPlayed")}
               </th>
               {position === "GK" ? (
-                <th onClick={() => handleSort("defenses")} style={{ cursor: "pointer" }}>
+                <th
+                  onClick={() => handleSort("defenses")}
+                  style={{ cursor: "pointer" }}
+                >
                   Defesas {getSortIcon("defenses")}
                 </th>
               ) : (
                 <>
-                  <th onClick={() => handleSort("goals")} style={{ cursor: "pointer" }}>
+                  <th
+                    onClick={() => handleSort("goals")}
+                    style={{ cursor: "pointer" }}
+                  >
                     Gols {getSortIcon("goals")}
                   </th>
-                  <th onClick={() => handleSort("assists")} style={{ cursor: "pointer" }}>
+                  <th
+                    onClick={() => handleSort("assists")}
+                    style={{ cursor: "pointer" }}
+                  >
                     Assistências {getSortIcon("assists")}
                   </th>
                 </>
@@ -221,7 +254,10 @@ export default function TopScorers() {
           <tbody>
             {top20Scorers.length === 0 ? (
               <tr>
-                <td colSpan={position === "GK" ? 6 : 7} className={styles?.message || "text-muted"}>
+                <td
+                  colSpan={position === "GK" ? 6 : 7}
+                  className={styles?.message || "text-muted"}
+                >
                   {emptyMessage}
                 </td>
               </tr>

@@ -39,9 +39,14 @@ export default function MobilePlayerCard({
         </div>
       </div>
 
-      {actionButton &&
-        <button onClick={actionButton.action} className={styles[actionButton.type]}>{actionButton.type === "buy" ? "COMPRAR" : "VENDER"}</button>
-      }
+      {actionButton && (
+        <button
+          onClick={actionButton.action}
+          className={styles[actionButton.type]}
+        >
+          {actionButton.type === "buy" ? "COMPRAR" : "VENDER"}
+        </button>
+      )}
     </div>
   );
 }

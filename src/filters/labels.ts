@@ -1,4 +1,5 @@
 import { PositionGroup } from "../app/(game)/squad/page";
+import { getCompetitionScope } from "../components/modals/competitions";
 import NATIONALITIES_DATA, { Nationality } from "../data/nationalities";
 import { CompetitionScope } from "../stores/useFilterStore";
 import { CompetitionId, Region } from "../types/competition";
@@ -123,7 +124,7 @@ export const REGION_LABELS: Record<Region, string> = {
 };
 
 interface GetLabelProps {
-  length: number;
+  length?: number;
   key: CompetitionId;
 }
 
@@ -153,22 +154,32 @@ export const COMPETITIONS_SCOPE_MAP: Record<CompetitionScope, string> = {
   world: "Mundiais",
 };
 
-export const getCompetitionName = ({ length, key }: GetLabelProps): string => {
-  const staticName = COMPETITION_NAMES[key];
+export const getCompetitionName = ({
+  length = 1,
+  key,
+}: GetLabelProps): string => {
+  const [nationalityCode, compType, division] = key.split("_");
+  const baseKey = `${nationalityCode}_${compType}` as CompetitionId;
+  const staticName = COMPETITION_NAMES[key] || COMPETITION_NAMES[baseKey];
+  let baseName = "";
   if (staticName) {
-    return length === 1 ? staticName.singular : staticName.plural;
+    baseName = length === 1 ? staticName.singular : staticName.plural;
+  } else {
+    const baseType = COMPETITION_TYPES_MAP[compType];
+    const nationalityData = NATIONALITIES_DATA[nationalityCode as Nationality];
+    if (!baseType || !nationalityData) {
+      throw new Error(`Id de competição inválido: ${key}`);
+    }
+    const typeWord = baseType.charAt(0).toUpperCase() + baseType.slice(1);
+    const demonymBase = nationalityData.demonym.feminine;
+    const demonymWord =
+      demonymBase.charAt(0).toUpperCase() + demonymBase.slice(1);
+    baseName = length === 1
+      ? `${typeWord} ${demonymWord}`
+      : `${typeWord}s ${demonymWord}s`;
   }
-  const [nationalityCode, compType] = key.split("_");
-  const baseType = COMPETITION_TYPES_MAP[compType];
-  const nationalityData = NATIONALITIES_DATA[nationalityCode as Nationality];
-  if (!baseType || !nationalityData) {
-    throw new Error(`Id de competição inválido: ${key}`);
+  if (nationalityCode === "BR" && compType === "league" && division) {
+    return `${baseName} Série ${division.toUpperCase()}`;
   }
-  const typeWord = baseType.charAt(0).toUpperCase() + baseType.slice(1);
-  const demonymBase = nationalityData.demonym.feminine;
-  const demonymWord =
-    demonymBase.charAt(0).toUpperCase() + demonymBase.slice(1);
-  return length === 1
-    ? `${typeWord} ${demonymWord}`
-    : `${typeWord}s ${demonymWord}s`;
+  return baseName;
 };

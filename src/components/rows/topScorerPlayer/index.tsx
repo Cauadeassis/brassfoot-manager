@@ -35,15 +35,21 @@ function TopScorerRow({
           <div className={styles.mobileStatsGroup}>
             {isAttacker ? (
               <>
-                {stats.goals > 0 &&
-                  <span className={styles.playerGoals}>{stats.goals} {stats.goals === 1 ? "Gol" : "Gols"}</span>
-                }
-                {stats.assists > 0 &&
-                  <span className={styles.playerAssists}>{stats.assists} {stats.assists === 1 ? "Assist" : "Assists"}</span>
-                }
+                {stats.goals > 0 && (
+                  <span className={styles.playerGoals}>
+                    {stats.goals} {stats.goals === 1 ? "Gol" : "Gols"}
+                  </span>
+                )}
+                {stats.assists > 0 && (
+                  <span className={styles.playerAssists}>
+                    {stats.assists} {stats.assists === 1 ? "Assist" : "Assists"}
+                  </span>
+                )}
               </>
             ) : (
-              <span className={styles.playerGoals}>{stats.defenses} Defesas</span>
+              <span className={styles.playerGoals}>
+                {stats.defenses} Defesas
+              </span>
             )}
           </div>
         }
@@ -63,7 +69,10 @@ function TopScorerRow({
         />
       </td>
       <td>
-        <PositionBadge position={scorerPlayer.position} isMobile={layoutMode === "desktop" ? false : true} />
+        <PositionBadge
+          position={scorerPlayer.position}
+          isMobile={layoutMode === "desktop" ? false : true}
+        />
       </td>
       <td>{stats.matchesPlayed}</td>
       {isAttacker && (

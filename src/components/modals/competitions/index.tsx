@@ -23,7 +23,7 @@ interface CompetitionsModalProps {
   onItemClick?: () => void;
 }
 
-const getCompetitionScope = (id: CompetitionId): CompetitionScope => {
+export const getCompetitionScope = (id: CompetitionId): CompetitionScope => {
   if (id.toLowerCase().includes("world")) return "world";
   if (id.length > 5 && id.includes("_")) {
     if (id.split("_")[0].length === 2) return "national";

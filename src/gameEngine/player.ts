@@ -1,6 +1,12 @@
 import getPositionsData from "./generators/positions";
 import { getRandom } from "../utils";
-import { Position, PlayerSkills, Skill, Player, PlayerStatistics } from "../types/player";
+import {
+  Position,
+  PlayerSkills,
+  Skill,
+  Player,
+  PlayerStatistics,
+} from "../types/player";
 import { Team } from "../types/team";
 import NATIONALITIES_DATA from "../data/nationalities";
 import { Nationality } from "../data/nationalities";
@@ -27,11 +33,16 @@ export const getPlayerStats = ({
   competitionId,
 }: GetPlayerStatsProps): PlayerStatistics => {
   let { matchesPlayed, yellowCards, redCards } = emptyBaseStatistics;
-  let goals = 0, assists = 0, defenses = 0;
+  let goals = 0,
+    assists = 0,
+    defenses = 0;
   Object.entries(player.history ?? {}).forEach(([historyKey, rawStats]) => {
-    const matchesSeason = season === undefined || historyKey.startsWith(`${season}_`);
+    const matchesSeason =
+      season === undefined || historyKey.startsWith(`${season}_`);
     const matchesCompetition =
-      competitionId === "all" || !competitionId || historyKey.endsWith(`_${competitionId}`);
+      competitionId === "all" ||
+      !competitionId ||
+      historyKey.endsWith(`_${competitionId}`);
     if (matchesSeason && matchesCompetition) {
       const stats = rawStats as PlayerStatistics;
       matchesPlayed += stats.matchesPlayed || 0;

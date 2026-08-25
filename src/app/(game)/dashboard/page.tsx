@@ -65,7 +65,7 @@ export default function Dashboard() {
     );
   }
 
-  const nationalLeagueId = `${userTeam.nationality}_league` as CompetitionId;
+  const nationalLeagueId = `${userTeam.nationality}_league_${userTeam.division}` as CompetitionId;
   const historyKey = `${season}_${nationalLeagueId}` as HistoryKey;
   const getNationalLeagueName = () => {
     try {

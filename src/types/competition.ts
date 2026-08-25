@@ -3,8 +3,7 @@ import { Division, TeamType } from "./team";
 import { Match } from "./match";
 import { PlayerTournamentStatistics } from "./player";
 import { TeamStatistics } from "./team";
-import { type } from "os";
-import { QuantityVariation } from "../filters/labels";
+
 export type CompetitionFormat = "league" | "cup" | "mixed";
 export type Region =
   "southAmerican" | "european" | "northAmerican" | "african" | "asian";
@@ -17,6 +16,7 @@ export type CompetitionId =
   | `${Region}_nations_competition`
   | `${Region}_cup`
   | `${Nationality}_league`
+  | `${Nationality}_league_${Division}`
   | `${Nationality}_cup`
   | `${Nationality}_supercup`;
 export type Frequency = "anual" | "bienal" | "quadrienal";
@@ -42,10 +42,10 @@ export interface Standing extends TeamStatistics {
 export interface CompetitionRules {
   format: CompetitionFormat;
   hasGroupStage: boolean;
-  groupSize?: number; // Para formatos 'mixed'
-  leagueGamesPerOpponent?: 1 | 2; // Para formatos 'league' puros
-  groupStageGamesPerRound?: 1 | 2; // Para formatos 'mixed'
-  knockoutGamesPerRound?: 1 | 2; // Para formatos 'cup' ou 'mixed'
+  groupSize?: number;
+  leagueGamesPerOpponent?: 1 | 2;
+  groupStageGamesPerRound?: 1 | 2;
+  knockoutGamesPerRound?: 1 | 2;
   hasThirdPlaceMatch: boolean;
   finalIsSingleGame: boolean;
 }
@@ -54,19 +54,7 @@ export interface CompetitionEligibility {
   region?: Region;
   teamType: TeamType;
   nationality?: Nationality;
-}
-
-export interface TargetCompetition {
-  id: CompetitionId;
-  slots: number;
-}
-
-export interface RegionalCompetition extends Pick<
-  Competition,
-  "id" | "rules" | "eligibility"
-> {
-  slotsByNationality?: Partial<Record<Nationality, number>>;
-  defaultSlots?: number;
+  division?: Division;
 }
 
 export interface Competition {
@@ -76,4 +64,18 @@ export interface Competition {
   frequency?: Frequency;
   input?: TargetCompetition[];
   output?: TargetCompetition[];
+}
+
+export interface TargetCompetition {
+  id: CompetitionId; // Se rebaixamento, BR_league_B. Senão, southAmerican_clubs_competition
+  slots: number;
+  isRelegation?: boolean;
+}
+
+export interface RegionalCompetition extends Pick<
+  Competition,
+  "id" | "rules" | "eligibility"
+> {
+  slotsByNationality?: Partial<Record<Nationality, number>>;
+  defaultSlots?: number;
 }

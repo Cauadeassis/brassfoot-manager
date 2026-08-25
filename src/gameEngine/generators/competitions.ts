@@ -4,6 +4,7 @@ import {
   Region,
   CompetitionRules,
   RegionalCompetition,
+  TargetCompetition,
 } from "../../types/competition";
 import NATIONALITIES_DATA from "../../data/nationalities";
 import CONFEDERATIONS from "../../data/confederations";
@@ -20,29 +21,55 @@ import {
   nationalSupercupRules,
 } from "../../data/rules";
 import { CompetitionId } from "../../types/competition";
+import { Division } from "../../types/team";
 
 interface GenerateRegionalCompetitionProps {
   draftCompetition: RegionalCompetition;
 }
 
-interface GenerateNationalLeagueProps {
+interface GenerateNationalLeaguesProps {
   nationality: Nationality;
   continentalCompetitionId: CompetitionId;
   countrySlots: number;
+  divisions: Division[]; // ex: ["a", "b", "c"]
 }
 
-export function generateNationalLeague({
+export function generateNationalLeagues({
   nationality,
   continentalCompetitionId,
   countrySlots,
-}: GenerateNationalLeagueProps): Competition {
-  return {
-    id: `${nationality}_league` as CompetitionId,
-    eligibility: { nationality, teamType: "club" },
-    rules: nationalLeagueRules,
-    frequency: "anual",
-    output: [{ id: continentalCompetitionId, slots: countrySlots }],
-  };
+  divisions,
+}: GenerateNationalLeaguesProps): Competition[] {
+  return divisions.map((division, index) => {
+    const isTopDivision = index === 0;
+    const hasNextDivision = index < divisions.length - 1;
+    const id = `${nationality}_league_${division}` as CompetitionId;
+    const output: TargetCompetition[] = [];
+    if (isTopDivision) {
+      output.push({ id: continentalCompetitionId, slots: countrySlots });
+    } else {
+      const previousDivision = divisions[index - 1];
+      output.push({
+        id: `${nationality}_league_${previousDivision}` as CompetitionId,
+        slots: 4,
+      });
+    }
+    if (hasNextDivision) {
+      const nextDivision = divisions[index + 1];
+      output.push({
+        id: `${nationality}_league_${nextDivision}` as CompetitionId,
+        slots: 4,
+        isRelegation: true,
+      });
+    }
+    return {
+      id,
+      eligibility: { nationality, teamType: "club", division },
+      rules: nationalLeagueRules,
+      frequency: "anual",
+      output,
+    };
+  });
 }
 
 interface GenerateNationalCupProps {
@@ -68,7 +95,7 @@ export function generateNationalSupercup({
     rules: nationalSupercupRules,
     frequency: "anual",
     input: [
-      { id: `${nationality}_league` as CompetitionId, slots: 1 },
+      { id: `${nationality}_league_A` as CompetitionId, slots: 1 },
       { id: `${nationality}_cup` as CompetitionId, slots: 1 },
     ],
   };
@@ -134,13 +161,15 @@ export const buildCompetitions = (): Competition[] => {
         continentalClubComp?.slotsByNationality?.[nationality] ??
         continentalClubComp?.defaultSlots ??
         1;
-      allCompetitions.push(
-        generateNationalLeague({
-          nationality,
-          continentalCompetitionId: continentalClubComp.id as CompetitionId,
-          countrySlots,
-        }),
-      );
+      const countryDivisions: Division[] =
+        nationality === "BR" ? ["A", "B"] : ["A"];
+      const leagues = generateNationalLeagues({
+        nationality,
+        continentalCompetitionId: continentalClubComp.id as CompetitionId,
+        countrySlots,
+        divisions: countryDivisions,
+      });
+      allCompetitions.push(...leagues);
       allCompetitions.push(generateNationalCup({ nationality }));
       allCompetitions.push(generateNationalSupercup({ nationality }));
     });

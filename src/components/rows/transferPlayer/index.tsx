@@ -62,14 +62,14 @@ function TransferPlayerRow({
           )
         }
         customValue={
-          <span className={`${styles.valueTag} ${!canAfford ? styles.noFunds : ""}`}>
+          <span
+            className={`${styles.valueTag} ${!canAfford ? styles.noFunds : ""}`}
+          >
             {formatMoney(value)}
           </span>
         }
         actionButton={
-          canAfford
-            ? { action: handleBuyClick, type: "buy" }
-            : undefined
+          canAfford ? { action: handleBuyClick, type: "buy" } : undefined
         }
       />
     );

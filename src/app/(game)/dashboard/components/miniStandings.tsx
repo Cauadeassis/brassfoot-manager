@@ -16,14 +16,17 @@ const MiniStandings = ({
   historyKey,
 }: DashBoardComponentProps) => {
   const teams = Object.values(useGameStore((state) => state.teams));
-  const [season, competitionId] = historyKey.split("_");
-  const topTeams = useMemo(() => {
-    return getStandings({ teams, season: Number(season), competitionId }).slice(
-      0,
-      6,
-    );
-  }, [teams, historyKey]);
+  const firstUnderscoreIndex = historyKey.indexOf("_");
+  const season = Number(historyKey.substring(0, firstUnderscoreIndex));
+  const competitionId = historyKey.substring(firstUnderscoreIndex + 1) as CompetitionId;
 
+  const topTeams = useMemo(() => {
+    return getStandings({
+      teams,
+      season,
+      competitionId,
+    }).slice(0, 6);
+  }, [teams, historyKey, season, competitionId]);
   return (
     <section>
       <h3>

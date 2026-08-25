@@ -1,5 +1,11 @@
 import { FormationType, getPositionsByFormation } from "../data/formations";
-import { Division, Modality, PlayStyle, TeamStatistics, TeamType } from "../types/team";
+import {
+  Division,
+  Modality,
+  PlayStyle,
+  TeamStatistics,
+  TeamType,
+} from "../types/team";
 import { getCompatiblePositions, getRandom } from "../utils";
 import { Player } from "../types/player";
 import { Team, RawTeamData } from "../types/team";
@@ -324,8 +330,8 @@ export const createBaseTeam = (raw: RawTeamData): GeneralTeamData => {
     },
   };
 };
-const formations = ["4-4-2", "4-2-3-1", "4-3-3"] as FormationType[]
-const styles = ["offensive", "balanced", "defensive"] as PlayStyle[]
+const formations = ["4-4-2", "4-2-3-1", "4-3-3"] as FormationType[];
+const styles = ["offensive", "balanced", "defensive"] as PlayStyle[];
 export const generateTeam = ({ baseData, modality }: CreateTeamProps): Team => {
   const overall = baseData.overall[modality];
   return {

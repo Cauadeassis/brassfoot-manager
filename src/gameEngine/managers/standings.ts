@@ -15,12 +15,13 @@ export function getStandings({
   division,
   season,
 }: GetStandingsProps): Team[] {
-  const [prefix, _] = competitionId.split("_");
+  const [prefix, compType, divisionFromId] = competitionId.split("_");
+  const effectiveDivision = division ?? divisionFromId;
   const teamsWithStats = teams
     .filter((team) => {
       const { nationality, type } = team;
-      const matchesDivision = division ? team.division === division : true;
-      const isNationalLeague = nationality === prefix && type === "club";
+      const matchesDivision = effectiveDivision ? team.division === effectiveDivision : true;
+      const isNationalLeague = nationality === prefix && type === "club" && (!compType || compType === "league");
       const isSameRegion = NATIONALITIES_DATA[nationality]?.region === prefix;
       const expectedTeamType = competitionId.includes("clubs")
         ? "club"

@@ -130,11 +130,14 @@ interface InitialPlayerHistoryProps {
   teamId: string;
 }
 
-export const emptyBaseStatistics: Pick<PlayerStatistics, 'matchesPlayed' | 'yellowCards' | 'redCards'> = {
+export const emptyBaseStatistics: Pick<
+  PlayerStatistics,
+  "matchesPlayed" | "yellowCards" | "redCards"
+> = {
   matchesPlayed: 0,
   yellowCards: 0,
   redCards: 0,
-}
+};
 
 const initPlayerHistory = ({
   player,
@@ -147,22 +150,22 @@ const initPlayerHistory = ({
     player.history[historyKey] =
       player.position === "GK"
         ? {
-          role: "goalkeeper",
-          season,
-          competitionId,
-          teamId,
-          defenses: 0,
-          ...emptyBaseStatistics,
-        }
+            role: "goalkeeper",
+            season,
+            competitionId,
+            teamId,
+            defenses: 0,
+            ...emptyBaseStatistics,
+          }
         : {
-          role: "attacker",
-          season,
-          competitionId,
-          teamId,
-          goals: 0,
-          assists: 0,
-          ...emptyBaseStatistics,
-        };
+            role: "attacker",
+            season,
+            competitionId,
+            teamId,
+            goals: 0,
+            assists: 0,
+            ...emptyBaseStatistics,
+          };
   }
 };
 

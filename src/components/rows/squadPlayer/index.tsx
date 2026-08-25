@@ -77,9 +77,7 @@ export default function SquadPlayerRow({
           >
             {formatMoney(player.value)}
           </span>
-          {!isCompact && (
-            <button onClick={handleSellClick}>VENDER</button>
-          )}
+          {!isCompact && <button onClick={handleSellClick}>VENDER</button>}
         </>
       )}
     </div>

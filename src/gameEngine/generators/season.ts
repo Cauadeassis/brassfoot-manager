@@ -20,6 +20,7 @@ const ELIGIBILITY_RULES: {
 } = {
   teamType: (team, value) => team.type === value,
   nationality: (team, value) => team.nationality === value,
+  division: (team, value) => team.division === value,
   region: (team, value) => {
     const { nationality, name } = team;
     const region = NATIONALITIES_DATA[nationality]?.region;

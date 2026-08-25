@@ -70,7 +70,7 @@ export default function Calendar() {
   }, [competitionId]);
 
   const layoutMode = getLayoutMode({ compactWidth: 850 });
-  console.log(layoutMode)
+  console.log(layoutMode);
   if (!competitionId)
     return (
       <div>

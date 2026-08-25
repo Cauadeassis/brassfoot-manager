@@ -12,12 +12,19 @@ interface MatchListProps {
 
 interface GetLayoutModeProps {
   cardWidth?: number;
-  compactWidth?: number
+  compactWidth?: number;
 }
 
-export const getLayoutMode = ({ cardWidth = 500, compactWidth = 768 }: GetLayoutModeProps): LayoutMode => {
+export const getLayoutMode = ({
+  cardWidth = 500,
+  compactWidth = 768,
+}: GetLayoutModeProps): LayoutMode => {
   const width = useWindowWidth();
-  return width <= cardWidth ? "card" : width <= compactWidth ? "compact" : "desktop";
+  return width <= cardWidth
+    ? "card"
+    : width <= compactWidth
+      ? "compact"
+      : "desktop";
 };
 
 const MatchList = ({ type }: MatchListProps) => {
@@ -26,7 +33,7 @@ const MatchList = ({ type }: MatchListProps) => {
   const results = useGameStore((state) => state.results);
   const activeCompetitions = useGameStore((state) => state.competitions);
   const layoutMode = getLayoutMode({});
-  console.log(layoutMode)
+  console.log(layoutMode);
   const matches = useMemo(() => {
     if (!userTeamId) return [];
     const upcomingMatches = getUpcomingMatches({
