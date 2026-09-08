@@ -1,0 +1,167 @@
+.bracketSection {
+  width: 100%;
+  border: 1px solid green;
+  overflow-x: auto;
+  padding: 1rem 0;
+
+  .scroll {
+    overflow-x: auto;
+    padding: 1rem 0.5rem 2rem;
+  }
+
+  .grid {
+    --col-gap: 1rem;
+    display: grid;
+    column-gap: var(--col-gap);
+    row-gap: 1rem;
+    min-width: max-content;
+  }
+}
+
+.match {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .connector.straight {
+    top: 50%;
+    height: 0;
+    border-bottom: none;
+    border-top: 2px solid #3f3f46;
+  }
+}
+
+.matchCard {
+  width: 100%;
+  max-width: fit-content;
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+  z-index: 2;
+
+  :hover {
+    border-color: #52525b;
+    transform: translateY(-2px);
+  }
+
+
+  .teamRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #27272a;
+    background-color: #18181b;
+
+    :last-child {
+      border-bottom: none;
+    }
+
+    .shield {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      flex-shrink: 0;
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    .score {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #f4f4f5;
+      background-color: #27272a;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      min-width: 22px;
+      text-align: center;
+    }
+  }
+}
+
+.winner .teamScore {
+  background-color: #22c55e;
+  color: #000;
+}
+
+.connector {
+  position: absolute;
+  width: var(--col-gap);
+  height: 50%;
+  border: 2px solid #3f3f46;
+  pointer-events: none;
+}
+
+.connector.left {
+  right: calc(-1 * var(--col-gap));
+  border-left: none;
+}
+
+.connector.right {
+  left: calc(-1 * var(--col-gap));
+  border-right: none;
+}
+
+.connector.topOfPair {
+  top: 50%;
+  border-bottom: none;
+}
+
+.connector.bottomOfPair {
+  bottom: 50%;
+  border-top: none;
+}
+
+.finalWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.finalCard {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background-color: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+
+  >span {
+    font-size: 0.8rem;
+    color: #71717a;
+  }
+
+  .teamRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+
+    :last-child {
+      flex-direction: row-reverse;
+    }
+
+    .shield {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      flex-shrink: 0;
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+  }
+}
+
+.emptyState {
+  padding: 2rem;
+  color: #71717a;
+}

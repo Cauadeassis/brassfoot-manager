@@ -517,6 +517,544 @@ const NATIONAL_TEAMS: RawTeamData[] = [
   },
 ];
 
+const BRAZILIAN_CLUBS: RawTeamData[] = [
+  {
+    name: "Flamengo",
+    shield: "/clubs/southAmerica/BR/Flamengo.svg",
+    description: "Quer jogar no modo fácil, é?",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 89,
+      feminine: 78,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [1981, 2019, 2022],
+      worldClubs: [1981],
+    },
+  },
+  {
+    name: "Palmeiras",
+    shield: "/clubs/southAmerica/BR/Palmeiras.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 87,
+      feminine: 84,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [1999, 2020, 2021],
+    },
+  },
+  {
+    name: "Atlético Mineiro",
+    shield: "/clubs/southAmerica/BR/AtleticoMineiro.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 76,
+      feminine: 60,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [2013],
+    },
+  },
+  {
+    name: "Fluminense",
+    shield: "/clubs/southAmerica/BR/Fluminense.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 80,
+      feminine: 62,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [2023],
+    },
+  },
+  {
+    name: "Internacional",
+    shield: "/clubs/southAmerica/BR/Internacional.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 78,
+      feminine: 82,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [2006, 2010],
+      worldClubs: [2006],
+    },
+  },
+  {
+    name: "Criciúma",
+    shield: "/clubs/southAmerica/BR/Criciuma.svg",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 67,
+      feminine: 52,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Vitória",
+    shield: "/clubs/southAmerica/BR/Vitoria.svg",
+    division: {
+      masculine: "A",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 68,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Ceará",
+    shield: "/clubs/southAmerica/BR/Ceara.svg",
+    division: {
+      masculine: "A",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 69,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Juventude",
+    shield: "/clubs/southAmerica/BR/Juventude.svg",
+    description: "Preparado para jogar sob neblina intensa?",
+    division: {
+      masculine: "A",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 66,
+      feminine: 52,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Guarani",
+    shield: "/clubs/southAmerica/BR/Guarani.svg",
+    description: "Campeão brasileiro de 1978 vivendo de saudades.",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 62,
+      feminine: 50,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Avaí",
+    shield: "/clubs/southAmerica/BR/Avai.svg",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 61,
+      feminine: 50,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Paysandu",
+    shield: "/clubs/southAmerica/BR/Paysandu.svg",
+    description: "O maior campeão da Amazônia.",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 60,
+      feminine: 50,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "São Paulo",
+    shield: "/clubs/southAmerica/BR/SaoPaulo.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 79,
+      feminine: 85,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [1992, 1993, 2005],
+      worldClubs: [1992, 1993, 2005],
+    },
+  },
+  {
+    name: "Grêmio",
+    shield: "/clubs/southAmerica/BR/Gremio.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 75,
+      feminine: 74,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [1983, 1995, 2017],
+      worldClubs: [1983],
+    },
+  },
+  {
+    name: "Botafogo",
+    shield: "/clubs/southAmerica/BR/Botafogo.svg",
+    description: "Prove que o Fogão é o melhor do mundo!",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 83,
+      feminine: 64,
+    },
+    money: -2_500_000_000,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Corinthians",
+    shield: "/clubs/southAmerica/BR/Corinthians.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 76,
+      feminine: 93,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [2012],
+      worldClubs: [2000, 2012],
+    },
+  },
+  {
+    name: "Ferroviária",
+    shield: "/clubs/southAmerica/BR/Ferroviaria.svg",
+    division: {
+      masculine: "B",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 62,
+      feminine: 84,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Santos",
+    shield: "/clubs/southAmerica/BR/Santos.svg",
+    description: "Lidere o Santos sem Pelé, sem Neymar, sem nada. Boa sorte!",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 70,
+      feminine: 76,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [1962, 1963, 2011],
+      worldClubs: [1962, 1963],
+    },
+  },
+  {
+    name: "Cruzeiro",
+    shield: "/clubs/southAmerica/BR/Cruzeiro.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 80,
+      feminine: 78,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [1976, 1997],
+    },
+  },
+  {
+    name: "Vasco",
+    shield: "/clubs/southAmerica/BR/Vasco.svg",
+    description: "Que Deus te ajude.",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 68,
+      feminine: 60,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+    trophies: {
+      southAmerican_clubs_competition: [1998],
+    },
+  },
+  {
+    name: "Atlético Paranaense",
+    shield: "/clubs/southAmerica/BR/AtleticoParanaense.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 74,
+      feminine: 58,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Fortaleza",
+    shield: "/clubs/southAmerica/BR/Fortaleza.svg",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 68,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Bahia",
+    shield: "/clubs/southAmerica/BR/Bahia.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 76,
+      feminine: 76,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Bragantino",
+    shield: "/clubs/southAmerica/BR/Bragantino.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 77,
+      feminine: 80,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Goiás",
+    shield: "/clubs/southAmerica/BR/Goias.svg",
+    description: "Um dos piores clubes do planeta!",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 62,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Cuiabá",
+    shield: "/clubs/southAmerica/BR/Cuiaba.svg",
+    description: "Um dos piores clubes do planeta!",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 60,
+      feminine: 52,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Coritiba",
+    shield: "/clubs/southAmerica/BR/Coritiba.svg",
+    description: "Um dos piores clubes do planeta!",
+    division: {
+      masculine: "A",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 70,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "América-MG",
+    shield: "/clubs/southAmerica/BR/AmericaMG.svg",
+    description: "Um dos piores clubes do planeta!",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 60,
+      feminine: 52,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Chapecoense",
+    shield: "/clubs/southAmerica/BR/Chapecoense.svg",
+    description: "Um dos piores clubes do planeta!",
+    division: {
+      masculine: "A",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 68,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Vila Nova",
+    shield: "/clubs/southAmerica/BR/VilaNova.svg",
+    description: "Um dos piores clubes do planeta!",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 60,
+      feminine: 52,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+  {
+    name: "Sport",
+    shield: "/clubs/southAmerica/BR/Sport.svg",
+    description: "Um dos piores clubes do planeta!",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 62,
+      feminine: 55,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+
+  {
+    name: "Ponte Preta",
+    shield: "/clubs/southAmerica/BR/PontePreta.svg",
+    description: "O futebol desse time é mais feio do que bater em mãe",
+    division: {
+      masculine: "B",
+      feminine: "B",
+    },
+    overall: {
+      masculine: 58,
+      feminine: 52,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "BR",
+  },
+]
+
 const CLUBS: RawTeamData[] = [
   {
     name: "Arsenal",
@@ -982,434 +1520,6 @@ const CLUBS: RawTeamData[] = [
     },
   },
   {
-    name: "Flamengo",
-    shield: "/clubs/southAmerica/BR/Flamengo.svg",
-    description: "Quer jogar no modo fácil, é?",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 89,
-      feminine: 78,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [1981, 2019, 2022],
-      worldClubs: [1981],
-    },
-  },
-  {
-    name: "Palmeiras",
-    shield: "/clubs/southAmerica/BR/Palmeiras.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 87,
-      feminine: 84,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [1999, 2020, 2021],
-    },
-  },
-  {
-    name: "Atlético Mineiro",
-    shield: "/clubs/southAmerica/BR/AtleticoMineiro.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 76,
-      feminine: 60,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [2013],
-    },
-  },
-  {
-    name: "Fluminense",
-    shield: "/clubs/southAmerica/BR/Fluminense.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 80,
-      feminine: 62,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [2023],
-    },
-  },
-  {
-    name: "Internacional",
-    shield: "/clubs/southAmerica/BR/Internacional.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 78,
-      feminine: 82,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [2006, 2010],
-      worldClubs: [2006],
-    },
-  },
-  {
-    name: "São Paulo",
-    shield: "/clubs/southAmerica/BR/SaoPaulo.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 79,
-      feminine: 85,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [1992, 1993, 2005],
-      worldClubs: [1992, 1993, 2005],
-    },
-  },
-  {
-    name: "Grêmio",
-    shield: "/clubs/southAmerica/BR/Gremio.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 75,
-      feminine: 74,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [1983, 1995, 2017],
-      worldClubs: [1983],
-    },
-  },
-  {
-    name: "Botafogo",
-    shield: "/clubs/southAmerica/BR/Botafogo.svg",
-    description: "Prove que o Fogão é o melhor do mundo!",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 83,
-      feminine: 64,
-    },
-    money: -2_500_000_000,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Corinthians",
-    shield: "/clubs/southAmerica/BR/Corinthians.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 76,
-      feminine: 93,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [2012],
-      worldClubs: [2000, 2012],
-    },
-  },
-  {
-    name: "Ferroviária",
-    shield: "/clubs/southAmerica/BR/Ferroviaria.svg",
-    division: {
-      masculine: "B",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 62,
-      feminine: 84,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Santos",
-    shield: "/clubs/southAmerica/BR/Santos.svg",
-    description: "Lidere o Santos sem Pelé, sem Neymar, sem nada. Boa sorte!",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 70,
-      feminine: 76,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [1962, 1963, 2011],
-      worldClubs: [1962, 1963],
-    },
-  },
-  {
-    name: "Cruzeiro",
-    shield: "/clubs/southAmerica/BR/Cruzeiro.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 80,
-      feminine: 78,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [1976, 1997],
-    },
-  },
-  {
-    name: "Vasco",
-    shield: "/clubs/southAmerica/BR/Vasco.svg",
-    description: "Que Deus te ajude.",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 68,
-      feminine: 60,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-    trophies: {
-      southAmerican_clubs_competition: [1998],
-    },
-  },
-  {
-    name: "Atlético Paranaense",
-    shield: "/clubs/southAmerica/BR/AtleticoParanaense.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 74,
-      feminine: 58,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Fortaleza",
-    shield: "/clubs/southAmerica/BR/Fortaleza.svg",
-    division: {
-      masculine: "B",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 68,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Bahia",
-    shield: "/clubs/southAmerica/BR/Bahia.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 76,
-      feminine: 76,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Bragantino",
-    shield: "/clubs/southAmerica/BR/Bragantino.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 77,
-      feminine: 80,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Goiás",
-    shield: "/clubs/southAmerica/BR/Goias.svg",
-    description: "Um dos piores clubes do planeta!",
-    division: {
-      masculine: "B",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 62,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Cuiabá",
-    shield: "/clubs/southAmerica/BR/Cuiaba.svg",
-    description: "Um dos piores clubes do planeta!",
-    division: {
-      masculine: "B",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 60,
-      feminine: 52,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Coritiba",
-    shield: "/clubs/southAmerica/BR/Coritiba.svg",
-    description: "Um dos piores clubes do planeta!",
-    division: {
-      masculine: "A",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 70,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "América-MG",
-    shield: "/clubs/southAmerica/BR/AmericaMG.svg",
-    description: "Um dos piores clubes do planeta!",
-    division: {
-      masculine: "B",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 60,
-      feminine: 52,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Chapecoense",
-    shield: "/clubs/southAmerica/BR/Chapecoense.svg",
-    description: "Um dos piores clubes do planeta!",
-    division: {
-      masculine: "A",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 68,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Vila Nova",
-    shield: "/clubs/southAmerica/BR/VilaNova.svg",
-    description: "Um dos piores clubes do planeta!",
-    division: {
-      masculine: "B",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 60,
-      feminine: 52,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-  {
-    name: "Sport",
-    shield: "/clubs/southAmerica/BR/Sport.svg",
-    description: "Um dos piores clubes do planeta!",
-    division: {
-      masculine: "B",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 62,
-      feminine: 55,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-
-  {
-    name: "Ponte Preta",
-    shield: "/clubs/southAmerica/BR/PontePreta.svg",
-    description: "O futebol desse time é mais feio do que bater em mãe",
-    division: {
-      masculine: "B",
-      feminine: "B",
-    },
-    overall: {
-      masculine: 58,
-      feminine: 52,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "BR",
-  },
-
-  {
     name: "Colo-colo",
     shield: "/clubs/southAmerica/CL/Colo-Colo.svg",
     division: {
@@ -1499,7 +1609,7 @@ const CLUBS: RawTeamData[] = [
   },
 ];
 
-const RAWTEAMS: RawTeamData[] = [...CLUBS];
+const RAWTEAMS: RawTeamData[] = [...CLUBS, ...BRAZILIAN_CLUBS];
 const getTeamsMap = (): Record<string, GeneralTeamData> => {
   return RAWTEAMS.reduce(
     (acc, rawTeam) => {

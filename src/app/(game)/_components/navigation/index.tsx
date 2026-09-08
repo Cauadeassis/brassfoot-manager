@@ -40,7 +40,7 @@ export const NAVIGATION_MENU: Section[] = [
   {
     title: "Competição",
     items: [
-      { href: "/standings", label: "Tabela", icon: "📋" },
+      { href: "/overview", label: "Visão Geral", icon: "📋" },
       { href: "/matches", label: "Jogos", icon: "📅" },
     ],
   },

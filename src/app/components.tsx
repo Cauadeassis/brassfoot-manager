@@ -13,7 +13,7 @@ const TeamCard = ({ team, onClick }: TeamCardProps) => {
   const handleClick = () => onClick(team);
   return (
     <button className={styles.card} onClick={handleClick}>
-      <Icon name={team.shield} className={styles.shieldIcon} />
+      <Icon name="/clubs/southAmerica/BR/Paysandu.svg" className={styles.shieldIcon} />
       <h2>{team.name}</h2>
       <OverallBadge overall={team.overall} />
       {team.type === "club" && <SerieBadge serie={team.division} />}

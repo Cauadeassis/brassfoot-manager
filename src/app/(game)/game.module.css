@@ -4,13 +4,12 @@
     width: 100%;
     min-height: calc(100vh - 52px);
 
-    & > main {
+    &>main {
       flex: 1;
       padding: 24px;
       overflow-y: auto;
-      max-width: 1100px;
 
-      & > section {
+      &>section {
         & h3 {
           font-family: var(--font-mono);
           font-size: 10px;
@@ -25,10 +24,10 @@
 }
 
 @media (max-width: 800px) {
-  .navAndMainContainer > main {
+  .navAndMainContainer>main {
     padding: 16px;
 
-    & > section header h2 {
+    &>section header h2 {
       font-size: 18px;
       letter-spacing: 2px;
     }

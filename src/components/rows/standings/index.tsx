@@ -6,8 +6,9 @@ import styles from "./standings.module.css";
 import { TeamBadge } from "../../badges";
 import { getTeamStats } from "../../../gameEngine/team";
 import { CompetitionId } from "../../../types/competition";
-import { ZoneData } from "../../../app/(game)/standings/page";
+
 import React from "react";
+import { ZoneData } from "../../../app/(game)/overview/_components/Standings";
 interface StandingsRowProps {
   team: Team;
   index: number;
