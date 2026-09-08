@@ -207,7 +207,7 @@ function BracketColumnView({
 
 interface TeamRowProps {
   shield?: string;
-  score?: number;
+  score?: string;
   isWinner?: boolean;
 }
 
@@ -238,8 +238,8 @@ function MatchCard({ match, teamsDict }: { match: Match | null; teamsDict: Recor
 
   return (
     <div className={styles.matchCard}>
-      <TeamRow shield={homeTeam?.shield} score={match.goals.home} isWinner={homeWon} />
-      <TeamRow shield={awayTeam?.shield} score={match.goals.away} isWinner={awayWon} />
+      <TeamRow shield={homeTeam?.shield} score={match.goals.home.toString()} isWinner={homeWon} />
+      <TeamRow shield={awayTeam?.shield} score={match.goals.away.toString()} isWinner={awayWon} />
     </div>
   );
 }
@@ -275,9 +275,9 @@ function FinalMatchCard({
   return (
     <div className={styles.finalWrapper} style={{ gridColumn, gridRow: `2 / span ${rowCount}` }}>
       <div className={styles.finalCard}>
-        <TeamRow shield={homeTeam?.shield} score={match.goals.home} isWinner={homeWon} />
+        <TeamRow shield={homeTeam?.shield} score={match.goals.home.toString()} isWinner={homeWon} />
         <span>×</span>
-        <TeamRow shield={awayTeam?.shield} score={match.goals.away} isWinner={awayWon} />
+        <TeamRow shield={awayTeam?.shield} score={match.goals.away.toString()} isWinner={awayWon} />
       </div>
     </div>
   );
