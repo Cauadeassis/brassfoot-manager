@@ -39,7 +39,10 @@ interface BracketColumn {
 
 export default function KnockoutBracket() {
   const calendar = useGameStore((state) => state.calendar);
-  const teamsDict = useGameStore((state) => state.teams) as Record<string, TeamLike>;
+  const teamsDict = useGameStore((state) => state.teams) as Record<
+    string,
+    TeamLike
+  >;
   const competitionId = useFiltersStore(
     (state) => state.globalFilters.generalCompetitionId,
   );
@@ -51,18 +54,27 @@ export default function KnockoutBracket() {
   }, [calendar, competitionId]);
   const bracket = useMemo(() => {
     if (!competitionMatches || competitionMatches.length === 0) return null;
-    const groupedByRound = competitionMatches.reduce((acc, match) => {
-      const round = match.round;
-      if (!acc[round]) acc[round] = [];
-      acc[round].push(match);
-      return acc;
-    }, {} as Record<number, Match[]>);
-    const roundKeys = Object.keys(groupedByRound).map(Number).sort((a, b) => a - b);
+    const groupedByRound = competitionMatches.reduce(
+      (acc, match) => {
+        const round = match.round;
+        if (!acc[round]) acc[round] = [];
+        acc[round].push(match);
+        return acc;
+      },
+      {} as Record<number, Match[]>,
+    );
+    const roundKeys = Object.keys(groupedByRound)
+      .map(Number)
+      .sort((a, b) => a - b);
     if (roundKeys.length === 0) return null;
     const firstRoundMatches = groupedByRound[roundKeys[0]];
-    const baseMatchesCount = [16, 8, 4, 2].find(n => n <= firstRoundMatches.length) || 2;
+    const baseMatchesCount =
+      [16, 8, 4, 2].find((n) => n <= firstRoundMatches.length) || 2;
     const depthCount = Math.log2(baseMatchesCount) + 1;
-    const phaseTargets = Array.from({ length: depthCount }, (_, d) => baseMatchesCount / (2 ** d));
+    const phaseTargets = Array.from(
+      { length: depthCount },
+      (_, d) => baseMatchesCount / 2 ** d,
+    );
     const phaseMatchesMap: Record<number, Match[]> = {};
     roundKeys.forEach((rk) => {
       const matchesInRound = groupedByRound[rk];
@@ -80,7 +92,7 @@ export default function KnockoutBracket() {
       const expectedPerSide = expectedMatchesTotal / 2;
       const actualMatches = phaseMatchesMap[d] || [];
       const sideMatches = Array.from({ length: expectedMatchesTotal }).map(
-        (_, i) => actualMatches[i] || null
+        (_, i) => actualMatches[i] || null,
       );
       const phaseName = getPhaseName(expectedMatchesTotal);
       leftColumns.push({
@@ -119,7 +131,14 @@ export default function KnockoutBracket() {
       </div>
     );
   }
-  const { leftColumns, rightColumns, finalMatch, finalPhaseName, rowCount, totalColumns } = bracket;
+  const {
+    leftColumns,
+    rightColumns,
+    finalMatch,
+    finalPhaseName,
+    rowCount,
+    totalColumns,
+  } = bracket;
   const finalColumnIndex = leftColumns.length + 1;
   return (
     <section className={styles.bracketSection}>
@@ -195,7 +214,11 @@ function BracketColumnView({
               className={[
                 styles.connector,
                 styles[column.side],
-                isSemi ? styles.straight : isTopOfPair ? styles.topOfPair : styles.bottomOfPair,
+                isSemi
+                  ? styles.straight
+                  : isTopOfPair
+                    ? styles.topOfPair
+                    : styles.bottomOfPair,
               ].join(" ")}
             />
           </div>
@@ -211,17 +234,27 @@ interface TeamRowProps {
   isWinner?: boolean;
 }
 
-function TeamRow({ shield = "/BlankShield.svg", score = "-", isWinner = false }: TeamRowProps) {
-  const winnerStyle = isWinner ? "styles.winner" : ""
+function TeamRow({
+  shield = "/BlankShield.svg",
+  score = "-",
+  isWinner = false,
+}: TeamRowProps) {
+  const winnerStyle = isWinner ? "styles.winner" : "";
   return (
     <div className={`${styles.teamRow} ${winnerStyle}`}>
       <img src={shield} alt="" className={styles.shield} />
       <span className={styles.score}>{score}</span>
     </div>
-  )
+  );
 }
 
-function MatchCard({ match, teamsDict }: { match: Match | null; teamsDict: Record<string, TeamLike> }) {
+function MatchCard({
+  match,
+  teamsDict,
+}: {
+  match: Match | null;
+  teamsDict: Record<string, TeamLike>;
+}) {
   if (!match) {
     return (
       <div className={styles.matchCard}>
@@ -238,8 +271,16 @@ function MatchCard({ match, teamsDict }: { match: Match | null; teamsDict: Recor
 
   return (
     <div className={styles.matchCard}>
-      <TeamRow shield={homeTeam?.shield} score={match.goals.home.toString()} isWinner={homeWon} />
-      <TeamRow shield={awayTeam?.shield} score={match.goals.away.toString()} isWinner={awayWon} />
+      <TeamRow
+        shield={homeTeam?.shield}
+        score={match.goals.home.toString()}
+        isWinner={homeWon}
+      />
+      <TeamRow
+        shield={awayTeam?.shield}
+        score={match.goals.away.toString()}
+        isWinner={awayWon}
+      />
     </div>
   );
 }
@@ -257,7 +298,10 @@ function FinalMatchCard({
 }) {
   if (!match) {
     return (
-      <div className={styles.finalWrapper} style={{ gridColumn, gridRow: `2 / span ${rowCount}` }}>
+      <div
+        className={styles.finalWrapper}
+        style={{ gridColumn, gridRow: `2 / span ${rowCount}` }}
+      >
         <div className={styles.finalCard}>
           <TeamRow />
           <span>×</span>
@@ -273,11 +317,22 @@ function FinalMatchCard({
   const awayWon = match.goals.away > match.goals.home;
 
   return (
-    <div className={styles.finalWrapper} style={{ gridColumn, gridRow: `2 / span ${rowCount}` }}>
+    <div
+      className={styles.finalWrapper}
+      style={{ gridColumn, gridRow: `2 / span ${rowCount}` }}
+    >
       <div className={styles.finalCard}>
-        <TeamRow shield={homeTeam?.shield} score={match.goals.home.toString()} isWinner={homeWon} />
+        <TeamRow
+          shield={homeTeam?.shield}
+          score={match.goals.home.toString()}
+          isWinner={homeWon}
+        />
         <span>×</span>
-        <TeamRow shield={awayTeam?.shield} score={match.goals.away.toString()} isWinner={awayWon} />
+        <TeamRow
+          shield={awayTeam?.shield}
+          score={match.goals.away.toString()}
+          isWinner={awayWon}
+        />
       </div>
     </div>
   );

@@ -8,35 +8,35 @@ import Toast from "../../components/toast";
 import { useIsMobile } from "../../hooks";
 import TopBar from "./_components/topBar";
 export default function GameLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const [hydrated, setHydrated] = useState(false);
-    const isMobile = useIsMobile(800);
-    useEffect(() => {
-        setHydrated(true);
-    }, []);
-    if (!hydrated) {
-        return <div className={styles.loading}>Carregando save do jogo...</div>;
-    }
-    return (
-        <section className={styles.gameScreen}>
-            <TopBar isMobile={isMobile} />
+  const [hydrated, setHydrated] = useState(false);
+  const isMobile = useIsMobile(800);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+  if (!hydrated) {
+    return <div className={styles.loading}>Carregando save do jogo...</div>;
+  }
+  return (
+    <section className={styles.gameScreen}>
+      <TopBar isMobile={isMobile} />
 
-            <div className={styles.navAndMainContainer}>
-                {!isMobile && (
-                    <aside>
-                        <Navigation styleMode="aside" />
-                    </aside>
-                )}
+      <div className={styles.navAndMainContainer}>
+        {!isMobile && (
+          <aside>
+            <Navigation styleMode="aside" />
+          </aside>
+        )}
 
-                <main>{children}</main>
-            </div>
+        <main>{children}</main>
+      </div>
 
-            <Toast />
-            <MatchModal />
-            <MenuModal />
-        </section>
-    );
+      <Toast />
+      <MatchModal />
+      <MenuModal />
+    </section>
+  );
 }

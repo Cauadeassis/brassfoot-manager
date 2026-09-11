@@ -174,9 +174,10 @@ export const getCompetitionName = ({
     const demonymBase = nationalityData.demonym.feminine;
     const demonymWord =
       demonymBase.charAt(0).toUpperCase() + demonymBase.slice(1);
-    baseName = length === 1
-      ? `${typeWord} ${demonymWord}`
-      : `${typeWord}s ${demonymWord}s`;
+    baseName =
+      length === 1
+        ? `${typeWord} ${demonymWord}`
+        : `${typeWord}s ${demonymWord}s`;
   }
   if (nationalityCode === "BR" && compType === "league" && division) {
     return `${baseName} Série ${division.toUpperCase()}`;

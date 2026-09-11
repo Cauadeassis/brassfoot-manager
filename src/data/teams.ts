@@ -517,7 +517,7 @@ const NATIONAL_TEAMS: RawTeamData[] = [
   },
 ];
 
-const BRAZILIAN_CLUBS: RawTeamData[] = [
+const BR_CLUBS: RawTeamData[] = [
   {
     name: "Flamengo",
     shield: "/clubs/southAmerica/BR/Flamengo.svg",
@@ -1053,356 +1053,9 @@ const BRAZILIAN_CLUBS: RawTeamData[] = [
     type: "club",
     nationality: "BR",
   },
-]
+];
 
-const CLUBS: RawTeamData[] = [
-  {
-    name: "Arsenal",
-    shield: "/clubs/europe/GB/Arsenal.svg",
-    description:
-      "Com um futebol vistoso e jovem, o Arsenal busca finalmente conquistar a Europa e colocar seu nome na história do torneio",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 90,
-      feminine: 96,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "GB",
-  },
-  {
-    name: "Sporting",
-    shield: "/clubs/europe/PT/Sporting.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 84,
-      feminine: 78,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "PT",
-  },
-  {
-    name: "FC Porto",
-    shield: "/clubs/europe/PT/FC_Porto.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 83,
-      feminine: 76,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "PT",
-    trophies: {
-      european_clubs_competition: [1987, 2004],
-      worldClubs: [1987, 2004],
-    },
-  },
-  {
-    name: "Benfica",
-    shield: "/clubs/europe/PT/Benfica.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 84,
-      feminine: 76,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "PT",
-    trophies: {
-      european_clubs_competition: [1961, 1962],
-    },
-  },
-  {
-    name: "Atlético de Madrid",
-    shield: "/clubs/europe/ES/AtleticoDeMadrid.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 84,
-      feminine: 74,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "ES",
-    trophies: {
-      worldClubs: [1974],
-    },
-  },
-  {
-    name: "Atlético de Bilbao",
-    shield: "/clubs/europe/ES/AtleticoDeBilbao.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 80,
-      feminine: 70,
-    },
-    money: mediumTeamPatch,
-    type: "club",
-    nationality: "ES",
-  },
-  {
-    name: "Barcelona",
-    shield: "/clubs/europe/ES/Barcelona.svg",
-    description:
-      "O Barcelona carrega o peso de sua filosofia 'Més que un club' em busca da glória europeia mais uma vez.",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 90,
-      feminine: 97,
-    },
-    money: topTierPatch,
-    type: "club",
-    nationality: "ES",
-    trophies: {
-      european_clubs_competition: [1992, 2006, 2009, 2011, 2015],
-      worldClubs: [2009, 2011, 2015],
-    },
-  },
-  {
-    name: "Bayern de Munique",
-    shield: "/clubs/europe/DE/BayernDeMunique.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 90,
-      feminine: 84,
-    },
-    money: topTierPatch,
-    type: "club",
-    nationality: "DE",
-    trophies: {
-      european_clubs_competition: [1974, 1975, 1976, 2001, 2013, 2020],
-      worldClubs: [1976, 2001, 2013, 2020],
-    },
-  },
-  {
-    name: "Borussia Dortmund",
-    shield: "/clubs/europe/DE/BorussiaDortmund.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 82,
-      feminine: 74,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "DE",
-    trophies: {
-      european_clubs_competition: [1997],
-      worldClubs: [1997],
-    },
-  },
-  {
-    name: "Chelsea",
-    shield: "/clubs/europe/GB/Chelsea.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 84,
-      feminine: 93,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "GB",
-    trophies: {
-      european_clubs_competition: [2012, 2021],
-      worldClubs: [2021],
-    },
-  },
-  {
-    name: "Tottenham",
-    shield: "/clubs/europe/GB/Tottenham.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 80,
-      feminine: 78,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "GB",
-  },
-  {
-    name: "Inter de Milão",
-    shield: "/clubs/europe/IT/InterDeMilao.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 86,
-      feminine: 74,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "IT",
-    trophies: {
-      european_clubs_competition: [1964, 1965, 2010],
-      worldClubs: [1964, 1965, 2010],
-    },
-  },
-  {
-    name: "Milan",
-    shield: "/clubs/europe/IT/Milan.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 82,
-      feminine: 76,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "IT",
-    trophies: {
-      european_clubs_competition: [1963, 1969, 1989, 1990, 1994, 2003, 2007],
-      worldClubs: [1969, 1989, 1990, 2007],
-    },
-  },
-  {
-    name: "Juventus",
-    shield: "/clubs/europe/IT/Juventus.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 83,
-      feminine: 80,
-    },
-    money: richTeamPatch,
-    type: "club",
-    nationality: "IT",
-    trophies: {
-      european_clubs_competition: [1985, 1996],
-      worldClubs: [1985, 1996],
-    },
-  },
-  {
-    name: "Liverpool",
-    shield: "/clubs/europe/GB/Liverpool.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 88,
-      feminine: 76,
-    },
-    money: topTierPatch,
-    type: "club",
-    nationality: "GB",
-    trophies: {
-      european_clubs_competition: [1977, 1978, 1981, 1984, 2005, 2019],
-      worldClubs: [2019],
-    },
-  },
-  {
-    name: "Manchester City",
-    shield: "/clubs/europe/GB/ManchesterCity.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 90,
-      feminine: 88,
-    },
-    money: topTierPatch,
-    type: "club",
-    nationality: "GB",
-    trophies: {
-      european_clubs_competition: [2023],
-      worldClubs: [2023],
-    },
-  },
-  {
-    name: "Manchester United",
-    shield: "/clubs/europe/GB/ManchesterUnited.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 78,
-      feminine: 82,
-    },
-    money: topTierPatch,
-    type: "club",
-    nationality: "GB",
-    trophies: {
-      european_clubs_competition: [1968, 1999, 2008],
-      worldClubs: [1999, 2008],
-    },
-  },
-  {
-    name: "Paris Saint-Germain",
-    shield: "/clubs/europe/FR/ParisSaintGermain.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 92,
-      feminine: 78,
-    },
-    money: topTierPatch,
-    type: "club",
-    nationality: "FR",
-  },
-  {
-    name: "Real Madrid",
-    shield: "/clubs/europe/ES/RealMadrid.svg",
-    description: "Você quer jogar no modo fácil, é?",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 95,
-      feminine: 82,
-    },
-    money: topTierPatch,
-    type: "club",
-    nationality: "ES",
-    trophies: {
-      european_clubs_competition: [
-        1956, 1957, 1958, 1959, 1960, 1966, 1998, 2000, 2002, 2014, 2016, 2017,
-        2018, 2022, 2024,
-      ],
-      worldClubs: [1960, 1998, 2002, 2014, 2016, 2017, 2018, 2022],
-    },
-  },
+const AR_CLUBS: RawTeamData[] = [
   {
     name: "Independiente",
     shield: "/clubs/southAmerica/AR/Independiente.svg",
@@ -1422,44 +1075,6 @@ const CLUBS: RawTeamData[] = [
         1964, 1965, 1972, 1973, 1974, 1975, 1984,
       ],
       worldClubs: [1973, 1984],
-    },
-  },
-  {
-    name: "Peñarol",
-    shield: "/clubs/southAmerica/UY/Peñarol.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 78,
-      feminine: 60,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "UY",
-    trophies: {
-      southAmerican_clubs_competition: [1960, 1961, 1966, 1982, 1987],
-      worldClubs: [1961, 1966, 1982],
-    },
-  },
-  {
-    name: "Nacional",
-    shield: "/clubs/southAmerica/UY/Nacional.svg",
-    division: {
-      masculine: "A",
-      feminine: "A",
-    },
-    overall: {
-      masculine: 77,
-      feminine: 58,
-    },
-    money: poorTeamPatch,
-    type: "club",
-    nationality: "UY",
-    trophies: {
-      southAmerican_clubs_competition: [1971, 1980, 1988],
-      worldClubs: [1971, 1980, 1988],
     },
   },
   {
@@ -1519,24 +1134,352 @@ const CLUBS: RawTeamData[] = [
       worldClubs: [1986],
     },
   },
+];
+
+const GB_CLUBS: RawTeamData[] = [
   {
-    name: "Colo-colo",
-    shield: "/clubs/southAmerica/CL/Colo-Colo.svg",
+    name: "Arsenal",
+    shield: "/clubs/europe/GB/Arsenal.svg",
+    description:
+      "Com um futebol vistoso e jovem, o Arsenal busca finalmente conquistar a Europa e colocar seu nome na história do torneio",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 90,
+      feminine: 96,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "GB",
+  },
+  {
+    name: "Chelsea",
+    shield: "/clubs/europe/GB/Chelsea.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 84,
+      feminine: 93,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "GB",
+    trophies: {
+      european_clubs_competition: [2012, 2021],
+      worldClubs: [2021],
+    },
+  },
+  {
+    name: "Tottenham",
+    shield: "/clubs/europe/GB/Tottenham.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 80,
+      feminine: 78,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "GB",
+  },
+  {
+    name: "Liverpool",
+    shield: "/clubs/europe/GB/Liverpool.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 88,
+      feminine: 76,
+    },
+    money: topTierPatch,
+    type: "club",
+    nationality: "GB",
+    trophies: {
+      european_clubs_competition: [1977, 1978, 1981, 1984, 2005, 2019],
+      worldClubs: [2019],
+    },
+  },
+  {
+    name: "Manchester City",
+    shield: "/clubs/europe/GB/ManchesterCity.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 90,
+      feminine: 88,
+    },
+    money: topTierPatch,
+    type: "club",
+    nationality: "GB",
+    trophies: {
+      european_clubs_competition: [2023],
+      worldClubs: [2023],
+    },
+  },
+  {
+    name: "Manchester United",
+    shield: "/clubs/europe/GB/ManchesterUnited.svg",
     division: {
       masculine: "A",
       feminine: "A",
     },
     overall: {
       masculine: 78,
-      feminine: 60,
+      feminine: 82,
     },
-    money: poorTeamPatch,
+    money: topTierPatch,
     type: "club",
-    nationality: "CL",
+    nationality: "GB",
     trophies: {
-      southAmerican_clubs_competition: [1991],
+      european_clubs_competition: [1968, 1999, 2008],
+      worldClubs: [1999, 2008],
     },
   },
+];
+
+const IT_CLUBS: RawTeamData[] = [
+  {
+    name: "Inter de Milão",
+    shield: "/clubs/europe/IT/InterDeMilao.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 86,
+      feminine: 74,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "IT",
+    trophies: {
+      european_clubs_competition: [1964, 1965, 2010],
+      worldClubs: [1964, 1965, 2010],
+    },
+  },
+  {
+    name: "Milan",
+    shield: "/clubs/europe/IT/Milan.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 82,
+      feminine: 76,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "IT",
+    trophies: {
+      european_clubs_competition: [1963, 1969, 1989, 1990, 1994, 2003, 2007],
+      worldClubs: [1969, 1989, 1990, 2007],
+    },
+  },
+  {
+    name: "Juventus",
+    shield: "/clubs/europe/IT/Juventus.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 83,
+      feminine: 80,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "IT",
+    trophies: {
+      european_clubs_competition: [1985, 1996],
+      worldClubs: [1985, 1996],
+    },
+  },
+];
+const ES_CLUBS: RawTeamData[] = [
+  {
+    name: "Real Madrid",
+    shield: "/clubs/europe/ES/RealMadrid.svg",
+    description: "Você quer jogar no modo fácil, é?",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 95,
+      feminine: 82,
+    },
+    money: topTierPatch,
+    type: "club",
+    nationality: "ES",
+    trophies: {
+      european_clubs_competition: [
+        1956, 1957, 1958, 1959, 1960, 1966, 1998, 2000, 2002, 2014, 2016, 2017,
+        2018, 2022, 2024,
+      ],
+      worldClubs: [1960, 1998, 2002, 2014, 2016, 2017, 2018, 2022],
+    },
+  },
+  {
+    name: "Atlético de Madrid",
+    shield: "/clubs/europe/ES/AtleticoDeMadrid.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 84,
+      feminine: 74,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "ES",
+    trophies: {
+      worldClubs: [1974],
+    },
+  },
+  {
+    name: "Atlético de Bilbao",
+    shield: "/clubs/europe/ES/AtleticoDeBilbao.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 80,
+      feminine: 70,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "ES",
+  },
+  {
+    name: "Barcelona",
+    shield: "/clubs/europe/ES/Barcelona.svg",
+    description:
+      "O Barcelona carrega o peso de sua filosofia 'Més que un club' em busca da glória europeia mais uma vez.",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 90,
+      feminine: 97,
+    },
+    money: topTierPatch,
+    type: "club",
+    nationality: "ES",
+    trophies: {
+      european_clubs_competition: [1992, 2006, 2009, 2011, 2015],
+      worldClubs: [2009, 2011, 2015],
+    },
+  },
+];
+const PT_CLUBS: RawTeamData[] = [
+  {
+    name: "Sporting",
+    shield: "/clubs/europe/PT/Sporting.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 84,
+      feminine: 78,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "PT",
+  },
+  {
+    name: "FC Porto",
+    shield: "/clubs/europe/PT/FC_Porto.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 83,
+      feminine: 76,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "PT",
+    trophies: {
+      european_clubs_competition: [1987, 2004],
+      worldClubs: [1987, 2004],
+    },
+  },
+  {
+    name: "Benfica",
+    shield: "/clubs/europe/PT/Benfica.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 84,
+      feminine: 76,
+    },
+    money: mediumTeamPatch,
+    type: "club",
+    nationality: "PT",
+    trophies: {
+      european_clubs_competition: [1961, 1962],
+    },
+  },
+];
+const DE_CLUBS: RawTeamData[] = [
+  {
+    name: "Bayern de Munique",
+    shield: "/clubs/europe/DE/BayernDeMunique.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 90,
+      feminine: 84,
+    },
+    money: topTierPatch,
+    type: "club",
+    nationality: "DE",
+    trophies: {
+      european_clubs_competition: [1974, 1975, 1976, 2001, 2013, 2020],
+      worldClubs: [1976, 2001, 2013, 2020],
+    },
+  },
+  {
+    name: "Borussia Dortmund",
+    shield: "/clubs/europe/DE/BorussiaDortmund.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 82,
+      feminine: 74,
+    },
+    money: richTeamPatch,
+    type: "club",
+    nationality: "DE",
+    trophies: {
+      european_clubs_competition: [1997],
+      worldClubs: [1997],
+    },
+  },
+];
+const PY_CLUBS: RawTeamData[] = [
   {
     name: "Olimpia",
     shield: "/clubs/southAmerica/PY/Olimpia.svg",
@@ -1556,24 +1499,87 @@ const CLUBS: RawTeamData[] = [
       worldClubs: [1979],
     },
   },
+];
+const CL_CLUBS: RawTeamData[] = [
   {
-    name: "Atlético Nacional de Medellín",
-    shield: "/clubs/southAmerica/CO/AtleticoNacional.svg",
+    name: "Colo-colo",
+    shield: "/clubs/southAmerica/CL/Colo-Colo.svg",
     division: {
       masculine: "A",
       feminine: "A",
     },
     overall: {
-      masculine: 80,
-      feminine: 62,
+      masculine: 78,
+      feminine: 60,
     },
     money: poorTeamPatch,
     type: "club",
-    nationality: "CO",
+    nationality: "CL",
     trophies: {
-      southAmerican_clubs_competition: [1989, 2016],
+      southAmerican_clubs_competition: [1991],
     },
   },
+];
+const UY_CLUBS: RawTeamData[] = [
+  {
+    name: "Peñarol",
+    shield: "/clubs/southAmerica/UY/Peñarol.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 78,
+      feminine: 60,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "UY",
+    trophies: {
+      southAmerican_clubs_competition: [1960, 1961, 1966, 1982, 1987],
+      worldClubs: [1961, 1966, 1982],
+    },
+  },
+  {
+    name: "Nacional",
+    shield: "/clubs/southAmerica/UY/Nacional.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 77,
+      feminine: 58,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "UY",
+    trophies: {
+      southAmerican_clubs_competition: [1971, 1980, 1988],
+      worldClubs: [1971, 1980, 1988],
+    },
+  },
+];
+
+const FR_CLUBS: RawTeamData[] = [
+  {
+    name: "Paris Saint-Germain",
+    shield: "/clubs/europe/FR/ParisSaintGermain.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 92,
+      feminine: 78,
+    },
+    money: topTierPatch,
+    type: "club",
+    nationality: "FR",
+  },
+];
+
+const EC_CLUBS: RawTeamData[] = [
   {
     name: "Independiente del Valle",
     shield: "/clubs/southAmerica/EC/IndependienteDelValle.svg",
@@ -1609,7 +1615,44 @@ const CLUBS: RawTeamData[] = [
   },
 ];
 
-const RAWTEAMS: RawTeamData[] = [...CLUBS, ...BRAZILIAN_CLUBS];
+const CO_CLUBS: RawTeamData[] = [
+  {
+    name: "Atlético Nacional de Medellín",
+    shield: "/clubs/southAmerica/CO/AtleticoNacional.svg",
+    division: {
+      masculine: "A",
+      feminine: "A",
+    },
+    overall: {
+      masculine: 80,
+      feminine: 62,
+    },
+    money: poorTeamPatch,
+    type: "club",
+    nationality: "CO",
+    trophies: {
+      southAmerican_clubs_competition: [1989, 2016],
+    },
+  },
+];
+
+const CLUBS: RawTeamData[] = [
+  ...AR_CLUBS,
+  ...BR_CLUBS,
+  ...CL_CLUBS,
+  ...CO_CLUBS,
+  ...DE_CLUBS,
+  ...EC_CLUBS,
+  ...ES_CLUBS,
+  ...FR_CLUBS,
+  ...GB_CLUBS,
+  ...IT_CLUBS,
+  ...PT_CLUBS,
+  ...PY_CLUBS,
+  ...UY_CLUBS,
+];
+
+const RAWTEAMS: RawTeamData[] = [...CLUBS];
 const getTeamsMap = (): Record<string, GeneralTeamData> => {
   return RAWTEAMS.reduce(
     (acc, rawTeam) => {

@@ -43,14 +43,15 @@
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
   z-index: 2;
 
   :hover {
     border-color: #52525b;
     transform: translateY(-2px);
   }
-
 
   .teamRow {
     display: flex;
@@ -71,7 +72,9 @@
       height: 20px;
       object-fit: contain;
       flex-shrink: 0;
-      transition: width 0.3s ease, height 0.3s ease;
+      transition:
+        width 0.3s ease,
+        height 0.3s ease;
     }
 
     .score {
@@ -136,7 +139,7 @@
   padding: 0.6rem 0.8rem;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 
-  >span {
+  > span {
     font-size: 0.8rem;
     color: #71717a;
   }
@@ -156,7 +159,9 @@
       height: 24px;
       object-fit: contain;
       flex-shrink: 0;
-      transition: width 0.3s ease, height 0.3s ease;
+      transition:
+        width 0.3s ease,
+        height 0.3s ease;
     }
   }
 }

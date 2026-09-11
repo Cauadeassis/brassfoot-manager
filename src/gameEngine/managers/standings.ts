@@ -20,8 +20,13 @@ export function getStandings({
   const teamsWithStats = teams
     .filter((team) => {
       const { nationality, type } = team;
-      const matchesDivision = effectiveDivision ? team.division === effectiveDivision : true;
-      const isNationalLeague = nationality === prefix && type === "club" && (!compType || compType === "league");
+      const matchesDivision = effectiveDivision
+        ? team.division === effectiveDivision
+        : true;
+      const isNationalLeague =
+        nationality === prefix &&
+        type === "club" &&
+        (!compType || compType === "league");
       const isSameRegion = NATIONALITIES_DATA[nationality]?.region === prefix;
       const expectedTeamType = competitionId.includes("clubs")
         ? "club"

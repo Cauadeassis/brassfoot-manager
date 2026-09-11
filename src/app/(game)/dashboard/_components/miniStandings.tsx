@@ -18,7 +18,9 @@ const MiniStandings = ({
   const teams = Object.values(useGameStore((state) => state.teams));
   const firstUnderscoreIndex = historyKey.indexOf("_");
   const season = Number(historyKey.substring(0, firstUnderscoreIndex));
-  const competitionId = historyKey.substring(firstUnderscoreIndex + 1) as CompetitionId;
+  const competitionId = historyKey.substring(
+    firstUnderscoreIndex + 1,
+  ) as CompetitionId;
 
   const topTeams = useMemo(() => {
     return getStandings({
