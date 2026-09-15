@@ -5,11 +5,18 @@ import {
 } from "../../types/player";
 import { CalendarDay, GameState } from "../../types/state";
 import { HistoryKey, TeamStatistic, TeamStatistics } from "../../types/team";
-import { MatchEvent, EventType, Result, MatchTeams } from "../../types/match";
+import {
+  Match,
+  MatchEvent,
+  EventType,
+  Result,
+  MatchTeams,
+} from "../../types/match";
 import { EVENT_CONFIG } from "./events/manager";
 import { Player } from "../../types/player";
 import { Team } from "../../types/team";
 import { CompetitionId } from "../../types/competition";
+import COMPETITIONS from "../../data/competitions";
 
 export interface MatchResultPayload {
   matchId: string;
@@ -72,6 +79,160 @@ interface ProcessMatchResultsProps {
   gameState: GameState;
   payload: MatchResultPayload;
 }
+
+const addDaysToDate = (dateString: string, days: number): string => {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const date = new Date(year, month - 1, day + days);
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+};
+
+const createKnockoutMatch = ({
+  competitionId,
+  homeTeamId,
+  awayTeamId,
+  round,
+  date,
+}: {
+  competitionId: CompetitionId;
+  homeTeamId: string;
+  awayTeamId: string;
+  round: number;
+  date: string;
+}): Match => ({
+  id: crypto.randomUUID(),
+  competitionId,
+  homeTeamId,
+  awayTeamId,
+  round,
+  date,
+  simulated: false,
+  accelerated: false,
+  goals: { home: 0, away: 0 },
+});
+
+const addMatchesToCalendar = (
+  calendar: GameState["calendar"],
+  matches: Match[],
+): void => {
+  matches.forEach((match) => {
+    const calendarDay = calendar.find((day) => day.date === match.date);
+    if (calendarDay) {
+      calendarDay.matches.push(match);
+    } else {
+      calendar.push({ date: match.date, matches: [match], events: [] });
+    }
+  });
+  calendar.sort((first, second) => first.date.localeCompare(second.date));
+};
+
+const advanceCupIfRoundIsComplete = ({
+  gameState,
+  currentMatch,
+}: {
+  gameState: GameState;
+  currentMatch: Match;
+}): void => {
+  const competition = COMPETITIONS.find(
+    (candidate) => candidate.id === currentMatch.competitionId,
+  );
+  if (!competition || competition.rules.format !== "cup") return;
+
+  const gamesPerTie = competition.rules.knockoutGamesPerRound || 1;
+  const competitionMatches = gameState.calendar
+    .flatMap((day) => day.matches)
+    .filter((match) => match.competitionId === currentMatch.competitionId);
+  const phaseStartRound =
+    Math.floor((currentMatch.round - 1) / gamesPerTie) * gamesPerTie + 1;
+  const phaseEndRound = phaseStartRound + gamesPerTie - 1;
+  if (currentMatch.round !== phaseEndRound) return;
+
+  const phaseMatches = competitionMatches.filter(
+    (match) => match.round >= phaseStartRound && match.round <= phaseEndRound,
+  );
+  if (
+    phaseMatches.length === 0 ||
+    phaseMatches.some((match) => !match.simulated)
+  ) {
+    return;
+  }
+
+  const nextRoundStart = phaseEndRound + 1;
+  if (competitionMatches.some((match) => match.round >= nextRoundStart)) {
+    return;
+  }
+
+  const firstLegMatches = phaseMatches.filter(
+    (match) => match.round === phaseStartRound,
+  );
+  const winners = firstLegMatches.map((firstLeg) => {
+    if (gamesPerTie === 1) {
+      return firstLeg.goals.home >= firstLeg.goals.away
+        ? firstLeg.homeTeamId
+        : firstLeg.awayTeamId;
+    }
+
+    const returnLeg = phaseMatches.find(
+      (match) =>
+        match.round === phaseEndRound &&
+        match.homeTeamId === firstLeg.awayTeamId &&
+        match.awayTeamId === firstLeg.homeTeamId,
+    );
+    if (!returnLeg) return firstLeg.homeTeamId;
+
+    const aggregateHomeGoals = firstLeg.goals.home + returnLeg.goals.away;
+    const aggregateAwayGoals = firstLeg.goals.away + returnLeg.goals.home;
+    return aggregateHomeGoals >= aggregateAwayGoals
+      ? firstLeg.homeTeamId
+      : firstLeg.awayTeamId;
+  });
+
+  if (winners.length < 2) return;
+  const lastPhaseDate = phaseMatches.reduce(
+    (latest, match) => (match.date > latest ? match.date : latest),
+    phaseMatches[0].date,
+  );
+  const nextMatches: Match[] = [];
+  for (let index = 0; index < winners.length; index += 2) {
+    const homeTeamId = winners[index];
+    const awayTeamId = winners[index + 1];
+    if (!awayTeamId) break;
+    const firstLegDate = addDaysToDate(lastPhaseDate, 1);
+    nextMatches.push(
+      createKnockoutMatch({
+        competitionId: currentMatch.competitionId,
+        homeTeamId,
+        awayTeamId,
+        round: nextRoundStart,
+        date: firstLegDate,
+      }),
+    );
+    if (gamesPerTie === 2) {
+      nextMatches.push(
+        createKnockoutMatch({
+          competitionId: currentMatch.competitionId,
+          homeTeamId: awayTeamId,
+          awayTeamId: homeTeamId,
+          round: nextRoundStart + 1,
+          date: addDaysToDate(lastPhaseDate, 2),
+        }),
+      );
+    }
+  }
+
+  addMatchesToCalendar(gameState.calendar, nextMatches);
+  const competitionState = gameState.competitions.find(
+    (state) => state.id === currentMatch.competitionId,
+  );
+  competitionState?.matches.push(
+    ...Array.from({ length: gamesPerTie }, (_, index) =>
+      nextMatches.filter((match) => match.round === nextRoundStart + index),
+    ),
+  );
+};
 
 const MATCH_RESULT_MAPPING = {
   win: { wins: 1, points: 3 },
@@ -407,5 +568,6 @@ export const processMatchResults = ({
     });
   }
 
+  advanceCupIfRoundIsComplete({ gameState, currentMatch });
   updateDayStatus({ gameState, calendarDay });
 };

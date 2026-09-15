@@ -6,6 +6,7 @@ import useGameStore from "../../../../../stores/useGameStore";
 import useFiltersStore from "../../../../../stores/useFilterStore";
 import SectionHeader from "../../../_components/sectionHeader";
 import { Match } from "../../../../../types/match";
+import { getAggregateScore } from "../../../../../gameEngine/match/aggregate";
 
 interface TeamLike {
   name: string;
@@ -157,12 +158,14 @@ export default function KnockoutBracket() {
               column={column}
               columnIndex={colIdx + 1}
               teamsDict={teamsDict}
+              competitionMatches={competitionMatches}
             />
           ))}
 
           <FinalMatchCard
             match={finalMatch}
             teamsDict={teamsDict}
+            competitionMatches={competitionMatches}
             gridColumn={finalColumnIndex}
             rowCount={rowCount}
           />
@@ -173,6 +176,7 @@ export default function KnockoutBracket() {
               column={column}
               columnIndex={finalColumnIndex + 1 + colIdx}
               teamsDict={teamsDict}
+              competitionMatches={competitionMatches}
             />
           ))}
         </div>
@@ -185,10 +189,12 @@ function BracketColumnView({
   column,
   columnIndex,
   teamsDict,
+  competitionMatches,
 }: {
   column: BracketColumn;
   columnIndex: number;
   teamsDict: Record<string, TeamLike>;
+  competitionMatches: Match[];
 }) {
   const span = 2 ** column.depth;
   const isSemi = column.matches.length === 1;
@@ -208,7 +214,11 @@ function BracketColumnView({
               gridRow: `${rowStart} / span ${span}`,
             }}
           >
-            <MatchCard match={match} teamsDict={teamsDict} />
+            <MatchCard
+              match={match}
+              teamsDict={teamsDict}
+              competitionMatches={competitionMatches}
+            />
             <span
               aria-hidden="true"
               className={[
@@ -251,9 +261,11 @@ function TeamRow({
 function MatchCard({
   match,
   teamsDict,
+  competitionMatches,
 }: {
   match: Match | null;
   teamsDict: Record<string, TeamLike>;
+  competitionMatches: Match[];
 }) {
   if (!match) {
     return (
@@ -266,19 +278,20 @@ function MatchCard({
 
   const homeTeam = teamsDict[match.homeTeamId];
   const awayTeam = teamsDict[match.awayTeamId];
-  const homeWon = match.goals.home > match.goals.away;
-  const awayWon = match.goals.away > match.goals.home;
+  const aggregateScore = getAggregateScore({ match, competitionMatches });
+  const homeWon = aggregateScore.home > aggregateScore.away;
+  const awayWon = aggregateScore.away > aggregateScore.home;
 
   return (
     <div className={styles.matchCard}>
       <TeamRow
         shield={homeTeam?.shield}
-        score={match.goals.home.toString()}
+        score={aggregateScore.home.toString()}
         isWinner={homeWon}
       />
       <TeamRow
         shield={awayTeam?.shield}
-        score={match.goals.away.toString()}
+        score={aggregateScore.away.toString()}
         isWinner={awayWon}
       />
     </div>
@@ -288,11 +301,13 @@ function MatchCard({
 function FinalMatchCard({
   match,
   teamsDict,
+  competitionMatches,
   gridColumn,
   rowCount,
 }: {
   match: Match | null;
   teamsDict: Record<string, TeamLike>;
+  competitionMatches: Match[];
   gridColumn: number;
   rowCount: number;
 }) {
@@ -313,8 +328,9 @@ function FinalMatchCard({
 
   const homeTeam = teamsDict[match.homeTeamId];
   const awayTeam = teamsDict[match.awayTeamId];
-  const homeWon = match.goals.home > match.goals.away;
-  const awayWon = match.goals.away > match.goals.home;
+  const aggregateScore = getAggregateScore({ match, competitionMatches });
+  const homeWon = aggregateScore.home > aggregateScore.away;
+  const awayWon = aggregateScore.away > aggregateScore.home;
 
   return (
     <div
@@ -324,13 +340,13 @@ function FinalMatchCard({
       <div className={styles.finalCard}>
         <TeamRow
           shield={homeTeam?.shield}
-          score={match.goals.home.toString()}
+          score={aggregateScore.home.toString()}
           isWinner={homeWon}
         />
         <span>×</span>
         <TeamRow
           shield={awayTeam?.shield}
-          score={match.goals.away.toString()}
+          score={aggregateScore.away.toString()}
           isWinner={awayWon}
         />
       </div>

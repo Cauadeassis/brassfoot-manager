@@ -1,7 +1,5 @@
 .bracketSection {
   width: 100%;
-  border: 1px solid green;
-  overflow-x: auto;
   padding: 1rem 0;
 
   .scroll {
@@ -14,7 +12,8 @@
     display: grid;
     column-gap: var(--col-gap);
     row-gap: 1rem;
-    min-width: max-content;
+    width: max-content;
+    margin-inline: auto;
   }
 }
 
@@ -68,13 +67,18 @@
     }
 
     .shield {
-      width: 20px;
-      height: 20px;
+      width: 1.6rem;
+      height: 1.6rem;
       object-fit: contain;
       flex-shrink: 0;
       transition:
         width 0.3s ease,
         height 0.3s ease;
+
+        @media (max-width: 768px) {
+          width: 24px;
+          height: 24px;
+        }
     }
 
     .score {
@@ -101,26 +105,23 @@
   height: 50%;
   border: 2px solid #3f3f46;
   pointer-events: none;
-}
 
-.connector.left {
-  right: calc(-1 * var(--col-gap));
-  border-left: none;
-}
-
-.connector.right {
-  left: calc(-1 * var(--col-gap));
-  border-right: none;
-}
-
-.connector.topOfPair {
-  top: 50%;
-  border-bottom: none;
-}
-
-.connector.bottomOfPair {
-  bottom: 50%;
-  border-top: none;
+  &.left {
+    right: calc(-1 * var(--col-gap));
+    border-left: none;
+  }
+  &.right {
+    left: calc(-1 * var(--col-gap));
+    border-right: none;
+  }
+  &.topOfPair {
+    top: 50%;
+    border-bottom: none;
+  }
+  &.bottomOfPair {
+    bottom: 50%;
+    border-top: none;
+  }
 }
 
 .finalWrapper {
