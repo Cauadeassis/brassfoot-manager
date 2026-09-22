@@ -1,0 +1,53 @@
+.container {
+  display: flex;
+  align-items: center;
+}
+
+.container span {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.small {
+  gap: 10px;
+}
+
+.small span {
+  width: 14px;
+  height: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.large {
+  gap: 0.5rem;
+}
+
+.large span {
+  width: 28px;
+  height: 28px;
+  color: white;
+  font-size: 0.7rem;
+}
+
+.win {
+  background: #10b981;
+  border: 1px solid #10b981;
+}
+
+.draw {
+  background: #6b7280;
+  border: 1px solid #6b7280;
+}
+
+.defeat {
+  background: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.empty {
+  background: #ffffff;
+  border: 1px solid rgba(150, 150, 150, 0.5);
+}

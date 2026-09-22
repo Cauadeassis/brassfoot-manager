@@ -8,6 +8,7 @@ import { CompetitionRules } from "../../../types/competition";
 import { getCompetitionName } from "../../../filters/labels";
 import { TeamBadge } from "../../badges";
 import { LayoutMode } from "../../../app/(game)/transfers/page";
+import useUIStore from "../../../stores/useUIStore";
 
 interface MatchRowProps {
   match: Match;
@@ -88,6 +89,7 @@ export default function MatchRow({
   const awayTeam = useGameStore((state) => state.teams[match.awayTeamId]);
   const isCompact = layoutMode !== "desktop";
   const userTeamId = useGameStore((state) => state.userTeamId);
+  const openScoutModal = useUIStore((state) => state.openScoutModal);
   const matchCompetition = getCompetition(match.competitionId);
   if (!homeTeam || !awayTeam || !matchCompetition) return null;
   const isHome = match.homeTeamId === userTeamId;
@@ -100,6 +102,7 @@ export default function MatchRow({
   const shouldShowRound = !isCompact;
   const shouldShowLocalTag = isUserInvolved && !isCompact;
   const shouldShowPending = !isCompact && !match.simulated;
+  const opponentTeam = isHome ? awayTeam : homeTeam;
   return (
     <div className={`${styles.matchRow} ${styles[layoutMode]}`}>
       <div className={styles.matchMeta}>
@@ -133,6 +136,20 @@ export default function MatchRow({
         </span>
       )}
       <span className={`${styles.label} ${styles.date}`}>{formattedDate}</span>
+      {isUserInvolved && !match.simulated && (
+        <button
+          type="button"
+          className={styles.scoutButton}
+          onClick={() => openScoutModal(opponentTeam.id)}
+          aria-label={`Analisar ${opponentTeam.name}`}
+          title="Analisar adversário"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+            <circle cx="12" cy="12" r="2.5" />
+          </svg>
+        </button>
+      )}
       {shouldShowPending && <span className={styles.label}>PENDENTE</span>}
     </div>
   );

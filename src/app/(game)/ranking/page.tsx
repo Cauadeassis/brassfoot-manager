@@ -9,6 +9,7 @@ import { getLastMatches } from "../../../gameEngine/match/state";
 import { getMatchResult } from "../../../gameEngine/match/progression";
 import { Result } from "../../../types/match";
 import SectionHeader from "../_components/sectionHeader";
+import LastMatches from "../../../components/lastMatches";
 
 interface RankingTeamRowProps {
   team: Team;
@@ -20,31 +21,11 @@ interface RankingTeam extends Team {
   lastMatchesResults: Result[];
 }
 
-const RESULT_COLORS: Record<Result, string> = {
-  win: "#10b981",
-  draw: "#6b7280",
-  defeat: "#ef4444",
-};
-const getResultColor = (result: Result | undefined) => {
-  if (!result)
-    return {
-      backgroundColor: "#ffffff",
-      border: "1px solid rgba(150, 150, 150, 0.5)",
-    };
-
-  const color = RESULT_COLORS[result];
-  return { backgroundColor: color, border: `1px solid ${color}` };
-};
-
 function RankingTeamRow({
   team,
   position,
   lastMatchesResults,
 }: RankingTeamRowProps) {
-  const paddedMatches = [
-    ...lastMatchesResults,
-    ...Array(5 - lastMatchesResults.length).fill(undefined),
-  ];
   return (
     <tr className={styles.rankingTeamRow}>
       <td>{position}</td>
@@ -53,15 +34,7 @@ function RankingTeamRow({
       </td>
       <td className={styles.score}>{Math.round(team.rankingScore)}</td>
       <td>
-        <div className={styles.lastMatchesContainer}>
-          {paddedMatches.map((result, index) => (
-            <span
-              key={index}
-              style={getResultColor(result)}
-              title={result ? result.toUpperCase() : "Sem partida"}
-            />
-          ))}
-        </div>
+        <LastMatches results={lastMatchesResults} />
       </td>
     </tr>
   );

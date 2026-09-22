@@ -32,7 +32,13 @@ interface MenuModal {
   closeMenuModal: () => void;
 }
 
-interface UIState extends MatchModal, CardModal, MenuModal {
+interface ScoutModal {
+  activeScoutTeamId: string | null;
+  openScoutModal: (teamId: string) => void;
+  closeScoutModal: () => void;
+}
+
+interface UIState extends MatchModal, CardModal, MenuModal, ScoutModal {
   closeAllModals: () => void;
 }
 
@@ -41,6 +47,7 @@ const initialState = {
   isCardModalOpen: false,
   cardModalData: null,
   isMenuModalOpen: false,
+  activeScoutTeamId: null,
 };
 
 const useUIStore = create<UIState>((set) => ({
@@ -51,6 +58,8 @@ const useUIStore = create<UIState>((set) => ({
   closeCardModal: () => set({ isCardModalOpen: false, cardModalData: null }),
   openMenuModal: () => set({ isMenuModalOpen: true }),
   closeMenuModal: () => set({ isMenuModalOpen: false }),
+  openScoutModal: (teamId) => set({ activeScoutTeamId: teamId }),
+  closeScoutModal: () => set({ activeScoutTeamId: null }),
   closeAllModals: () => set(initialState),
 }));
 
