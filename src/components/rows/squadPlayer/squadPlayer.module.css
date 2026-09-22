@@ -58,7 +58,6 @@
   .age {
     font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--text-muted);
     width: 24px;
     text-align: center;
   }

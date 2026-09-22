@@ -10,9 +10,17 @@ export function createMatchState({
   homeTeam,
   awayTeam,
 }: CreateMatchStateProps): MatchState {
+  const homeTactics = {
+    formation: homeTeam.tactics.formation,
+    style: homeTeam.tactics.style,
+  };
+  const awayTactics = {
+    formation: awayTeam.tactics.formation,
+    style: awayTeam.tactics.style,
+  };
   const { homeModifiers, awayModifiers } = getTeamsModifiers({
-    homeTeam,
-    awayTeam,
+    homeTactics,
+    awayTactics,
   });
   const possession = calculatePossession({
     homeTeamOverall: homeTeam.overall,

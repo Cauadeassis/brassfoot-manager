@@ -3,6 +3,7 @@ import {
   getTeamsModifiers,
   simulateOpportunities,
   simulateCPUMatches,
+  GetTeamBaseModifiersProps,
 } from "../gameEngine/match/orchestrator";
 
 import {
@@ -11,6 +12,7 @@ import {
   calculateTotalShots,
 } from "../gameEngine/match/simulator";
 import MatchEngine from "../gameEngine/match/MatchEngine";
+import { FormationType } from "../data/formations";
 jest.mock("../gameEngine/match/simulator", () => ({
   simulateShot: jest.fn(),
   simulateCorner: jest.fn(),
@@ -60,8 +62,10 @@ describe("Orchestrator Engine (orchestrator.ts)", () => {
 
   describe("getTeamBaseModifiers()", () => {
     it("deve retornar zeros para estilo balanced e formação não mapeada (ou sem modificadores)", () => {
-      const team = createMockTeam("T1", "balanced", "5-3-2");
-      const modifiers = getTeamBaseModifiers(team);
+      const modifiers = getTeamBaseModifiers({
+        formation: "5-3-2" as FormationType,
+        style: "balanced",
+      });
       expect(modifiers).toEqual({
         ownShots: 0,
         opponentShots: 0,
@@ -70,16 +74,20 @@ describe("Orchestrator Engine (orchestrator.ts)", () => {
     });
 
     it("deve combinar estilo offensive com formação 4-3-3", () => {
-      const team = createMockTeam("T2", "offensive", "4-3-3");
-      const modifiers = getTeamBaseModifiers(team);
+      const modifiers = getTeamBaseModifiers({
+        formation: "4-3-3",
+        style: "offensive",
+      });
       expect(modifiers.ownShots).toBeCloseTo(0.2);
       expect(modifiers.opponentShots).toBeCloseTo(0.2);
       expect(modifiers.ownPossession).toBe(0);
     });
 
     it("deve combinar estilo defensive com formação 4-2-3-1", () => {
-      const team = createMockTeam("T3", "defensive", "4-2-3-1");
-      const modifiers = getTeamBaseModifiers(team);
+      const modifiers = getTeamBaseModifiers({
+        formation: "4-2-3-1",
+        style: "defensive",
+      });
       expect(modifiers.ownShots).toBeCloseTo(-0.3); // -0.1 + -0.2
       expect(modifiers.opponentShots).toBeCloseTo(-0.1);
       expect(modifiers.ownPossession).toBeCloseTo(0.1);
@@ -88,13 +96,22 @@ describe("Orchestrator Engine (orchestrator.ts)", () => {
 
   describe("getTeamsModifiers()", () => {
     it("deve calcular corretamente a interação entre os modificadores de ambos os times", () => {
-      const homeTeam = createMockTeam("home", "offensive", "4-3-3");
-      const awayTeam = createMockTeam("away", "balanced", "4-2-3-1");
-      const result = getTeamsModifiers({ homeTeam, awayTeam });
-      expect(result.homeModifiers.shotsModifier).toBeCloseTo(0.2);
-      expect(result.homeModifiers.possessionModifier).toBe(0);
-      expect(result.awayModifiers.shotsModifier).toBeCloseTo(0);
-      expect(result.awayModifiers.possessionModifier).toBeCloseTo(0.1);
+      const homeTactics = {
+        formation: "4-3-3",
+        style: "offensive",
+      } as GetTeamBaseModifiersProps;
+      const awayTactics = {
+        formation: "4-2-3-1",
+        style: "balanced",
+      } as GetTeamBaseModifiersProps;
+      const { homeModifiers, awayModifiers } = getTeamsModifiers({
+        homeTactics,
+        awayTactics,
+      });
+      expect(homeModifiers.shotsModifier).toBeCloseTo(0.2);
+      expect(homeModifiers.possessionModifier).toBe(0);
+      expect(awayModifiers.shotsModifier).toBeCloseTo(0);
+      expect(awayModifiers.possessionModifier).toBeCloseTo(0.1);
     });
   });
 

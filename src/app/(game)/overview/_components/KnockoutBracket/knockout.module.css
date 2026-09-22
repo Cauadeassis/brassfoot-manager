@@ -75,10 +75,10 @@
         width 0.3s ease,
         height 0.3s ease;
 
-        @media (max-width: 768px) {
-          width: 24px;
-          height: 24px;
-        }
+      @media (max-width: 768px) {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     .score {

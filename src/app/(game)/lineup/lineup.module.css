@@ -16,9 +16,15 @@
     text-transform: uppercase;
     cursor: pointer;
   }
+
+  > h3 {
+    text-align: center;
+  }
 }
 
 .footballFieldContainer {
+  grid-column: 2;
+  grid-row: 1 / span 2;
   position: relative;
   height: 85vh;
   margin: 0 auto 20px auto;
@@ -81,5 +87,139 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 200px 1fr 200px;
+  grid-template-rows: auto auto;
+  align-items: start;
+  gap: 1.5rem;
+
+  >div {
+
+        @media (max-width: 1000px) {
+      display: flex;
+    }
+    .tacticsPanel {
+  grid-column: 1;
+  grid-row: 1;
+  width: 200px;
+  flex: 0 1 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 0 0 1rem 0;
+
+  @media (max-width: 1000px) {
+    margin: 0 1rem 0 0;
+  }
+
+  & h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--dim-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 12px 0;
+  }
+
+  > label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    > p {
+      font-size: 12px;
+      color: var(--text-main);
+    }
+    > span {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--dim-color);
+
+      &.positive {
+        color: #22c55e;
+      }
+
+      &.negative {
+        color: #ef4444;
+      }
+    }
+  }
+}
+
+.substitutionLog {
+  grid-column: 1;
+  grid-row: 2;
+  max-width: 400px;
+  flex: 0 1 200px;
+  animation: fadeOut 5s linear forwards;
+
+  .substitutionEntry {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    animation: fadeSlideIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    & p {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+    .subOut {
+      color: #ef4444;
+    }
+
+    .subIn {
+      color: #22c55e;
+    }
+
+    .subSwap {
+      color: #eab308;
+    }
+  }
+}
+  }
+
+  @media (max-width: 1000px) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

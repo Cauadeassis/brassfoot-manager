@@ -67,9 +67,15 @@ const DEFAULT_MODIFIERS: Modifiers = {
   ownPossession: 0,
 };
 
-export function getTeamBaseModifiers(team: Team): Modifiers {
-  const style = team.tactics.style;
-  const formation = team.tactics.formation;
+export type GetTeamBaseModifiersProps = Pick<
+  Team["tactics"],
+  "formation" | "style"
+>;
+
+export function getTeamBaseModifiers({
+  formation,
+  style,
+}: GetTeamBaseModifiersProps): Modifiers {
   const styleModifiers = playStyleModifiers[style];
   const formationModifiers = formationsModifiers[formation];
   const combined = { ...DEFAULT_MODIFIERS };
@@ -83,9 +89,23 @@ export function getTeamBaseModifiers(team: Team): Modifiers {
   return combined;
 }
 
-export function getTeamsModifiers({ homeTeam, awayTeam }: MatchTeams) {
-  const homeBase = getTeamBaseModifiers(homeTeam);
-  const awayBase = getTeamBaseModifiers(awayTeam);
+interface GetTeamsModifiersProps {
+  homeTactics: GetTeamBaseModifiersProps;
+  awayTactics: GetTeamBaseModifiersProps;
+}
+
+export function getTeamsModifiers({
+  homeTactics,
+  awayTactics,
+}: GetTeamsModifiersProps) {
+  const homeBase = getTeamBaseModifiers({
+    formation: homeTactics.formation,
+    style: homeTactics.style,
+  });
+  const awayBase = getTeamBaseModifiers({
+    formation: awayTactics.formation,
+    style: awayTactics.style,
+  });
   return {
     homeModifiers: {
       shotsModifier: homeBase.ownShots + awayBase.opponentShots,
@@ -191,9 +211,17 @@ export function simulateOpportunities({
   awayTeam,
   playersMap,
 }: SimulateOpportunitiesProps) {
+  const homeTactics = {
+    formation: homeTeam.tactics.formation,
+    style: homeTeam.tactics.style,
+  };
+  const awayTactics = {
+    formation: awayTeam.tactics.formation,
+    style: awayTeam.tactics.style,
+  };
   const { homeModifiers, awayModifiers } = getTeamsModifiers({
-    homeTeam,
-    awayTeam,
+    homeTactics,
+    awayTactics,
   });
 
   const homeGoalkeeper = getGoalkeeper({ team: homeTeam, playersMap });

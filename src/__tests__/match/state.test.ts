@@ -1,5 +1,6 @@
 import {
   getTeamBaseModifiers,
+  GetTeamBaseModifiersProps,
   getTeamsModifiers,
 } from "../../gameEngine/match/orchestrator";
 import { calculatePossession } from "../../gameEngine/match/simulator";
@@ -25,7 +26,7 @@ interface CreateMockTeamProps {
 const baseTactics = {
   formation: "4-4-2",
   style: "balanced",
-};
+} as GetTeamBaseModifiersProps;
 
 const createMockTeam = ({
   id,
@@ -58,21 +59,18 @@ describe("Match State & Utils (state.ts)", () => {
     const differentTactics = {
       formation: "4-2-3-1",
       style: "defensive",
-    };
+    } as GetTeamBaseModifiersProps;
     it("Should get the base modifiers", () => {
-      const homeTeam = createMockTeam({ id: "T1", tactics: differentTactics });
       const { ownShots, opponentShots, ownPossession } =
-        getTeamBaseModifiers(homeTeam);
+        getTeamBaseModifiers(differentTactics);
       expect(ownShots).toBeCloseTo(-0.3);
       expect(opponentShots).toBeCloseTo(-0.1);
       expect(ownPossession).toBeCloseTo(0.1);
     });
     it("Should sum the modifiers", () => {
-      const homeTeam = createMockTeam({ id: "T1" });
-      const awayTeam = createMockTeam({ id: "T2", tactics: differentTactics });
       const { homeModifiers, awayModifiers } = getTeamsModifiers({
-        homeTeam,
-        awayTeam,
+        homeTactics: baseTactics,
+        awayTactics: differentTactics,
       });
       expect(homeModifiers.shotsModifier).toBeCloseTo(-0.2);
       expect(homeModifiers.possessionModifier).toBeCloseTo(0);

@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
 import { Position } from "./types/player";
 import useFiltersStore, {
   ScorerSortKey,
   TransferPlayerSortKey,
 } from "./stores/useFilterStore";
+
+import React, { useState, useEffect, useRef } from "react";
 
 export function useWindowWidth() {
   const [width, setWidth] = useState(
@@ -95,3 +96,71 @@ export function useTableFilters<SortKey>({
     getSortIcon,
   };
 }
+
+function useCountUp(targetValue: number, duration: number = 500) {
+  const targetPercent = Math.round(targetValue * 100);
+  const [displayPercent, setDisplayPercent] = useState(targetPercent);
+  const displayPercentRef = useRef(targetPercent);
+  const startTimeRef = useRef<number | null>(null);
+  const startValueRef = useRef(targetPercent);
+  const previousTargetRef = useRef(targetPercent);
+  const animationFrameRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (targetPercent === previousTargetRef.current) {
+      return;
+    }
+
+    cancelAnimationFrame(animationFrameRef.current!);
+    startTimeRef.current = null;
+    startValueRef.current = displayPercentRef.current;
+    previousTargetRef.current = targetPercent;
+
+    const animate = (timestamp: number) => {
+      if (!startTimeRef.current) startTimeRef.current = timestamp;
+      const runtime = timestamp - startTimeRef.current;
+      const relativeProgress = runtime / duration;
+      const easedProgress = 1 - Math.pow(1 - Math.min(relativeProgress, 1), 4);
+      const currentValue =
+        startValueRef.current +
+        (targetPercent - startValueRef.current) * easedProgress;
+      const nextDisplay = Math.round(currentValue);
+
+      if (nextDisplay !== displayPercentRef.current) {
+        displayPercentRef.current = nextDisplay;
+        setDisplayPercent(nextDisplay);
+      }
+
+      if (runtime < duration) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        displayPercentRef.current = targetPercent;
+        setDisplayPercent(targetPercent);
+      }
+    };
+    animationFrameRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameRef.current!);
+  }, [targetPercent, duration]);
+
+  return displayPercent;
+}
+
+interface AnimatedPercentProps {
+  value: number;
+  className?: string;
+}
+
+export const AnimatedPercent: React.FC<AnimatedPercentProps> = ({
+  value,
+  className,
+}) => {
+  const animatedValue = useCountUp(value, 1000);
+  const sign = animatedValue > 0 ? "+" : "";
+  const safeValue = Object.is(animatedValue, -0) ? 0 : animatedValue;
+  return (
+    <span className={className}>
+      {sign}
+      {safeValue}%
+    </span>
+  );
+};
