@@ -33,7 +33,10 @@
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 
   .broochContainer {
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 0.35rem);
+    transform: translateX(-50%);
     width: auto;
     height: 2.5rem;
     display: flex;
@@ -41,7 +44,7 @@
     justify-content: center;
     gap: 4px;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-    pointer-events: none;
+    pointer-events: auto;
     z-index: 10;
   }
 
@@ -50,6 +53,41 @@
     height: 2.5rem;
     border-radius: 50%;
     flex: 0 0 2.5rem;
+  }
+
+  .badgeWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+  }
+
+  .badgeWrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 0.5rem);
+    transform: translateX(-50%) translateY(-8px);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    background: rgba(15, 23, 42, 0.96);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 20;
+  }
+
+  .badgeWrapper:hover::after,
+  .badgeWrapper:focus-within::after,
+  .tooltipVisible::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
 

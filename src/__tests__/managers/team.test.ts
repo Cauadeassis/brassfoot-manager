@@ -6,6 +6,7 @@ import {
   initialTeamStatistics,
   processTransfer,
   removePlayer,
+  resetTakersForStarters,
   updateOverall,
 } from "../../gameEngine/team";
 import { Player } from "../../types/player";
@@ -156,6 +157,27 @@ describe("Team Management", () => {
       expect(updatedArgentina.tactics.captainId).toBeNull();
       expect(updatedArgentina.tactics.takers.corner).toBeNull();
       expect(updatedArgentina.tactics.takers.freeKick).toBeNull();
+    });
+
+    it("Should clear takers when starters change and a taker leaves the starting XI", () => {
+      const updatedArgentina = resetTakersForStarters({
+        team: {
+          ...argentina,
+          tactics: {
+            ...argentina.tactics,
+            takers: {
+              penalty: "LionelMessi",
+              freeKick: "DibuMartinez",
+              corner: "LionelMessi",
+            },
+          },
+        },
+        starterIds: ["DibuMartinez"],
+      });
+
+      expect(updatedArgentina.tactics.takers.penalty).toBeNull();
+      expect(updatedArgentina.tactics.takers.freeKick).toBe("DibuMartinez");
+      expect(updatedArgentina.tactics.takers.corner).toBeNull();
     });
   });
 

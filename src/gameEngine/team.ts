@@ -206,6 +206,34 @@ export const updateOverall = ({ team, playersMap }: GetSquadProps): Team => {
   return { ...team, overall, rankingScore };
 };
 
+export const resetTakersForStarters = ({
+  team,
+  starterIds,
+}: {
+  team: Team;
+  starterIds: string[];
+}): Team => {
+  const startersSet = new Set(starterIds);
+
+  return {
+    ...team,
+    tactics: {
+      ...team.tactics,
+      takers: {
+        penalty: startersSet.has(team.tactics.takers.penalty ?? "")
+          ? team.tactics.takers.penalty
+          : null,
+        freeKick: startersSet.has(team.tactics.takers.freeKick ?? "")
+          ? team.tactics.takers.freeKick
+          : null,
+        corner: startersSet.has(team.tactics.takers.corner ?? "")
+          ? team.tactics.takers.corner
+          : null,
+      },
+    },
+  };
+};
+
 export const setStarters = ({ team, playersMap }: GetSquadProps): Team => {
   const squadPlayers = team.squad.playerIds
     .map((id) => playersMap[id])
@@ -250,7 +278,12 @@ export const setStarters = ({ team, playersMap }: GetSquadProps): Team => {
     },
   };
 
-  return updateOverall({ team: teamWithStarters, playersMap });
+  const teamWithValidatedTakers = resetTakersForStarters({
+    team: teamWithStarters,
+    starterIds: teamWithStarters.squad.starterIds,
+  });
+
+  return updateOverall({ team: teamWithValidatedTakers, playersMap });
 };
 
 interface ProcessTransferProps extends GetSquadProps {

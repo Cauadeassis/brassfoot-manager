@@ -1,8 +1,8 @@
 import React from "react";
-import { SharedSoccerDefs } from "../SharedSoccerDefs";
-import { BackgroundAsset } from "../Background";
-import { GoalAsset } from "../Goal";
-import { TelstarBallAsset } from "../Ball";
+import { SharedSoccerDefs, Border } from "../SharedSoccerDefs";
+import { Background } from "../Background";
+import { Goal } from "../Goal";
+import { Ball } from "../Ball";
 
 export const PenaltyBadge: React.FC = () => (
   <svg
@@ -14,20 +14,13 @@ export const PenaltyBadge: React.FC = () => (
     <SharedSoccerDefs />
 
     <g clipPath="url(#soccer-badge-clip)">
-      <BackgroundAsset />
-      <GoalAsset x={0} y={0} />
+      <Background />
+      <Goal x={0} y={0} />
       <ellipse cx="100" cy="126" rx="18" ry="5" fill="#0f172a" opacity="0.2" />
       <ellipse cx="100" cy="126" rx="14" ry="4" fill="#e2e8f0" />
-      <TelstarBallAsset x={100} y={100} scale={1} />
+      <Ball x={100} y={100} scale={1} />
     </g>
 
-    <circle
-      cx="100"
-      cy="100"
-      r="95"
-      fill="none"
-      stroke="#cda434"
-      strokeWidth="20"
-    />
+    <Border />
   </svg>
 );

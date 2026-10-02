@@ -1,6 +1,6 @@
 import React from "react";
 
-export const BackgroundAsset: React.FC = () => (
+export const Background: React.FC = () => (
   <g>
     <circle cx="100" cy="100" r="95" fill="#e0f2fe" />
     <g clipPath="url(#soccer-badge-clip)">

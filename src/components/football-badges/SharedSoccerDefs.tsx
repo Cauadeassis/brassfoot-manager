@@ -25,3 +25,14 @@ export const SharedSoccerDefs: React.FC = () => (
     </radialGradient>
   </defs>
 );
+
+export const Border: React.FC = () => (
+  <circle
+    cx="100"
+    cy="100"
+    r="95"
+    fill="none"
+    stroke="#cda434"
+    strokeWidth="20"
+  />
+);

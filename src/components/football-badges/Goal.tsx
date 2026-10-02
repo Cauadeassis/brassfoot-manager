@@ -1,11 +1,11 @@
 import React from "react";
 
-interface GoalAssetProps {
+interface GoalProps {
   x?: number;
   y?: number;
 }
 
-export const GoalAsset: React.FC<GoalAssetProps> = ({ x = 0, y = 0 }) => (
+export const Goal: React.FC<GoalProps> = ({ x = 0, y = 0 }) => (
   <g transform={`translate(${x}, ${y})`}>
     <g fill="url(#soccer-net-pattern)">
       <polygon points="48,50 152,50 152,115 48,115" />

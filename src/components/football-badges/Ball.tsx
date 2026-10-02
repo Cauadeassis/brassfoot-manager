@@ -1,16 +1,12 @@
 import React from "react";
 
-interface TelstarBallAssetProps {
+interface BallProps {
   x: number;
   y: number;
   scale?: number;
 }
 
-export const TelstarBallAsset: React.FC<TelstarBallAssetProps> = ({
-  x,
-  y,
-  scale = 1,
-}) => {
+export const Ball: React.FC<BallProps> = ({ x, y, scale = 1 }) => {
   const uniqueClipId = `ball-clip-${x}-${y}`;
   return (
     <g transform={`translate(${x}, ${y}) scale(${scale})`}>

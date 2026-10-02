@@ -8,6 +8,7 @@ import { SharedSoccerDefs } from "../football-badges/SharedSoccerDefs";
 import { PlayerSlot } from "../../data/formations";
 import { Player as PlayerData } from "../../types/player";
 import { Team } from "../../types/team";
+import { Badge, getBadgeLabel } from "./badges";
 import styles from "./footballField.module.css";
 import useFootballFieldData from "./useFootballFieldData";
 
@@ -17,15 +18,12 @@ interface FootballFieldProps {
   mode?: "mini" | "full";
 }
 
-export type Badge = "penalty" | "freeKick" | "corner";
-
 interface PlayerMarkerProps {
   slot: PlayerSlot;
   name: string | null;
   badges: Badge[];
 }
 
-// 1. MAPEAMENTO CORRIGIDO: Associa a chave ao COMPONENTE, não a uma string.
 const badgeComponentMap: Partial<Record<Badge, React.FC>> = {
   penalty: PenaltyBadge,
   freeKick: FreeKickBadge,
@@ -33,6 +31,8 @@ const badgeComponentMap: Partial<Record<Badge, React.FC>> = {
 };
 
 const PlayerMarker = React.memo(({ slot, name, badges }: PlayerMarkerProps) => {
+  const [tooltipVisible, setTooltipVisible] = React.useState(false);
+
   return (
     <div
       className={styles.player}
@@ -45,7 +45,36 @@ const PlayerMarker = React.memo(({ slot, name, badges }: PlayerMarkerProps) => {
         <div className={styles.broochContainer}>
           {badges.map((badge) => {
             const BadgeComponent = badgeComponentMap[badge];
-            return BadgeComponent ? <BadgeComponent key={badge} /> : null;
+            if (!BadgeComponent) return null;
+
+            const label = getBadgeLabel(badge);
+            const isVisible = tooltipVisible;
+
+            return (
+              <div
+                key={badge}
+                className={`${styles.badgeWrapper} ${isVisible ? styles.tooltipVisible : ""}`.trim()}
+                data-tooltip={label}
+                title={label}
+                aria-label={label}
+                aria-expanded={isVisible}
+                onMouseEnter={() => setTooltipVisible(true)}
+                onMouseLeave={() => setTooltipVisible(false)}
+                onFocus={() => setTooltipVisible(true)}
+                onBlur={() => setTooltipVisible(false)}
+                onClick={() => setTooltipVisible((previous) => !previous)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setTooltipVisible((previous) => !previous);
+                  }
+                }}
+              >
+                <BadgeComponent />
+              </div>
+            );
           })}
         </div>
       )}
@@ -66,8 +95,6 @@ export default function FootballField({
       <div
         className={`${styles.footballFieldContainer} ${mode === "mini" ? styles.mini : ""}`.trim()}
       >
-        {/* 3. IMPORTANTE: Insere as definições compartilhadas UMA vez aqui. */}
-        {/* Usamos display: none para garantir que o SVG de defs não ocupe espaço visual. */}
         <div style={{ display: "none" }}>
           <svg>
             <SharedSoccerDefs />
