@@ -1,24 +1,23 @@
 .tacticsPanel {
-  width: 200px;
-  flex: 0 1 200px;
+  width: auto;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   background: var(--bg-card);
   border: 1px solid var(--border-accent);
   border-radius: 8px;
-  padding: 14px 16px;
+  padding: 1rem;
   margin: 0 0 1rem 0;
 
-  @media (max-width: 1000px) {
-    margin: 0 1rem 0 0;
+  h4 {
+    text-align: center;
+    color: var(--dim-color);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
-}
-
-.tacticsPanel h4 {
-  margin: 0 0 12px;
-  color: var(--dim-color);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
 }
 
 .tacticsRow {
@@ -27,16 +26,16 @@
   justify-content: space-between;
   padding: 6px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  label {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 12px;
+  }
 }
 
 .tacticsRow:last-child {
   border-bottom: none;
-}
-
-.tacticsLabel {
-  margin: 0;
-  color: var(--text-main);
-  font-size: 12px;
 }
 
 .tacticValue {
@@ -52,18 +51,4 @@
 
 .negative {
   color: #ef4444;
-}
-
-.scoutTacticsPanel {
-  width: auto;
-  flex: none;
-  padding: 14px 16px;
-  margin-bottom: 1rem;
-  background: rgba(17, 19, 24, 0.88);
-}
-
-@media (max-width: 1000px) {
-  .tacticsPanel {
-    margin-right: 1rem;
-  }
 }

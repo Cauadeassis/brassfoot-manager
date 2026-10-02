@@ -12,8 +12,23 @@ import { getCompetitionName } from "../../../filters/labels";
 import LastMatches from "../../lastMatches";
 import TacticsPanel from "../../tacticsPanel";
 import FootballField from "../../footballField";
+import { useWindowWidth } from "../../../hooks";
 import styles from "./scout.module.css";
 import tacticsStyles from "../../tacticsPanel/tacticsPanel.module.css";
+
+const getLayoutMode = ({
+  cardWidth = 700,
+  compactWidth = 960,
+}: {
+  cardWidth?: number;
+  compactWidth?: number;
+} = {}) => {
+  const width = useWindowWidth();
+
+  if (width <= cardWidth) return "card";
+  if (width <= compactWidth) return "compact";
+  return "desktop";
+};
 
 export default function ScoutModal() {
   const activeScoutTeamId = useUIStore((state) => state.activeScoutTeamId);
@@ -22,6 +37,8 @@ export default function ScoutModal() {
   const season = useGameStore((state) => state.season);
   const teams = useGameStore((state) => state.teams);
   const players = useGameStore((state) => state.players);
+  const layoutMode = getLayoutMode({ cardWidth: 500, compactWidth: 700 });
+  const isCardLayout = layoutMode === "card";
   const team = activeScoutTeamId ? teams[activeScoutTeamId] : null;
   const allTeams = useMemo(() => Object.values(teams), [teams]);
 
@@ -67,6 +84,9 @@ export default function ScoutModal() {
       return "Liga Nacional";
     }
   })();
+
+  const rankingLabel = isCardLayout ? "Pontuação" : "Pontuação no Ranking";
+
   return (
     <section
       className={styles.backdrop}
@@ -80,48 +100,60 @@ export default function ScoutModal() {
         onClick={(event) => event.stopPropagation()}
       >
         <header>
-          <div>
+          <div className={styles.teamInformation}>
             <h2 id="scout-title">{team.name}</h2>
-            <p>
-              {position > 0
-                ? `${position}º (${nationalLeagueName})`
-                : `Sem posição (${nationalLeagueName})`}
-              <span>•</span>
-              Pontuação no Ranking: {Math.round(team.rankingScore)}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={closeScoutModal}
-            aria-label="Fechar scout"
-          >
-            X
-          </button>
-        </header>
-
-        <div className={styles.content}>
-          <div className={styles.fieldColumn}>
-            <FootballField
-              team={team}
-              playersMap={players}
-              mode="mini"
-            />
-          </div>
-          <aside className={styles.sidebar}>
-            <TacticsPanel
-              modifiers={modifiers}
-              className={tacticsStyles.scoutTacticsPanel}
-            />
-            <section className={styles.formSection}>
-              <h3>Últimas partidas</h3>
+            <div className={styles.teamMeta}>
+              <p>
+                {position > 0
+                  ? `${position}º (${nationalLeagueName})`
+                  : `Sem posição (${nationalLeagueName})`}
+              </p>
+              <p>
+                {rankingLabel}: {Math.round(team.rankingScore)}
+              </p>
+            </div>
+            {isCardLayout && (
               <LastMatches
                 results={lastMatchesResults}
                 size="large"
                 showLabels
               />
-            </section>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={closeScoutModal}
+            aria-label="Fechar scout"
+            className={styles.closeButton}
+            title="Fechar"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M6.75 6.75 17.25 17.25M17.25 6.75 6.75 17.25" />
+            </svg>
+          </button>
+        </header>
+
+        <main>
+          <div>
+            <FootballField team={team} playersMap={players} mode="mini" />
+          </div>
+          <aside>
+            <TacticsPanel
+              modifiers={modifiers}
+              className={tacticsStyles.scoutTacticsPanel}
+            />
+            {!isCardLayout && (
+              <section className={styles.formSection}>
+                <h3>Últimas partidas</h3>
+                <LastMatches
+                  results={lastMatchesResults}
+                  size="large"
+                  showLabels
+                />
+              </section>
+            )}
           </aside>
-        </div>
+        </main>
       </article>
     </section>
   );

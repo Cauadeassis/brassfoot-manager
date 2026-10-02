@@ -1,5 +1,4 @@
 import React from "react";
-// Certifique-se de ajustar os imports conforme o caminho real dos seus assets
 import { SharedSoccerDefs } from "../SharedSoccerDefs";
 import { BackgroundAsset } from "../Background";
 import { TelstarBallAsset } from "../Ball";

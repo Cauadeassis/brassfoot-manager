@@ -10,7 +10,7 @@ import generateSeason from "../gameEngine/generators/season";
 import { processMatchResults } from "../gameEngine/match/progression";
 import useUIStore from "./useUIStore";
 import { MatchEvent } from "../types/match";
-import { Modality, PlayStyle } from "../types/team";
+import { Modality, PlayStyle, Team } from "../types/team";
 import { FormationType } from "../data/formations";
 import { generateSquad, setStarters } from "../gameEngine/team";
 import { MatchSimulationError } from "../errors";
@@ -30,8 +30,9 @@ export interface UpdateTeamMoneyProps {
 }
 
 export interface ChangeTacticsPayload {
-  formation?: FormationType;
-  style?: PlayStyle;
+  formation?: Team["tactics"]["formation"];
+  style?: Team["tactics"]["style"];
+  takers?: Team["tactics"]["takers"];
 }
 
 export interface ChangeTacticsProps {
@@ -163,9 +164,7 @@ const useGameStore = create<GameStore>()(
           set((state) => {
             const team = state.teams[teamId];
             if (!team) return;
-
-            if (payload.formation) team.tactics.formation = payload.formation;
-            if (payload.style) team.tactics.style = payload.style;
+            Object.assign(team.tactics, payload);
             state.teams[teamId] = setStarters({
               team,
               playersMap: state.players,

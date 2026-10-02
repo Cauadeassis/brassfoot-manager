@@ -41,10 +41,10 @@ export default function TacticsPanel({
           .trim();
 
         return (
-          <label key={stat.label} className={styles.tacticsRow}>
-            <p className={styles.tacticsLabel}>{stat.label}</p>
+          <p key={stat.label} className={styles.tacticsRow}>
+            <label>{stat.label}</label>
             <AnimatedPercent value={stat.value} className={valueClassName} />
-          </label>
+          </p>
         );
       })}
     </div>
