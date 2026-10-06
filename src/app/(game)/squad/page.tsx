@@ -153,6 +153,8 @@ export default function Squad() {
               key={player.id}
               player={player}
               isStarter={startersId.has(player.id)}
+              shirtNumber={userTeam.squad.playerShirts[player.id]}
+              uniformDesign={userTeam.uniformDesign}
               showAction={true}
               layoutMode={layoutMode}
             />

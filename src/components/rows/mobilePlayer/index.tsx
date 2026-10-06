@@ -2,8 +2,12 @@ import { ReactNode } from "react";
 import styles from "./mobilePlayer.module.css";
 import { NationalityBadge, OverallBadge, PositionBadge } from "../../badges";
 import { Player } from "../../../types/player";
+import ShirtIcon, { Uniform } from "../../football-badges/shirts";
+
 interface MobilePlayerCardProps {
   player: Player;
+  shirtNumber?: number;
+  uniformDesign?: Uniform;
   isDisabled?: boolean;
   topRightContent?: ReactNode;
   actionButton?: {
@@ -15,6 +19,8 @@ interface MobilePlayerCardProps {
 
 export default function MobilePlayerCard({
   player,
+  shirtNumber,
+  uniformDesign,
   isDisabled = false,
   topRightContent,
   actionButton,
@@ -34,6 +40,9 @@ export default function MobilePlayerCard({
         </div>
 
         <div className={styles.rightSide}>
+          {shirtNumber !== undefined && uniformDesign !== undefined && (
+            <ShirtIcon number={shirtNumber} uniform={uniformDesign} />
+          )}
           {topRightContent}
           {customValue}
         </div>

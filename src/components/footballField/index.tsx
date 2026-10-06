@@ -5,10 +5,11 @@ import { CornerBadge } from "../football-badges/brooches/Corner";
 import { FreeKickBadge } from "../football-badges/brooches/FreeKick";
 import { PenaltyBadge } from "../football-badges/brooches/Penalty";
 import { SharedSoccerDefs } from "../football-badges/SharedSoccerDefs";
+import ShirtIcon from "../football-badges/shirts";
 import { PlayerSlot } from "../../data/formations";
 import { Player as PlayerData } from "../../types/player";
 import { Team } from "../../types/team";
-import { Badge, getBadgeLabel } from "./badges";
+import { Badge, getBadgeLabel, getBadgeLabels } from "./badges";
 import styles from "./footballField.module.css";
 import useFootballFieldData from "./useFootballFieldData";
 
@@ -21,6 +22,8 @@ interface FootballFieldProps {
 interface PlayerMarkerProps {
   slot: PlayerSlot;
   name: string | null;
+  number?: number;
+  uniform: Team["uniformDesign"];
   badges: Badge[];
 }
 
@@ -30,57 +33,75 @@ const badgeComponentMap: Partial<Record<Badge, React.FC>> = {
   corner: CornerBadge,
 };
 
-const PlayerMarker = React.memo(({ slot, name, badges }: PlayerMarkerProps) => {
-  const [tooltipVisible, setTooltipVisible] = React.useState(false);
-
-  return (
-    <div
-      className={styles.player}
-      style={{ top: `${slot.y}%`, left: `${slot.x}%` }}
-    >
-      <div className={styles.circle}>{slot.role || "?"}</div>
-      <div className={styles.name}>{name ? name.split(" ")[0] : "—"}</div>
-
-      {badges.some((badge) => badgeComponentMap[badge]) && (
-        <div className={styles.broochContainer}>
-          {badges.map((badge) => {
-            const BadgeComponent = badgeComponentMap[badge];
-            if (!BadgeComponent) return null;
-
-            const label = getBadgeLabel(badge);
-            const isVisible = tooltipVisible;
-
-            return (
-              <div
-                key={badge}
-                className={`${styles.badgeWrapper} ${isVisible ? styles.tooltipVisible : ""}`.trim()}
-                data-tooltip={label}
-                title={label}
-                aria-label={label}
-                aria-expanded={isVisible}
-                onMouseEnter={() => setTooltipVisible(true)}
-                onMouseLeave={() => setTooltipVisible(false)}
-                onFocus={() => setTooltipVisible(true)}
-                onBlur={() => setTooltipVisible(false)}
-                onClick={() => setTooltipVisible((previous) => !previous)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    setTooltipVisible((previous) => !previous);
-                  }
-                }}
-              >
-                <BadgeComponent />
-              </div>
-            );
-          })}
+const PlayerMarker = React.memo(
+  ({ slot, name, number, uniform, badges }: PlayerMarkerProps) => {
+    const [tooltipVisible, setTooltipVisible] = React.useState(false);
+    return (
+      <div
+        className={styles.player}
+        style={{ top: `${slot.y}%`, left: `${slot.x}%` }}
+      >
+        <div className={styles.shirtWrapper}>
+          <ShirtIcon number={number ?? 10} uniform={uniform} size={48} />
         </div>
-      )}
-    </div>
-  );
-});
+        <div className={styles.name}>{name ? name.split(" ")[0] : "—"}</div>
+
+        {badges.some((badge) => badgeComponentMap[badge]) && (
+          <div
+            className={`${styles.broochContainer} ${tooltipVisible ? styles.tooltipVisible : ""}`.trim()}
+            data-tooltip={
+              badges.length > 1
+                ? getBadgeLabels(badges)
+                : getBadgeLabel(badges[0])
+            }
+            title={
+              badges.length > 1
+                ? getBadgeLabels(badges)
+                : getBadgeLabel(badges[0])
+            }
+            aria-label={
+              badges.length > 1
+                ? getBadgeLabels(badges)
+                : getBadgeLabel(badges[0])
+            }
+            aria-expanded={tooltipVisible}
+            onMouseEnter={() => setTooltipVisible(true)}
+            onMouseLeave={() => setTooltipVisible(false)}
+            onFocus={() => setTooltipVisible(true)}
+            onBlur={() => setTooltipVisible(false)}
+            onClick={() => setTooltipVisible((previous) => !previous)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setTooltipVisible((previous) => !previous);
+              }
+            }}
+          >
+            {badges.map((badge) => {
+              const BadgeComponent = badgeComponentMap[badge];
+              if (!BadgeComponent) return null;
+
+              return (
+                <div
+                  key={badge}
+                  className={styles.badgeWrapper}
+                  onMouseEnter={() => setTooltipVisible(true)}
+                  onMouseLeave={() => setTooltipVisible(false)}
+                  onFocus={() => setTooltipVisible(true)}
+                  onBlur={() => setTooltipVisible(false)}
+                >
+                  <BadgeComponent />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  },
+);
 PlayerMarker.displayName = "PlayerMarker";
 
 export default function FootballField({
@@ -115,6 +136,9 @@ export default function FootballField({
             if (team.tactics?.takers?.corner === player.id)
               badges.push("corner");
           }
+          const shirtNumber = player?.id
+            ? (team.squad.playerShirts[player.id] ?? 10)
+            : 10;
 
           return (
             <PlayerMarker
@@ -122,6 +146,8 @@ export default function FootballField({
               slot={slot}
               name={player?.name ?? null}
               badges={badges}
+              number={shirtNumber}
+              uniform={team.uniformDesign}
             />
           );
         })}

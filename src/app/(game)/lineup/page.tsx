@@ -138,6 +138,8 @@ export default function Lineup() {
             <SquadPlayerRow
               key={player.id}
               player={player}
+              shirtNumber={userTeam.squad.playerShirts[player.id]}
+              uniformDesign={userTeam.uniformDesign}
               showAction={false}
               layoutMode={layoutMode}
             />

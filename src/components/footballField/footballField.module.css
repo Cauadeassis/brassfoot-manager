@@ -63,7 +63,7 @@
     pointer-events: auto;
   }
 
-  .badgeWrapper::after {
+  .broochContainer::after {
     content: attr(data-tooltip);
     position: absolute;
     left: 50%;
@@ -79,12 +79,14 @@
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
     z-index: 20;
   }
 
-  .badgeWrapper:hover::after,
-  .badgeWrapper:focus-within::after,
+  .broochContainer:hover::after,
+  .broochContainer:focus-within::after,
   .tooltipVisible::after {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -95,21 +97,10 @@
   transform: translate(-50%, -50%) scale(1.15);
 }
 
-.circle {
-  position: relative;
+.shirtWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  color: #ffffff;
-  background: #1a1f24;
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(26, 31, 36, 0.5);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
 }
 
 .mini {
@@ -117,10 +108,9 @@
   height: auto;
   margin: 0;
 
-  .circle {
+  .shirtWrapper svg {
     width: 2.5rem;
     height: 2.5rem;
-    font-size: 11px;
   }
 
   .name {

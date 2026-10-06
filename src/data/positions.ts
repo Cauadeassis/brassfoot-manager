@@ -9,11 +9,12 @@ export interface PositionData {
   color: PositionColor;
   label: LabelData;
   canBePlayedBy?: Position[];
+  shirtNumber: number[];
   max: number;
   skillsWeight: Partial<Record<Skill, number>>;
 }
 export type RawPositionData = Omit<PositionData, "label"> & { label: string };
-export type Template = Omit<PositionData, "label">;
+export type Template = Omit<PositionData, "label" | "shirtNumber">;
 const BASE_TEMPLATES: Record<string, Template> = {
   lateral: {
     color: "blue-color",
@@ -55,6 +56,7 @@ export const GKData: RawPositionData = {
   color: "yellow-color",
   label: "Goleiro",
   max: 3,
+  shirtNumber: [1, 12],
   skillsWeight: {
     reflexes: 0.45,
     vision: 0.15,
@@ -68,6 +70,7 @@ export const ZAData: RawPositionData = {
   label: "Zagueiro",
   max: 3,
   canBePlayedBy: ["VOL"],
+  shirtNumber: [3, 4, 14],
   skillsWeight: { defense: 0.4, vision: 0.15, shooting: 0.15, physical: 0.3 },
 };
 
@@ -75,12 +78,14 @@ export const LDData: RawPositionData = {
   ...BASE_TEMPLATES.lateral,
   label: "Lateral Direito",
   canBePlayedBy: ["ZA", "MD", "LE"],
+  shirtNumber: [2, 13],
 };
 
 export const LEData: RawPositionData = {
   ...BASE_TEMPLATES.lateral,
   label: "Lateral Esquerdo",
   canBePlayedBy: ["ZA", "ME", "LD"],
+  shirtNumber: [6, 16],
 };
 
 export const VOLData: RawPositionData = {
@@ -88,6 +93,7 @@ export const VOLData: RawPositionData = {
   label: "Volante",
   max: 2,
   canBePlayedBy: ["MC", "ZA"],
+  shirtNumber: [5, 15],
   skillsWeight: { defense: 0.25, vision: 0.25, shooting: 0.2, physical: 0.3 },
 };
 
@@ -96,6 +102,7 @@ export const MAData: RawPositionData = {
   label: "Meia Armador",
   max: 2,
   canBePlayedBy: ["PE", "PD", "MC"],
+  shirtNumber: [10, 20],
   skillsWeight: {
     vision: 0.3,
     dribbling: 0.25,
@@ -108,6 +115,7 @@ export const MDData: RawPositionData = {
   ...BASE_TEMPLATES.meia_lateral,
   label: "Meia Direito",
   canBePlayedBy: ["LD", "PD"],
+  shirtNumber: [7, 17],
 };
 
 export const MCData: RawPositionData = {
@@ -115,6 +123,7 @@ export const MCData: RawPositionData = {
   label: "Meia Central",
   max: 2,
   canBePlayedBy: ["VOL", "MA"],
+  shirtNumber: [8, 18],
   skillsWeight: {
     defense: 0.1,
     dribbling: 0.1,
@@ -128,18 +137,21 @@ export const MEData: RawPositionData = {
   ...BASE_TEMPLATES.meia_lateral,
   label: "Meia Esquerdo",
   canBePlayedBy: ["LE", "PE"],
+  shirtNumber: [11, 21],
 };
 
 export const PEData: RawPositionData = {
   ...BASE_TEMPLATES.ponta,
   label: "Ponta Esquerda",
   canBePlayedBy: ["CA", "MA", "PD"],
+  shirtNumber: [11, 21],
 };
 
 export const PDData: RawPositionData = {
   ...BASE_TEMPLATES.ponta,
   label: "Ponta Direita",
   canBePlayedBy: ["CA", "MA", "PE"],
+  shirtNumber: [7, 17],
 };
 
 export const CAData: RawPositionData = {
@@ -147,6 +159,7 @@ export const CAData: RawPositionData = {
   label: "Centroavante",
   max: 2,
   canBePlayedBy: ["PE", "PD", "MA"],
+  shirtNumber: [9, 19],
   skillsWeight: {
     shooting: 0.4,
     dribbling: 0.15,

@@ -168,6 +168,7 @@ const useGameStore = create<GameStore>()(
             state.teams[teamId] = setStarters({
               team,
               playersMap: state.players,
+              modality: state.modality,
             });
           });
         },

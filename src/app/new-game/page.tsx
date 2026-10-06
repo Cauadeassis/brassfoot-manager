@@ -133,6 +133,7 @@ export default function NewGame() {
         teamsRecord[team.id] = setStarters({
           team,
           playersMap: playersRecord,
+          modality,
         });
       });
 

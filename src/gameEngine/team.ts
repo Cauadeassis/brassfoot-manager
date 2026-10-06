@@ -9,19 +9,22 @@ import {
 import { getCompatiblePositions, getRandom } from "../utils";
 import { Player } from "../types/player";
 import { Team, RawTeamData } from "../types/team";
-import getPositionsData from "./generators/positions";
+import getPositionsData, { POSITIONS } from "./generators/positions";
 import { Position } from "../types/player";
 import { PositionData } from "../data/positions";
+import { getDefaultUniformDesign } from "../data/uniforms";
 import NATIONALITIES_DATA, { Nationality } from "../data/nationalities";
 import { CompetitionId, Region } from "../types/competition";
 import TEMPLATES from "../data/descriptions";
 import { generatePlayer } from "./player";
 import { GeneralTeamData } from "../types/team";
 import { TeamGenerationError } from "../errors";
+import { GameState } from "../types/state";
 
 interface GetSquadProps {
   team: Team;
   playersMap: Record<string, Player>;
+  modality?: Modality;
 }
 
 interface GetTeamDescriptionProps {
@@ -234,7 +237,11 @@ export const resetTakersForStarters = ({
   };
 };
 
-export const setStarters = ({ team, playersMap }: GetSquadProps): Team => {
+export const setStarters = ({
+  team,
+  playersMap,
+  modality = "masculine",
+}: GetSquadProps): Team => {
   const squadPlayers = team.squad.playerIds
     .map((id) => playersMap[id])
     .filter((p): p is Player => p !== undefined);
@@ -283,7 +290,23 @@ export const setStarters = ({ team, playersMap }: GetSquadProps): Team => {
     starterIds: teamWithStarters.squad.starterIds,
   });
 
-  return updateOverall({ team: teamWithValidatedTakers, playersMap });
+  const teamWithOverall = updateOverall({
+    team: teamWithValidatedTakers,
+    playersMap,
+  });
+
+  return {
+    ...teamWithOverall,
+    squad: {
+      ...teamWithOverall.squad,
+      playerShirts: assignShirtNumbers({
+        playerIds: teamWithOverall.squad.playerIds,
+        starterIds: teamWithOverall.squad.starterIds,
+        players: playersMap,
+        modality,
+      }),
+    },
+  };
 };
 
 interface ProcessTransferProps extends GetSquadProps {
@@ -298,6 +321,7 @@ export const processTransfer = ({
   value,
   role,
   playersMap,
+  modality = "masculine",
 }: ProcessTransferProps): Team => {
   let updatedTeam = {
     ...team,
@@ -309,7 +333,7 @@ export const processTransfer = ({
       ? removePlayer({ team: updatedTeam, playerId })
       : addPlayer({ team: updatedTeam, playerId });
 
-  return setStarters({ team: updatedTeam, playersMap });
+  return setStarters({ team: updatedTeam, playersMap, modality });
 };
 
 interface CreateTeamProps {
@@ -326,6 +350,7 @@ export const createBaseTeam = (raw: RawTeamData): GeneralTeamData => {
     division,
     overall,
     money,
+    uniformDesign,
     trophies,
     description,
   } = raw;
@@ -345,6 +370,7 @@ export const createBaseTeam = (raw: RawTeamData): GeneralTeamData => {
     division,
     overall,
     money,
+    uniformDesign: uniformDesign ?? getDefaultUniformDesign(nationality),
     description:
       description ||
       getTeamDescription({
@@ -398,5 +424,94 @@ export const generateSquad = async ({
     }
   }
 
+  const generatedPlayersMap = Object.fromEntries(
+    generatedPlayers.map((player) => [player.id, player]),
+  ) as Record<string, Player>;
+
+  currentTeamState = setStarters({
+    team: currentTeamState,
+    playersMap: generatedPlayersMap,
+    modality,
+  });
+
   return { updatedTeam: currentTeamState, squad: generatedPlayers };
 };
+
+interface AssignShirtNumbersProps
+  extends
+    Pick<Team["squad"], "playerIds" | "starterIds">,
+    Pick<GameState, "players"> {
+  modality?: Modality;
+}
+
+export function assignShirtToPlayer({
+  player,
+  starterIds,
+  usedNumbers,
+  modality = "masculine",
+}: {
+  player: Player;
+  starterIds: string[];
+  usedNumbers: Set<number>;
+  modality?: Modality;
+}): number {
+  const positionData = getPositionsData(modality);
+  const positionOptions = positionData[player.position]?.shirtNumber ?? [10];
+  const isStarter = starterIds.includes(player.id);
+  const preferredOrder = isStarter
+    ? positionOptions
+    : [...positionOptions].reverse();
+  const selectedNumber = isStarter
+    ? (positionOptions.find(
+        (shirtNumber) => shirtNumber <= 11 && !usedNumbers.has(shirtNumber),
+      ) ??
+      Array.from({ length: 11 }, (_, index) => index + 1).find(
+        (shirtNumber) => !usedNumbers.has(shirtNumber),
+      ) ??
+      preferredOrder.find((shirtNumber) => !usedNumbers.has(shirtNumber)))
+    : preferredOrder.find((shirtNumber) => !usedNumbers.has(shirtNumber));
+
+  if (selectedNumber !== undefined) {
+    usedNumbers.add(selectedNumber);
+    return selectedNumber;
+  }
+
+  let fallbackNumber = 1;
+  while (usedNumbers.has(fallbackNumber)) {
+    fallbackNumber += 1;
+  }
+
+  usedNumbers.add(fallbackNumber);
+  return fallbackNumber;
+}
+
+export function assignShirtNumbers({
+  playerIds,
+  starterIds,
+  players,
+  modality = "masculine",
+}: AssignShirtNumbersProps): Record<string, number> {
+  const shirtNumbers: Record<string, number> = {};
+  const usedNumbers = new Set<number>();
+  const starterSet = new Set(starterIds);
+  const orderedPlayerIds = [
+    ...starterIds.filter((playerId) => playerIds.includes(playerId)),
+    ...playerIds.filter((playerId) => !starterSet.has(playerId)),
+  ];
+
+  for (const playerId of orderedPlayerIds) {
+    const player = players[playerId];
+    if (!player) continue;
+
+    const selectedNumber = assignShirtToPlayer({
+      player,
+      starterIds,
+      usedNumbers,
+      modality,
+    });
+
+    shirtNumbers[playerId] = selectedNumber;
+  }
+
+  return shirtNumbers;
+}

@@ -1,5 +1,7 @@
+import { BASE_TEAM_COLORS } from "../../data/uniforms";
 import {
   addPlayer,
+  assignShirtNumbers,
   getGoalkeeper,
   getSquad,
   getTeamStats,
@@ -18,6 +20,14 @@ describe("Team Management", () => {
   beforeEach(() => {
     argentina = {
       id: "team-1",
+      uniformDesign: {
+        design: "verticalLines",
+        colors: {
+          primary: BASE_TEAM_COLORS.skyBlue,
+          secondary: BASE_TEAM_COLORS.white,
+          number: BASE_TEAM_COLORS.black,
+        },
+      },
       nationality: "AR",
       shield: "../shield",
       name: "Argentina",
@@ -202,6 +212,376 @@ describe("Team Management", () => {
     });
   });
 
+  describe("assignShirtNumbers", () => {
+    it("should assign goalkeeper and starter numbers without duplicates", () => {
+      const players: Record<string, Player> = {
+        gkStarter: {
+          id: "gkStarter",
+          name: "GK Starter",
+          currentTeamId: "team-1",
+          position: "GK",
+          age: 26,
+          nationality: "AR",
+          overall: 80,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            reflexes: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            reflexes: 10,
+          },
+          value: 1000000,
+          stamina: 90,
+          history: {},
+          trophies: {},
+        },
+        gkReserve: {
+          id: "gkReserve",
+          name: "GK Reserve",
+          currentTeamId: "team-1",
+          position: "GK",
+          age: 24,
+          nationality: "AR",
+          overall: 75,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            reflexes: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            reflexes: 10,
+          },
+          value: 500000,
+          stamina: 85,
+          history: {},
+          trophies: {},
+        },
+        z1: {
+          id: "z1",
+          name: "Z1",
+          currentTeamId: "team-1",
+          position: "ZA",
+          age: 29,
+          nationality: "AR",
+          overall: 78,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 700000,
+          stamina: 88,
+          history: {},
+          trophies: {},
+        },
+        z2: {
+          id: "z2",
+          name: "Z2",
+          currentTeamId: "team-1",
+          position: "ZA",
+          age: 28,
+          nationality: "AR",
+          overall: 77,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 650000,
+          stamina: 86,
+          history: {},
+          trophies: {},
+        },
+        ld: {
+          id: "ld",
+          name: "LD",
+          currentTeamId: "team-1",
+          position: "LD",
+          age: 27,
+          nationality: "AR",
+          overall: 76,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 600000,
+          stamina: 85,
+          history: {},
+          trophies: {},
+        },
+        le: {
+          id: "le",
+          name: "LE",
+          currentTeamId: "team-1",
+          position: "LE",
+          age: 27,
+          nationality: "AR",
+          overall: 76,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 600000,
+          stamina: 85,
+          history: {},
+          trophies: {},
+        },
+        vol: {
+          id: "vol",
+          name: "VOL",
+          currentTeamId: "team-1",
+          position: "VOL",
+          age: 30,
+          nationality: "AR",
+          overall: 80,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 700000,
+          stamina: 87,
+          history: {},
+          trophies: {},
+        },
+        ma: {
+          id: "ma",
+          name: "MA",
+          currentTeamId: "team-1",
+          position: "MA",
+          age: 25,
+          nationality: "AR",
+          overall: 82,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 800000,
+          stamina: 88,
+          history: {},
+          trophies: {},
+        },
+        mc: {
+          id: "mc",
+          name: "MC",
+          currentTeamId: "team-1",
+          position: "MC",
+          age: 26,
+          nationality: "AR",
+          overall: 79,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 650000,
+          stamina: 86,
+          history: {},
+          trophies: {},
+        },
+        pd: {
+          id: "pd",
+          name: "PD",
+          currentTeamId: "team-1",
+          position: "PD",
+          age: 27,
+          nationality: "AR",
+          overall: 77,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 650000,
+          stamina: 85,
+          history: {},
+          trophies: {},
+        },
+        pe: {
+          id: "pe",
+          name: "PE",
+          currentTeamId: "team-1",
+          position: "PE",
+          age: 24,
+          nationality: "AR",
+          overall: 78,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 680000,
+          stamina: 86,
+          history: {},
+          trophies: {},
+        },
+        ca: {
+          id: "ca",
+          name: "CA",
+          currentTeamId: "team-1",
+          position: "CA",
+          age: 29,
+          nationality: "AR",
+          overall: 81,
+          currentSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          potentialSkills: {
+            shooting: 10,
+            vision: 10,
+            physical: 10,
+            defense: 10,
+            dribbling: 10,
+          },
+          value: 850000,
+          stamina: 88,
+          history: {},
+          trophies: {},
+        },
+      };
+
+      const starterIds = [
+        "gkStarter",
+        "z1",
+        "z2",
+        "ld",
+        "le",
+        "vol",
+        "ma",
+        "mc",
+        "pd",
+        "pe",
+        "ca",
+      ];
+      const playersWithReserves = {
+        ...players,
+        meReserve: { ...players.pe, id: "meReserve", position: "ME" as const },
+        peReserve: { ...players.pe, id: "peReserve" },
+      };
+
+      const standardShirts = assignShirtNumbers({
+        playerIds: Object.keys(players),
+        starterIds,
+        players,
+      });
+      const playerShirts = assignShirtNumbers({
+        playerIds: ["meReserve", "peReserve", ...Object.keys(players)],
+        starterIds,
+        players: playersWithReserves,
+      });
+
+      expect(standardShirts.gkStarter).toBe(1);
+      expect(standardShirts.gkReserve).toBe(12);
+      expect(playerShirts.pe).toBe(11);
+      expect(playerShirts.ca).toBe(9);
+      expect(playerShirts.pd).toBe(7);
+
+      const starterNumbers = starterIds
+        .map((playerId) => playerShirts[playerId])
+        .sort((a, b) => a - b);
+
+      expect(starterNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+      expect(new Set(starterNumbers).size).toBe(11);
+    });
+  });
+
   describe("Managing team", () => {
     it("Should return correct overall", () => {
       argentina.squad.starterIds = [
@@ -243,6 +623,31 @@ describe("Team Management", () => {
   });
 
   describe("Transfers", () => {
+    it("Should update shirt numbers when buying and selling players", () => {
+      const teamAfterBuying = processTransfer({
+        team: argentina,
+        playerId: "DiMaria",
+        value: 500,
+        role: "buyer",
+        playersMap: mockPlayersMap,
+      });
+
+      expect(teamAfterBuying.squad.playerShirts["DiMaria"]).toBeDefined();
+
+      const teamAfterSelling = processTransfer({
+        team: teamAfterBuying,
+        playerId: "DiMaria",
+        value: 500,
+        role: "seller",
+        playersMap: mockPlayersMap,
+      });
+
+      expect(teamAfterSelling.squad.playerShirts["DiMaria"]).toBeUndefined();
+      expect(Object.values(teamAfterSelling.squad.playerShirts)).toHaveLength(
+        2,
+      );
+    });
+
     it("Should buy player", () => {
       const argentinaAfterBuying = processTransfer({
         team: argentina,

@@ -22,7 +22,7 @@ const TeamCard = ({ team, onClick }: TeamCardProps) => {
 };
 
 interface IconProps {
-  name: string; // Ex: 'gb-liverpool'
+  name: string;
   className?: string;
 }
 

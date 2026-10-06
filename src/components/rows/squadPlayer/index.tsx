@@ -7,11 +7,14 @@ import styles from "./squadPlayer.module.css";
 import { PositionBadge, NationalityBadge, OverallBadge } from "../../badges";
 import { LayoutMode } from "../../../app/(game)/transfers/page";
 import MobilePlayerCard from "../mobilePlayer";
+import ShirtIcon, { Uniform } from "../../football-badges/shirts";
 
 interface SquadPlayerRowProps {
   player: Player;
   isStarter?: boolean;
   showAction?: boolean;
+  shirtNumber?: number;
+  uniformDesign: Uniform;
   layoutMode?: LayoutMode;
 }
 
@@ -19,6 +22,8 @@ export default function SquadPlayerRow({
   player,
   isStarter = false,
   showAction = false,
+  shirtNumber,
+  uniformDesign,
   layoutMode = "desktop",
 }: SquadPlayerRowProps) {
   const sellPlayer = useGameStore((state) => state.sellPlayer);
@@ -31,6 +36,8 @@ export default function SquadPlayerRow({
     return (
       <MobilePlayerCard
         player={player}
+        shirtNumber={shirtNumber}
+        uniformDesign={uniformDesign}
         topRightContent={
           isStarter && <span className={styles.starterTag}>TITULAR</span>
         }
@@ -60,6 +67,9 @@ export default function SquadPlayerRow({
         <PositionBadge position={player.position} isMobile={isCompact} />
       </span>
 
+      {shirtNumber !== undefined && (
+        <ShirtIcon number={shirtNumber} uniform={uniformDesign} />
+      )}
       <p className={styles.name}>
         {player.name}
         {!isCompact && isStarter && <span>TITULAR</span>}

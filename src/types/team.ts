@@ -2,6 +2,23 @@ import { FormationType } from "../data/formations";
 import { Nationality } from "../data/nationalities";
 import { CompetitionId, Trophies } from "./competition";
 
+export type Uniform =
+  | {
+      design: "monoColor";
+      colors: {
+        primary: string;
+        number: string;
+      };
+    }
+  | {
+      design: "verticalLines" | "horizontalLines";
+      colors: {
+        primary: string;
+        secondary: string;
+        number: string;
+      };
+    };
+
 export type Modality = "masculine" | "feminine";
 export type Division = "A" | "B";
 export type PlayStyle = "balanced" | "offensive" | "defensive";
@@ -29,6 +46,7 @@ export interface Team {
   overall: number;
   rankingScore: number;
   money: number;
+  uniformDesign: Uniform;
   squad: {
     playerIds: string[];
     starterIds: string[];
@@ -57,6 +75,7 @@ export interface RawTeamData extends Pick<
   Team,
   "name" | "shield" | "money" | "type" | "nationality"
 > {
+  uniformDesign?: Uniform;
   description?: string;
   trophies?: Trophies;
   overall: { masculine: number; feminine: number };

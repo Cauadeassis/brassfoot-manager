@@ -4,6 +4,7 @@ import {
   generateTeam,
   getTeamStats,
 } from "../../gameEngine/team";
+import { BASE_TEAM_COLORS } from "../../data/uniforms";
 import { RawTeamData } from "../../types/team";
 
 describe("getTeamDescription", () => {
@@ -58,6 +59,13 @@ describe("createTeam", () => {
   it("Should create base team", () => {
     const team = createBaseTeam(rawMock);
     expect(team.squad.playerIds).toEqual([]);
+    expect(team.uniformDesign).toEqual({
+      design: "monoColor",
+      colors: {
+        primary: BASE_TEAM_COLORS.green,
+        number: BASE_TEAM_COLORS.yellow,
+      },
+    });
   });
   it("Should throw error if nationality is invalid", () => {
     expect(() => {
