@@ -21,9 +21,12 @@ export interface FormButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 export function FormButton({
   isActive = false,
   children,
+  className,
   ...buttonAttributes
 }: FormButtonProps) {
-  const buttonClassName = isActive ? "styles.ativo" : "";
+  const buttonClassName = [className, isActive && styles.ativo]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <button className={buttonClassName} {...buttonAttributes}>

@@ -17,12 +17,14 @@ interface FootballFieldProps {
   team: Team;
   playersMap: Record<string, PlayerData>;
   mode?: "mini" | "full";
+  shirtLabelMode?: "number" | "position";
 }
 
 interface PlayerMarkerProps {
   slot: PlayerSlot;
   name: string | null;
   number?: number;
+  shirtLabelMode: "number" | "position";
   uniform: Team["uniformDesign"];
   badges: Badge[];
 }
@@ -34,15 +36,24 @@ const badgeComponentMap: Partial<Record<Badge, React.FC>> = {
 };
 
 const PlayerMarker = React.memo(
-  ({ slot, name, number, uniform, badges }: PlayerMarkerProps) => {
+  ({
+    slot,
+    name,
+    number,
+    shirtLabelMode,
+    uniform,
+    badges,
+  }: PlayerMarkerProps) => {
     const [tooltipVisible, setTooltipVisible] = React.useState(false);
+    const shirtLabel =
+      shirtLabelMode === "position" ? slot.role : String(number ?? 10);
     return (
       <div
         className={styles.player}
         style={{ top: `${slot.y}%`, left: `${slot.x}%` }}
       >
         <div className={styles.shirtWrapper}>
-          <ShirtIcon number={number ?? 10} uniform={uniform} size={48} />
+          <ShirtIcon label={shirtLabel} uniform={uniform} size={48} />
         </div>
         <div className={styles.name}>{name ? name.split(" ")[0] : "—"}</div>
 
@@ -108,6 +119,7 @@ export default function FootballField({
   team,
   playersMap,
   mode = "full",
+  shirtLabelMode = "number",
 }: FootballFieldProps) {
   const { squadMap, slots } = useFootballFieldData({ team, playersMap });
 
@@ -147,6 +159,7 @@ export default function FootballField({
               name={player?.name ?? null}
               badges={badges}
               number={shirtNumber}
+              shirtLabelMode={shirtLabelMode}
               uniform={team.uniformDesign}
             />
           );

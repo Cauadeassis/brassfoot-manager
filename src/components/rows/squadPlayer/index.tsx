@@ -68,7 +68,7 @@ export default function SquadPlayerRow({
       </span>
 
       {shirtNumber !== undefined && (
-        <ShirtIcon number={shirtNumber} uniform={uniformDesign} />
+        <ShirtIcon label={String(shirtNumber)} uniform={uniformDesign} />
       )}
       <p className={styles.name}>
         {player.name}

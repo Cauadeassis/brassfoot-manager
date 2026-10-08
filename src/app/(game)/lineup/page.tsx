@@ -1,11 +1,15 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import useGameStore from "../../../stores/useGameStore";
 import SquadPlayerRow from "../../../components/rows/squadPlayer";
 import { FormationType } from "../../../data/formations";
 import { PlayStyle, Team } from "../../../types/team";
 import styles from "./lineup.module.css";
-import { FiltersContainer, FormSelect } from "../../../filters/components";
+import {
+  FiltersContainer,
+  FormButton,
+  FormSelect,
+} from "../../../filters/components";
 import {
   formationOptions,
   playStyleOptions,
@@ -20,6 +24,9 @@ import TacticsPanel from "../../../components/tacticsPanel";
 import { getLayoutMode } from "../dashboard/_components/matchList";
 import { Player } from "../../../types/player";
 export default function Lineup() {
+  const [shirtLabelMode, setShirtLabelMode] = useState<"number" | "position">(
+    "number",
+  );
   const userTeamId = useGameStore((state) => state.userTeamId);
   const changeTactics = useGameStore((state) => state.changeTactics);
   const userTeam = useGameStore((state) => state.teams[userTeamId!]);
@@ -81,6 +88,12 @@ export default function Lineup() {
     changeTactics({ teamId: userTeamId, payload: { style: newStyle } });
   };
 
+  const toggleShirtLabelMode = () => {
+    setShirtLabelMode((currentMode) =>
+      currentMode === "number" ? "position" : "number",
+    );
+  };
+
   const handleTakerChange = (
     role: keyof Team["tactics"]["takers"],
     playerId: string,
@@ -114,13 +127,25 @@ export default function Lineup() {
           options={playStyleOptions}
           onChange={handlePlayStyleChange}
         />
+        <FormButton
+          type="button"
+          aria-label={`Exibição atual: ${shirtLabelMode === "number" ? "Número" : "Posição"}. Alternar exibição.`}
+          title={`Alternar para ${shirtLabelMode === "number" ? "Posição" : "Número"}`}
+          onClick={toggleShirtLabelMode}
+        >
+          {shirtLabelMode === "number" ? "Número" : "Posição"}
+        </FormButton>
       </FiltersContainer>
       <div className={styles.fieldRow}>
         <aside>
           <TacticsPanel modifiers={modifiers} />
           <SubstitutionLog events={substitutionEvents} />
         </aside>
-        <FootballField team={userTeam} playersMap={playersMap} />
+        <FootballField
+          team={userTeam}
+          playersMap={playersMap}
+          shirtLabelMode={shirtLabelMode}
+        />
         <aside>
           <TakersPanel
             starters={startersList}

@@ -5,7 +5,7 @@ import { OPPOSITE_COLORS } from "../../data/uniforms";
 export type { Uniform } from "../../types/team";
 
 interface ShirtIconProps {
-  number: number;
+  label: string;
   uniform: Uniform;
   size?: number;
 }
@@ -14,7 +14,7 @@ const SHIRT_PATH =
   "M20 6 L8 16 L14 26 L20 22 L20 58 L44 58 L44 22 L50 26 L56 16 L44 6 Q38 12 32 12 Q26 12 20 6 Z";
 
 export default function ShirtIcon({
-  number,
+  label,
   uniform,
   size = 32,
 }: ShirtIconProps) {
@@ -23,7 +23,7 @@ export default function ShirtIcon({
   const { primary, number: numberColor } = colors;
   const numberOutlineColor = OPPOSITE_COLORS[numberColor] ?? "#000000";
   const secondaryColor = design !== "monoColor" ? colors.secondary : primary;
-  const numberFontSize = number >= 10 ? 17 : 20;
+  const labelFontSize = label.length >= 3 ? 13 : label.length === 2 ? 17 : 20;
 
   return (
     <svg
@@ -74,7 +74,7 @@ export default function ShirtIcon({
         y="40"
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={numberFontSize}
+        fontSize={labelFontSize}
         fontWeight="700"
         fontFamily="var(--font-mono, monospace)"
         fill="none"
@@ -83,19 +83,19 @@ export default function ShirtIcon({
         strokeLinejoin="round"
         strokeLinecap="round"
       >
-        {number}
+        {label}
       </text>
       <text
         x="32"
         y="40"
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={numberFontSize}
+        fontSize={labelFontSize}
         fontWeight="700"
         fontFamily="var(--font-mono, monospace)"
         fill={numberColor}
       >
-        {number}
+        {label}
       </text>
     </svg>
   );

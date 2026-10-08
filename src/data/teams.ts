@@ -523,14 +523,14 @@ const BR_CLUBS: RawTeamData[] = [
     name: "Flamengo",
     shield: "/clubs/southAmerica/BR/Flamengo.svg",
     description: "Quer jogar no modo fácil, é?",
-                        uniformDesign: {
-    design: "horizontalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.red,
-      secondary: BASE_TEAM_COLORS.black,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "horizontalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        secondary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     division: {
       masculine: "A",
       feminine: "A",
@@ -554,14 +554,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "horizontalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.white,
-      secondary: BASE_TEAM_COLORS.green,
-      number: BASE_TEAM_COLORS.black,
+    uniformDesign: {
+      design: "horizontalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.white,
+        secondary: BASE_TEAM_COLORS.green,
+        number: BASE_TEAM_COLORS.black,
+      },
     },
-  },
     overall: {
       masculine: 87,
       feminine: 84,
@@ -580,14 +580,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "verticalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.black,
-      secondary: BASE_TEAM_COLORS.white,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.black,
+        secondary: BASE_TEAM_COLORS.white,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 76,
       feminine: 60,
@@ -606,14 +606,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "verticalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.red,
-      secondary: BASE_TEAM_COLORS.green,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        secondary: BASE_TEAM_COLORS.green,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 80,
       feminine: 62,
@@ -632,13 +632,13 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "monoColor",
-    colors: {
-      primary: BASE_TEAM_COLORS.red,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "monoColor",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 78,
       feminine: 82,
@@ -677,6 +677,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: 68,
       feminine: 55,
     },
+        uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        secondary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
+    },
     money: poorTeamPatch,
     type: "club",
     nationality: "BR",
@@ -687,6 +695,14 @@ const BR_CLUBS: RawTeamData[] = [
     division: {
       masculine: "A",
       feminine: "B",
+    },
+        uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.white,
+        secondary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
     overall: {
       masculine: 69,
@@ -703,6 +719,14 @@ const BR_CLUBS: RawTeamData[] = [
     division: {
       masculine: "A",
       feminine: "B",
+    },
+        uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.green,
+        secondary: BASE_TEAM_COLORS.white,
+        number: BASE_TEAM_COLORS.black,
+      },
     },
     overall: {
       masculine: 66,
@@ -766,14 +790,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "verticalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.red,
-      secondary: BASE_TEAM_COLORS.black,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        secondary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 79,
       feminine: 85,
@@ -797,6 +821,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: 75,
       feminine: 74,
     },
+        uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.skyBlue,
+        secondary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
+    },
     money: poorTeamPatch,
     type: "club",
     nationality: "BR",
@@ -809,14 +841,14 @@ const BR_CLUBS: RawTeamData[] = [
     name: "Botafogo",
     shield: "/clubs/southAmerica/BR/Botafogo.svg",
     description: "Prove que o Fogão é o melhor do mundo!",
-                            uniformDesign: {
-    design: "verticalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.black,
-      secondary: BASE_TEAM_COLORS.white,
-      number: BASE_TEAM_COLORS.black,
+    uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.black,
+        secondary: BASE_TEAM_COLORS.white,
+        number: BASE_TEAM_COLORS.black,
+      },
     },
-  },
     division: {
       masculine: "A",
       feminine: "A",
@@ -836,14 +868,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "verticalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.white,
-      secondary: BASE_TEAM_COLORS.black,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.white,
+        secondary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 76,
       feminine: 93,
@@ -863,13 +895,13 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "B",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "monoColor",
-    colors: {
-      primary: BASE_TEAM_COLORS.maroon,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "monoColor",
+      colors: {
+        primary: BASE_TEAM_COLORS.maroon,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 62,
       feminine: 84,
@@ -886,13 +918,13 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "monoColor",
-    colors: {
-      primary: BASE_TEAM_COLORS.white,
-      number: BASE_TEAM_COLORS.black,
+    uniformDesign: {
+      design: "monoColor",
+      colors: {
+        primary: BASE_TEAM_COLORS.white,
+        number: BASE_TEAM_COLORS.black,
+      },
     },
-  },
     overall: {
       masculine: 70,
       feminine: 76,
@@ -912,13 +944,13 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "monoColor",
-    colors: {
-      primary: BASE_TEAM_COLORS.purple,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "monoColor",
+      colors: {
+        primary: BASE_TEAM_COLORS.purple,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 80,
       feminine: 78,
@@ -934,13 +966,13 @@ const BR_CLUBS: RawTeamData[] = [
     name: "Vasco",
     shield: "/clubs/southAmerica/BR/Vasco.svg",
     description: "Que Deus te ajude.",
-                            uniformDesign: {
-    design: "monoColor",
-    colors: {
-      primary: BASE_TEAM_COLORS.black,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "monoColor",
+      colors: {
+        primary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     division: {
       masculine: "A",
       feminine: "A",
@@ -966,6 +998,14 @@ const BR_CLUBS: RawTeamData[] = [
     overall: {
       masculine: 74,
       feminine: 58,
+    },
+        uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        secondary: BASE_TEAM_COLORS.black,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
     money: poorTeamPatch,
     type: "club",
@@ -993,14 +1033,14 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-                            uniformDesign: {
-    design: "verticalLines",
-    colors: {
-      primary: BASE_TEAM_COLORS.red,
-      secondary: BASE_TEAM_COLORS.navyBlue,
-      number: BASE_TEAM_COLORS.white,
+    uniformDesign: {
+      design: "verticalLines",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        secondary: BASE_TEAM_COLORS.navyBlue,
+        number: BASE_TEAM_COLORS.white,
+      },
     },
-  },
     overall: {
       masculine: 76,
       feminine: 76,
@@ -1015,6 +1055,13 @@ const BR_CLUBS: RawTeamData[] = [
     division: {
       masculine: "A",
       feminine: "A",
+    },
+            uniformDesign: {
+      design: "monoColor",
+      colors: {
+        primary: BASE_TEAM_COLORS.red,
+        number: BASE_TEAM_COLORS.black,
+      },
     },
     overall: {
       masculine: 77,

@@ -10,12 +10,8 @@ import {
   FiltersContainer,
   FormInput,
   FormSelect,
-  FormButton,
 } from "../../../filters/components";
-import {
-  getPositionsOptions,
-  getTeamsOptions,
-} from "../../../filters/selectOptions";
+import { getPositionsOptions } from "../../../filters/selectOptions";
 import { useTableFilters } from "../../../hooks";
 import SectionHeader from "../_components/sectionHeader";
 import useFiltersStore, { ScorerSortKey } from "../../../stores/useFilterStore";
@@ -42,16 +38,15 @@ export default function TopScorers() {
   const competitionId = useFiltersStore(
     (state) => state.topScorersPage.competitionId || "all",
   );
+  const teamSearchQuery = useFiltersStore(
+    (state) => state.topScorersPage.teamSearchQuery,
+  );
 
   const {
     searchQuery,
     position,
-    isUserTeamSelected,
-    teamId,
     sortConfig,
     handlePositionChange,
-    handleToggleTeamFilter,
-    handleTeamChange,
     handleSort,
     getSortIcon,
   } = useTableFilters<ScorerSortKey>({
@@ -68,10 +63,6 @@ export default function TopScorers() {
     [modality],
   );
 
-  const simplifiedTeams = useMemo(
-    () => Object.values(teamsDict).map(({ id, name }) => ({ id, name })),
-    [teamsDict],
-  );
   const competitionOptions = useMemo(() => {
     const opts = Object.values(competitionsDict).map((c) => ({
       value: c.id,
@@ -81,9 +72,11 @@ export default function TopScorers() {
   }, [competitionsDict]);
   const top20Scorers = useMemo(() => {
     const queryLower = searchQuery.toLowerCase();
+    const teamQueryLower = teamSearchQuery.trim().toLowerCase();
     const filtered: ScorerPlayer[] = [];
     for (const team of Object.values(teamsDict)) {
-      if (teamId !== "all" && team.id !== teamId) continue;
+      if (teamQueryLower && !team.name.toLowerCase().includes(teamQueryLower))
+        continue;
       for (const player of getSquad({ team, playersMap })) {
         if (position !== "all" && player.position !== position) continue;
         if (position !== "GK" && player.position === "GK") continue;
@@ -123,8 +116,8 @@ export default function TopScorers() {
   }, [
     teamsDict,
     searchQuery,
+    teamSearchQuery,
     position,
-    teamId,
     sortConfig,
     season,
     competitionId,
@@ -156,7 +149,7 @@ export default function TopScorers() {
           position !== "all"
             ? ` — ${POSITIONS_DATA[position].label.plural}`
             : null,
-          teamId !== "all" ? ` — ${teamsDict[teamId]?.name}` : null,
+          teamSearchQuery ? ` — ${teamSearchQuery}` : null,
         ].filter(Boolean)}
         defaultMeta=" — top 20"
       />
@@ -169,15 +162,17 @@ export default function TopScorers() {
             setFilter("topScorersPage", "searchQuery", e.target.value)
           }
         />
+        <FormInput
+          placeholder="Buscar time..."
+          value={teamSearchQuery}
+          onChange={(e) =>
+            setFilter("topScorersPage", "teamSearchQuery", e.target.value)
+          }
+        />
         <FormSelect
           value={position}
           options={positionsOptions}
           onChange={handlePositionChange}
-        />
-        <FormSelect
-          value={teamId}
-          options={getTeamsOptions({ teams: simplifiedTeams })}
-          onChange={handleTeamChange}
         />
         <FormSelect
           value={competitionId}
@@ -190,12 +185,6 @@ export default function TopScorers() {
             )
           }
         />
-        <FormButton
-          isActive={isUserTeamSelected}
-          onClick={handleToggleTeamFilter}
-        >
-          {isUserTeamSelected ? "Todos os times" : "Meu time"}
-        </FormButton>
       </FiltersContainer>
       {layoutMode === "card" ? (
         <div className={styles?.mobileList || "mobile-scorers-list"}>

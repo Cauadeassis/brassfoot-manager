@@ -41,7 +41,7 @@ export default function MobilePlayerCard({
 
         <div className={styles.rightSide}>
           {shirtNumber !== undefined && uniformDesign !== undefined && (
-            <ShirtIcon number={shirtNumber} uniform={uniformDesign} />
+            <ShirtIcon label={String(shirtNumber)} uniform={uniformDesign} />
           )}
           {topRightContent}
           {customValue}

@@ -58,7 +58,9 @@ interface TopScorersFilters extends Pick<
   | "sortDirection"
   | "nationality"
   | "competitionId"
-> {}
+> {
+  teamSearchQuery: string;
+}
 interface StartGameFilters extends Pick<
   Filters,
   "teamType" | "region" | "nationality" | "division"
@@ -103,6 +105,7 @@ const initialFiltersState: FiltersState = {
   },
   topScorersPage: {
     searchQuery: "",
+    teamSearchQuery: "",
     teamId: "all",
     position: "all",
     nationality: "all",
