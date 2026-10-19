@@ -6,6 +6,7 @@ import styles from "../dashboard.module.css";
 import { DashBoardComponentProps } from "./miniStandings";
 import { getTeamStats } from "../../../../gameEngine/team";
 import { CompetitionId } from "../../../../types/competition";
+import { isContractActive } from "../../../../gameEngine/contracts";
 
 const UserTeamStats = ({
   nationalLeagueName,
@@ -13,7 +14,23 @@ const UserTeamStats = ({
 }: DashBoardComponentProps) => {
   const userTeamId = useGameStore((state) => state.userTeamId);
   const teams = useGameStore((state) => state.teams);
+  const players = useGameStore((state) => state.players);
+  const currentDate = useGameStore((state) => state.currentDate);
   const userTeam = teams[userTeamId!];
+  const monthlyPayroll = useMemo(() => {
+    if (!userTeam || userTeam.type !== "club") return 0;
+    return userTeam.squad.playerIds.reduce((total, playerId) => {
+      const player = players[playerId];
+      if (
+        !player?.contract ||
+        player.currentTeamId !== userTeam.id ||
+        !isContractActive(player.contract, currentDate)
+      ) {
+        return total;
+      }
+      return total + player.contract.salary;
+    }, 0);
+  }, [userTeam, players, currentDate]);
   const stats = useMemo(() => {
     if (!userTeam) return null;
     const [season, nationalLeagueId] = historyKey.split("_");
@@ -63,6 +80,13 @@ const UserTeamStats = ({
           R$ {formatMoney(userTeam.money)}
         </span>
       </div>
+      {userTeam.type === "club" && (
+        <div>
+          <p>Gastos</p>
+          <span className="red-color">R$ {formatMoney(monthlyPayroll)}</span>
+          <small>Folha salarial mensal</small>
+        </div>
+      )}
     </div>
   );
 };

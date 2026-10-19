@@ -1,21 +1,13 @@
 import { StateCreator } from "zustand";
 import { GameState, TransferOffer } from "../../types/state";
 import {
+  evaluateTransferProposal,
   makeTransfer,
   processAITransfers,
   generateOffer,
 } from "../../gameEngine/market";
 import { toast } from "../useToastStore";
-import { GameStore } from "../useGameStore";
-
-export interface MarketActions {
-  acceptOffer: (index: number) => void;
-  rejectOffer: (index: number) => void;
-  sellPlayer: (playerId: string) => void;
-  makeTransfer: (transfer: TransferOffer) => void;
-  generateOffer: () => void;
-  aiManageMarket: () => void;
-}
+import type { GameStore, MarketActions } from "../types";
 
 export const createMarketSlice: StateCreator<
   GameStore,
@@ -26,16 +18,38 @@ export const createMarketSlice: StateCreator<
   acceptOffer: (index) => {
     const offer = get().notifications[index];
     if (!offer) return;
-
-    get().makeTransfer({
-      buyerTeamId: offer.buyerTeamId,
-      sellerTeamId: offer.sellerTeamId,
-      playerId: offer.playerId,
-      value: offer.value,
-    });
-
+    let result: ReturnType<typeof evaluateTransferProposal> = {
+      status: "rejected",
+      message: "A oferta expirou ou não pôde ser processada.",
+      clubAccepted: false,
+      playerAccepted: false,
+    };
     set((gameState) => {
+      const draft = gameState as unknown as GameState;
+      if (
+        !offer.expiresAt ||
+        offer.expiresAt < draft.currentDate ||
+        !offer.contractOffer
+      ) {
+        result.message = "A oferta expirou.";
+        gameState.notifications.splice(index, 1);
+        return;
+      }
+      result = evaluateTransferProposal({
+        draft,
+        buyerTeamId: offer.buyerTeamId,
+        proposal: {
+          playerId: offer.playerId,
+          sellerTeamId: offer.sellerTeamId,
+          transferFee: offer.value,
+          contractOffer: offer.contractOffer,
+        },
+      });
       gameState.notifications.splice(index, 1);
+    });
+    toast({
+      message: result.message,
+      type: result.status === "accepted" ? "ok" : "info",
     });
   },
 
@@ -86,12 +100,13 @@ export const createMarketSlice: StateCreator<
     }),
 
   generateOffer: () => {
-    const { teams, userTeamId, notifications, players } = get();
+    const { teams, userTeamId, notifications, players, currentDate } = get();
     const newOffer = generateOffer({
       teams: Object.values(teams),
       players,
       userTeamId,
       currentCount: notifications.length,
+      currentDate,
     });
 
     if (newOffer) {
@@ -106,5 +121,36 @@ export const createMarketSlice: StateCreator<
     set((gameState) => {
       processAITransfers(gameState as unknown as GameState);
     });
+  },
+
+  submitTransferProposal: (proposal) => {
+    const buyerTeamId = get().userTeamId;
+    if (!buyerTeamId) {
+      return {
+        status: "rejected",
+        message: "Nenhum clube controlado pelo usuário está selecionado.",
+        clubAccepted: false,
+        playerAccepted: false,
+      };
+    }
+
+    let result = {
+      status: "rejected",
+      message: "A proposta não pôde ser processada.",
+      clubAccepted: false,
+      playerAccepted: false,
+    } as ReturnType<typeof evaluateTransferProposal>;
+    set((gameState) => {
+      result = evaluateTransferProposal({
+        draft: gameState as unknown as GameState,
+        buyerTeamId,
+        proposal,
+      });
+    });
+    toast({
+      message: result.message,
+      type: result.status === "accepted" ? "ok" : "info",
+    });
+    return result;
   },
 });

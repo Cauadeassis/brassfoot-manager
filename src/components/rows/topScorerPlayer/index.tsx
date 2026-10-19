@@ -6,6 +6,7 @@ import { TeamBadge, PositionBadge } from "../../badges";
 import styles from "./topScorerPlayer.module.css";
 import MobilePlayerCard from "../mobilePlayer";
 import { LayoutMode } from "../../../app/(game)/transfers/page";
+import useUIStore from "../../../stores/useUIStore";
 
 interface TopScorerRowProps {
   scorerPlayer: ScorerPlayer;
@@ -18,6 +19,7 @@ function TopScorerRow({
   index,
   layoutMode = "desktop",
 }: TopScorerRowProps) {
+  const openPlayerModal = useUIStore((state) => state.openPlayerModal);
   const stats = scorerPlayer.activeStats;
   const isAttacker = stats.role === "attacker";
   if (layoutMode === "card") {
@@ -60,7 +62,16 @@ function TopScorerRow({
   return (
     <tr>
       <td className="dim-color">{index + 1}</td>
-      <td>{scorerPlayer.name}</td>
+      <td>
+        <button
+          type="button"
+          className={styles.playerNameButton}
+          onClick={() => openPlayerModal(scorerPlayer.id)}
+          aria-label={`Ver detalhes de ${scorerPlayer.name}`}
+        >
+          {scorerPlayer.name}
+        </button>
+      </td>
       <td>
         <TeamBadge
           teamShield={scorerPlayer.teamShield}

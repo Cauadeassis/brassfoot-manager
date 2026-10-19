@@ -13,12 +13,14 @@ import { Nationality } from "../data/nationalities";
 import { Modality } from "../types/team";
 import { PlayerGenerationError } from "../errors";
 import { CompetitionId } from "../types/competition";
+import { createContractFromOffer, generateAIContractOffer } from "./contracts";
 import { emptyBaseStatistics } from "./match/progression";
 
 export interface GeneratePlayerProps {
   position: Position;
   team: Team;
   modality: Modality;
+  startDate?: string;
 }
 
 interface GetPlayerStatsProps {
@@ -272,6 +274,7 @@ export const generatePlayer = async ({
   position,
   team,
   modality,
+  startDate = "2026-01-01",
 }: GeneratePlayerProps): Promise<Player> => {
   const foreignNationalities = getForeignNationalities({
     currentNationality: team.nationality,
@@ -315,6 +318,16 @@ export const generatePlayer = async ({
     baseOverall: team.overall,
   });
   const overall = calculateOverall({ position, skills: currentSkills });
+  const value = calculateMarketValue({ overall, age });
+  const contractOffer =
+    team.type === "club"
+      ? generateAIContractOffer({
+          age,
+          overall,
+          value,
+          maxWageCommitment: value * 0.25,
+        })
+      : null;
 
   return {
     id: crypto.randomUUID(),
@@ -328,7 +341,10 @@ export const generatePlayer = async ({
     currentSkills,
     potentialSkills: currentSkills,
     history: {},
-    value: calculateMarketValue({ overall, age }),
+    value,
+    contract: contractOffer
+      ? createContractFromOffer(contractOffer, startDate)
+      : null,
     trophies: {},
   };
 };

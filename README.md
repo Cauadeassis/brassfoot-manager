@@ -35,7 +35,7 @@ Este projeto nasceu como um ambiente de estudos básicos de HTML/CSS/JS.
 
 ## 🛠️ Tecnologias Utilizadas
 
-O projeto foi refatorado seguindo os princípios **SOLID** e **Clean Code**, garantindo um código escalável, testável e de fácil manutenção.
+O projeto separa a interface, o estado da carreira e a engine de simulação em módulos próprios. Essa estrutura evolui junto com as funcionalidades do jogo, mantendo as regras do domínio testáveis e a interface desacoplada da simulação.
 
 **Frontend:**
 
@@ -87,4 +87,5 @@ O projeto foi refatorado seguindo os princípios **SOLID** e **Clean Code**, gar
    npm run dev // inicia o jogo na porta 3000
    npm run analyze // faz uma análise da perfomance da aplicação
    npm run typescript // escaneia o código em busca de erros
+   npm test // executa os testes
    ```

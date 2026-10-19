@@ -117,11 +117,12 @@ export default function NewGame() {
   const startGame = useCallback(
     async (chosenTeam: Team) => {
       if (!modality) return;
+      const startDate = "2026-01-01";
       const teamsRecord: Record<string, Team> = {};
       const playersRecord: Record<string, Player> = {};
       const teamValues = Object.values(teams);
       for (const team of teamValues) {
-        const result = await generateSquad({ team, modality });
+        const result = await generateSquad({ team, modality, startDate });
         if (!result) continue;
         const { updatedTeam, squad } = result;
         squad.forEach((player) => {
@@ -143,18 +144,18 @@ export default function NewGame() {
       });
 
       const state: GameState = {
-        currentDate: "2026-01-01",
+        currentDate: startDate,
         modality,
         season: 2026,
         status: "IDLE",
         teams: teamsRecord,
         players: playersRecord,
+        payrollSalaryDays: {},
         userTeamId: chosenTeam.id,
         competitions,
         calendar,
         notifications: [],
         results: [],
-        activeMatch: null,
       };
 
       loadState({ state });

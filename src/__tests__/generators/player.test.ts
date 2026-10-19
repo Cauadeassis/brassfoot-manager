@@ -127,6 +127,21 @@ describe("Player Logic", () => {
       expect(player.stamina).toBe(100);
     });
 
+    it("Should assign a contract to a player generated for a club", async () => {
+      const player = await generatePlayer({
+        position: "GK",
+        team: { ...mockTeam, type: "club" },
+        modality: "masculine",
+        startDate: "2026-03-15",
+      });
+
+      expect(player.contract).toMatchObject({
+        startDate: "2026-03-15",
+        salary: Math.round((player.value * 0.05) / 12),
+        signingBonus: 0,
+      });
+    });
+
     it("Should throw error if the nationality is not supported", async () => {
       const badTeam = { ...mockTeam, nationality: "JAP" };
       await expect(

@@ -40,11 +40,15 @@ export const getOverallLabel = (overall: number): string =>
   overallLimits.find(({ min }) => overall >= min)!.label;
 
 const moneyFormatMap = [
+  { divisor: 1_000_000_000, suffix: "B" },
   { divisor: 1_000_000, suffix: "M" },
   { divisor: 1_000, suffix: "K" },
 ];
 
-export function formatMoney(value: number | string): string {
+export function formatMoney(
+  value: number | string,
+  maximumFractionDigits = 1,
+): string {
   const numericValue = Number(value);
   const formatRule = moneyFormatMap.find(
     ({ divisor }) => Math.abs(numericValue) >= divisor,
@@ -54,10 +58,32 @@ export function formatMoney(value: number | string): string {
   const reducedValue = numericValue / formatRule.divisor;
 
   return (
-    new Intl.NumberFormat("pt-BR", {
-      maximumFractionDigits: 1,
-    }).format(reducedValue) + formatRule.suffix
+    new Intl.NumberFormat("pt-BR", { maximumFractionDigits }).format(
+      reducedValue,
+    ) + formatRule.suffix
   );
+}
+
+const suffixMultipliers: Record<string, number> = {
+  K: 1_000,
+  M: 1_000_000,
+  B: 1_000_000_000,
+};
+
+export function parseMoney(text: string): number {
+  const match = text
+    .trim()
+    .toUpperCase()
+    .replace(/\s/g, "")
+    .match(/^([\d.,]*)([KM]?)$/);
+  if (!match) return NaN;
+
+  const [, digits, suffix] = match;
+  const normalized = suffix
+    ? digits.replace(",", ".")
+    : digits.replace(/\./g, "").replace(",", ".");
+
+  return Math.round(Number(normalized) * (suffixMultipliers[suffix] ?? 1));
 }
 
 // ---------------------------------------------------------

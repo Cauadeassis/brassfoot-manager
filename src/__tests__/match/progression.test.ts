@@ -29,6 +29,7 @@ const createGameState = (matches: Match[]): GameState => ({
   userTeamId: null,
   teams: {},
   players: {},
+  payrollSalaryDays: {},
   competitions: [
     { id: "BR_cup", matches: [matches], standings: [], stats: [] },
   ],
@@ -37,7 +38,6 @@ const createGameState = (matches: Match[]): GameState => ({
     matches: [match],
     events: [],
   })),
-  activeMatch: null,
   notifications: [],
   results: [],
 });

@@ -1,7 +1,6 @@
 "use client";
 
 import { memo } from "react";
-import useGameStore from "../../../stores/useGameStore";
 import { Player } from "../../../types/player";
 import { Team } from "../../../types/team";
 import { formatMoney } from "../../../utils";
@@ -13,6 +12,7 @@ import {
   PositionBadge,
 } from "../../badges";
 import MobilePlayerCard from "../mobilePlayer";
+import useUIStore from "../../../stores/useUIStore";
 
 export interface MarketPlayer extends Player {
   marketType: "free" | "club";
@@ -22,27 +22,25 @@ export interface MarketPlayer extends Player {
 interface TransferPlayerRowProps {
   marketPlayer: MarketPlayer;
   canAfford: boolean;
+  disabledReason?: string;
+  onPropose: (player: MarketPlayer) => void;
   layoutMode?: "desktop" | "compact" | "card";
 }
 
 function TransferPlayerRow({
   marketPlayer,
   canAfford,
+  disabledReason,
+  onPropose,
   layoutMode = "desktop",
 }: TransferPlayerRowProps) {
-  const makeTransfer = useGameStore((state) => state.makeTransfer);
-  const userTeamId = useGameStore((state) => state.userTeamId);
+  const openPlayerModal = useUIStore((state) => state.openPlayerModal);
   const { originTeam, id, value, position, age, nationality, overall, name } =
     marketPlayer;
 
   const handleBuyClick = () => {
     if (!canAfford) return;
-    makeTransfer({
-      buyerTeamId: userTeamId,
-      sellerTeamId: originTeam ? originTeam.id : null,
-      playerId: id,
-      value: value,
-    });
+    onPropose(marketPlayer);
   };
 
   if (layoutMode === "card") {
@@ -52,11 +50,16 @@ function TransferPlayerRow({
         isDisabled={!canAfford}
         topRightContent={
           originTeam ? (
-            <TeamBadge
-              teamShield={originTeam.shield}
-              teamName={originTeam.name}
-              isMobile={true}
-            />
+            <div>
+              <TeamBadge
+                teamShield={originTeam.shield}
+                teamName={originTeam.name}
+                isMobile={true}
+              />
+              {!canAfford && disabledReason && (
+                <span className={styles.windowClosedTag}>{disabledReason}</span>
+              )}
+            </div>
           ) : (
             <span className={styles.freeAgentTag}>LIVRE</span>
           )
@@ -69,7 +72,13 @@ function TransferPlayerRow({
           </span>
         }
         actionButton={
-          canAfford ? { action: handleBuyClick, type: "buy" } : undefined
+          canAfford
+            ? {
+                action: handleBuyClick,
+                type: "buy",
+                label: originTeam ? "PROPOR" : "CONTRATAR",
+              }
+            : undefined
         }
       />
     );
@@ -79,7 +88,14 @@ function TransferPlayerRow({
   return (
     <tr className={styles.transferPlayerRow}>
       <td>
-        <strong>{name}</strong>
+        <button
+          type="button"
+          className={styles.playerNameButton}
+          onClick={() => openPlayerModal(id)}
+          aria-label={`Ver detalhes de ${name}`}
+        >
+          {name}
+        </button>
       </td>
       <td>
         <PositionBadge position={position} isMobile={isCompact} />
@@ -113,8 +129,10 @@ function TransferPlayerRow({
           title={
             isCompact
               ? canAfford
-                ? "Clique para comprar"
-                : "Sem fundos"
+                ? originTeam
+                  ? "Clique para propor transferência"
+                  : "Clique para contratar"
+                : (disabledReason ?? "Sem fundos")
               : undefined
           }
         >
@@ -125,10 +143,12 @@ function TransferPlayerRow({
         {!isCompact &&
           (canAfford ? (
             <button className="green-button" onClick={handleBuyClick}>
-              COMPRAR
+              {originTeam ? "PROPOR" : "CONTRATAR"}
             </button>
           ) : (
-            <span className={styles.noFundsTag}>SEM FUNDOS</span>
+            <span className={styles.noFundsTag}>
+              {disabledReason ?? "SEM FUNDOS"}
+            </span>
           ))}
       </td>
     </tr>

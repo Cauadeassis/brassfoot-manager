@@ -90,6 +90,7 @@ interface MovePlayerProps {
 interface GenerateSquadProps {
   team: Team;
   modality: Modality;
+  startDate?: string;
 }
 
 export const initialTeamStatistics: TeamStatistics = {
@@ -403,6 +404,7 @@ export const generateTeam = ({ baseData, modality }: CreateTeamProps): Team => {
 export const generateSquad = async ({
   team,
   modality,
+  startDate = "2026-01-01",
 }: GenerateSquadProps): Promise<{ updatedTeam: Team; squad: Player[] }> => {
   const POSITIONS_DATA = getPositionsData(modality);
   if (!POSITIONS_DATA) throw TeamGenerationError.missingPositionsData(modality);
@@ -415,6 +417,7 @@ export const generateSquad = async ({
         position: positionKey as Position,
         team: currentTeamState,
         modality,
+        startDate,
       });
       currentTeamState = addPlayer({
         team: currentTeamState,

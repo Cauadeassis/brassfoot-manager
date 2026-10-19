@@ -4,7 +4,7 @@ import { createMatchState } from "./state";
 import { generateEvents } from "./events/generator";
 import { processEvent } from "./events/manager";
 import { getMatchResult } from "./progression";
-import useGameStore from "../../stores/useGameStore";
+import { Player } from "../../types/player";
 
 export default class MatchEngine {
   private state: MatchState;
@@ -17,6 +17,7 @@ export default class MatchEngine {
   constructor(
     private homeTeam: Team,
     private awayTeam: Team,
+    playersMap: Record<string, Player>,
     private callbacks?: {
       onTick: (state: MatchState) => void;
       onLog: (log: EventLog) => void;
@@ -33,7 +34,6 @@ export default class MatchEngine {
     });
     const possession = this.state.statistics.possession;
     this.baseHomePossession = possession.home;
-    const playersMap = useGameStore.getState().players;
     this.events = generateEvents({
       homeTeam,
       awayTeam,

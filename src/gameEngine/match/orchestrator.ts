@@ -285,20 +285,25 @@ export interface CPUMatchResult {
   events: MatchEvent[];
 }
 
-export interface SimulateCPUMatchesProps extends Pick<GameState, "teams"> {
+export interface SimulateCPUMatchesProps extends Pick<
+  GameState,
+  "teams" | "players"
+> {
   pendingMatches: Match[];
 }
 
 interface SimulateBackgroundMatchProps extends MatchTeams {
   match: Match;
+  playersMap: Record<string, Player>;
 }
 
 function simulateBackgroundMatch({
   match,
   homeTeam,
   awayTeam,
+  playersMap,
 }: SimulateBackgroundMatchProps): CPUMatchResult {
-  const engine = new MatchEngine(homeTeam, awayTeam);
+  const engine = new MatchEngine(homeTeam, awayTeam, playersMap);
   const summary = engine.simulateBackground();
   return {
     matchId: match.id,
@@ -311,6 +316,7 @@ function simulateBackgroundMatch({
 export function simulateCPUMatches({
   pendingMatches,
   teams,
+  players,
 }: SimulateCPUMatchesProps): CPUMatchResult[] {
   const results: CPUMatchResult[] = [];
   for (const match of pendingMatches) {
@@ -318,7 +324,12 @@ export function simulateCPUMatches({
     const homeTeam = teams[match.homeTeamId];
     const awayTeam = teams[match.awayTeamId];
     if (homeTeam && awayTeam) {
-      const result = simulateBackgroundMatch({ match, homeTeam, awayTeam });
+      const result = simulateBackgroundMatch({
+        match,
+        homeTeam,
+        awayTeam,
+        playersMap: players,
+      });
       results.push(result);
     }
   }

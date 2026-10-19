@@ -156,13 +156,18 @@ describe("Orchestrator Engine (orchestrator.ts)", () => {
         { id: "m2", homeTeamId: "t3", awayTeamId: "t4", simulated: true },
       ] as any;
 
-      const results = simulateCPUMatches({ pendingMatches, teams });
+      const players = {};
+      const results = simulateCPUMatches({ pendingMatches, teams, players });
       expect(results).toHaveLength(1);
       expect(results[0].matchId).toBe("m1");
       expect(results[0].homeGoals).toBe(2);
       expect(results[0].awayGoals).toBe(1);
       expect(MatchEngine).toHaveBeenCalledTimes(1);
-      expect(MatchEngine).toHaveBeenCalledWith(teams["t1"], teams["t2"]);
+      expect(MatchEngine).toHaveBeenCalledWith(
+        teams["t1"],
+        teams["t2"],
+        players,
+      );
     });
 
     it("deve ignorar partidas se os times não forem encontrados no state", () => {
@@ -172,7 +177,11 @@ describe("Orchestrator Engine (orchestrator.ts)", () => {
       const pendingMatches = [
         { id: "m1", homeTeamId: "t1", awayTeamId: "INVALID", simulated: false },
       ] as any;
-      const results = simulateCPUMatches({ pendingMatches, teams });
+      const results = simulateCPUMatches({
+        pendingMatches,
+        teams,
+        players: {},
+      });
       expect(results).toHaveLength(0);
       expect(MatchEngine).not.toHaveBeenCalled();
     });

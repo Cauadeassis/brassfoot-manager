@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useIsMobile, useTableFilters, useWindowWidth } from "../../../hooks";
 import useGameStore from "../../../stores/useGameStore";
 import TransferPlayerRow, {
@@ -24,9 +24,17 @@ import useFiltersStore, {
 } from "../../../stores/useFilterStore";
 import { Nationality } from "../../../data/nationalities";
 import { getLayoutMode } from "../dashboard/_components/matchList";
+import TransferProposalModal from "../../../components/modals/transferProposal";
+import {
+  getTransferWindowEnd,
+  isTransferWindowOpen,
+} from "../../../gameEngine/market";
 export type LayoutMode = "card" | "compact" | "desktop";
 
 export default function Transfers() {
+  const [proposalPlayer, setProposalPlayer] = useState<MarketPlayer | null>(
+    null,
+  );
   const userTeamId = useGameStore((state) => state.userTeamId);
   const teamsDict = useGameStore((state) => state.teams);
   const playersDict = useGameStore((state) => state.players);
@@ -35,9 +43,17 @@ export default function Transfers() {
   const acceptOffer = useGameStore((state) => state.acceptOffer);
   const rejectOffer = useGameStore((state) => state.rejectOffer);
   const season = useGameStore((state) => state.season);
+  const currentDate = useGameStore((state) => state.currentDate);
   const setFilter = useFiltersStore((state) => state.setFilter);
 
   const userTeam = userTeamId ? teamsDict[userTeamId] : null;
+  const transferWindowOpen = isTransferWindowOpen(currentDate);
+  const transferWindowEnd = getTransferWindowEnd(currentDate);
+  const canAffordPlayer = (player: MarketPlayer) => {
+    if (userTeam?.type !== "club") return false;
+    if (!player.originTeam) return true;
+    return transferWindowOpen && userTeam.money >= player.value;
+  };
 
   const {
     searchQuery,
@@ -110,17 +126,15 @@ export default function Transfers() {
         }
       }
     }
-
-    // --- CORREÇÃO: APLICANDO A ORDENAÇÃO (SORT) AQUI ---
     if (sortConfig && sortConfig.key) {
       availablePlayers.sort((a, b) => {
         const valA = a[sortConfig.key] || 0;
         const valB = b[sortConfig.key] || 0;
 
         if (sortConfig.direction === "asc") {
-          return valA - valB; // Crescente
+          return valA - valB;
         } else {
-          return valB - valA; // Decrescente
+          return valB - valA;
         }
       });
     }
@@ -134,7 +148,7 @@ export default function Transfers() {
     position,
     teamId,
     nationality,
-    sortConfig, // Como sortConfig já está aqui, o useMemo será disparado ao clicar nas setas
+    sortConfig,
     season,
   ]);
 
@@ -146,6 +160,11 @@ export default function Transfers() {
       <SectionHeader
         title="TRANSFERÊNCIAS"
         meta={[
+          userTeam?.type === "club"
+            ? transferWindowOpen
+              ? ` — Janela aberta até ${transferWindowEnd}`
+              : " — Janela fechada para jogadores vinculados; agentes livres disponíveis"
+            : " — Transferências disponíveis apenas para clubes",
           position !== "all"
             ? ` — ${POSITIONS_DATA[position as keyof typeof POSITIONS_DATA].label.plural}`
             : null,
@@ -213,8 +232,12 @@ export default function Transfers() {
                 key={marketPlayer.id}
                 layoutMode={layoutMode}
                 marketPlayer={marketPlayer}
-                canAfford={
-                  userTeam ? userTeam.money >= marketPlayer.value : false
+                onPropose={setProposalPlayer}
+                canAfford={canAffordPlayer(marketPlayer)}
+                disabledReason={
+                  !transferWindowOpen && marketPlayer.originTeam
+                    ? "JANELA FECHADA"
+                    : "SEM SALDO"
                 }
               />
             ))
@@ -266,14 +289,30 @@ export default function Transfers() {
                   key={marketPlayer.id}
                   layoutMode={layoutMode}
                   marketPlayer={marketPlayer}
-                  canAfford={
-                    userTeam ? userTeam.money >= marketPlayer.value : false
+                  onPropose={setProposalPlayer}
+                  canAfford={canAffordPlayer(marketPlayer)}
+                  disabledReason={
+                    !transferWindowOpen && marketPlayer.originTeam
+                      ? "JANELA FECHADA"
+                      : "SEM SALDO"
                   }
                 />
               ))
             )}
           </tbody>
         </table>
+      )}
+      {proposalPlayer && userTeam && (
+        <TransferProposalModal
+          playerId={proposalPlayer.id}
+          playerName={proposalPlayer.name}
+          sellerTeamId={proposalPlayer.originTeam?.id ?? null}
+          estimatedValue={proposalPlayer.value}
+          age={proposalPlayer.age}
+          overall={proposalPlayer.overall}
+          buyerBudget={userTeam.money}
+          onClose={() => setProposalPlayer(null)}
+        />
       )}
     </section>
   );

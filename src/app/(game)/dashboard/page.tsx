@@ -12,15 +12,21 @@ import { useMemo } from "react";
 import { getCompetitionName } from "../../../filters/labels";
 import { CompetitionId } from "../../../types/competition";
 import { HistoryKey } from "../../../types/team";
+import { useRouter } from "next/navigation";
+import useUIStore from "../../../stores/useUIStore";
 
 export default function Dashboard() {
+  const router = useRouter();
   const season = useGameStore((state) => state.season);
   const calendar = useGameStore((state) => state.calendar);
   const currentDate = useGameStore((state) => state.currentDate);
   const userTeamId = useGameStore((state) => state.userTeamId);
   const userTeam = useGameStore((state) => state.teams[userTeamId!]);
-  const simulateNextMatch = useGameStore((state) => state.simulateNextMatch);
-  const advanceDay = useGameStore((state) => state.advanceDay);
+  const getNextMatch = useGameStore((state) => state.getNextMatch);
+  const openMatchModal = useUIStore((state) => state.openMatchModal);
+  const advanceUntilEventOrMatch = useGameStore(
+    (state) => state.advanceUntilEventOrMatch,
+  );
   const hasMatchToday = useMemo(() => {
     const todaySchedule = calendar.find((day) => day.date === currentDate);
     if (!todaySchedule) return false;
@@ -33,7 +39,7 @@ export default function Dashboard() {
 
   function handleSimulateNextMatch() {
     try {
-      simulateNextMatch();
+      openMatchModal(getNextMatch());
     } catch (error) {
       if (error instanceof MatchSimulationError) {
         toast({ message: error.message, type: "error" });
@@ -47,10 +53,48 @@ export default function Dashboard() {
     }
   }
 
-  function handleAdvanceDay() {
+  function handleAdvanceUntilEventOrMatch() {
     try {
-      advanceDay();
-      toast({ message: "Dia avançado!", type: "ok" });
+      const result = advanceUntilEventOrMatch();
+      switch (result.reason) {
+        case "MATCH_DAY":
+          break;
+        case "TRANSFER_OFFER":
+          router.push("/transfers");
+          break;
+        case "PLAYER_INJURY": {
+          const injury = result.eventPayload as
+            | {
+                playerName?: unknown;
+                playerId?: unknown;
+                severity?: unknown;
+              }
+            | undefined;
+          const injuryDetails = [
+            typeof injury?.playerName === "string"
+              ? injury.playerName
+              : typeof injury?.playerId === "string"
+                ? injury.playerId
+                : null,
+            typeof injury?.severity === "string" ? injury.severity : null,
+          ]
+            .filter(Boolean)
+            .join(" — ");
+          toast({
+            message: injuryDetails
+              ? `Lesão: ${injuryDetails}. Verifique a situação do elenco.`
+              : "Um jogador sofreu uma lesão. Verifique a situação do elenco.",
+            type: "error",
+          });
+          break;
+        }
+        case "SUSPENSION":
+          toast({
+            message: "Um jogador foi suspenso. Verifique a situação do elenco.",
+            type: "error",
+          });
+          break;
+      }
     } catch (error) {
       console.error(error);
       toast({ message: "Erro ao avançar o dia.", type: "error" });
@@ -92,11 +136,14 @@ export default function Dashboard() {
 
       {hasMatchToday ? (
         <button className="green-button" onClick={handleSimulateNextMatch}>
-          JOGAR
+          JOGAR PARTIDA
         </button>
       ) : (
-        <button className="green-button" onClick={handleAdvanceDay}>
-          AVANÇAR DIA
+        <button
+          className="green-button"
+          onClick={handleAdvanceUntilEventOrMatch}
+        >
+          AVANÇAR PARA O PRÓXIMO JOGO
         </button>
       )}
 

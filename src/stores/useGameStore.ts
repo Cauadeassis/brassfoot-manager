@@ -2,64 +2,25 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { simulateCPUMatches } from "../gameEngine/match/orchestrator";
-import { createMarketSlice, MarketActions } from "./slices/createMarketSlice";
+import { createMarketSlice } from "./slices/createMarketSlice";
+import { createCalendarSlice } from "./slices/createCalendarSlice";
 import { GameState } from "../types/state";
 import { getUpcomingMatches } from "../gameEngine/match/state";
 import { toast } from "./useToastStore";
 import generateSeason from "../gameEngine/generators/season";
 import { processMatchResults } from "../gameEngine/match/progression";
-import useUIStore from "./useUIStore";
 import { MatchEvent } from "../types/match";
-import { Modality, PlayStyle, Team } from "../types/team";
-import { FormationType } from "../data/formations";
-import { generateSquad, setStarters } from "../gameEngine/team";
+import { Team } from "../types/team";
+import { setStarters } from "../gameEngine/team";
 import { MatchSimulationError } from "../errors";
-import { advanceDay, advanceMonth, advanceYear } from "../gameEngine/player";
-
-export interface LoadStateProps {
-  state: GameState;
-}
-
-export interface SetModalityProps {
-  modality: Modality;
-}
-
-export interface UpdateTeamMoneyProps {
-  teamId: string;
-  amount: number;
-}
-
-export interface ChangeTacticsPayload {
-  formation?: Team["tactics"]["formation"];
-  style?: Team["tactics"]["style"];
-  takers?: Team["tactics"]["takers"];
-}
-
-export interface ChangeTacticsProps {
-  teamId: string;
-  payload: ChangeTacticsPayload;
-}
-
-export interface FinishMatchProps {
-  matchId: string;
-  homeGoals: number;
-  awayGoals: number;
-  events: MatchEvent[];
-}
-
-export interface GameActions {
-  loadState: (props: LoadStateProps) => void;
-  setModality: (props: SetModalityProps) => void;
-  updateTeamMoney: (props: UpdateTeamMoneyProps) => void;
-  resetGame: () => void;
-  advanceDay: () => void;
-  finishMatch: (props: FinishMatchProps) => void;
-  changeTactics: (props: ChangeTacticsProps) => void;
-  simulateNextMatch: () => void;
-  startSeason: () => void;
-}
-
-export type GameStore = GameState & GameActions & MarketActions;
+import type {
+  GameStore,
+  SetModalityProps,
+  UpdateTeamMoneyProps,
+  ChangeTacticsProps,
+  FinishMatchProps,
+  LoadStateProps,
+} from "./types";
 
 const initialGameState: GameState = {
   currentDate: "2026-01-01",
@@ -69,20 +30,31 @@ const initialGameState: GameState = {
   userTeamId: null,
   teams: {},
   players: {},
+  payrollSalaryDays: {},
   competitions: [],
   calendar: [],
-  activeMatch: null,
   notifications: [],
   results: [],
 };
 
-function addOneDay(dateString: string): string {
-  const [year, month, day] = dateString.split("-").map(Number);
-  const date = new Date(year, month - 1, day + 1);
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+function normalizeGameState(savedState: unknown): GameState {
+  const legacyState =
+    typeof savedState === "object" && savedState !== null
+      ? (savedState as Partial<GameState> & { activeMatch?: unknown })
+      : {};
+  const { activeMatch: _activeMatch, ...gameState } = legacyState;
+  const players = Object.fromEntries(
+    Object.entries(gameState.players ?? {}).map(([playerId, player]) => [
+      playerId,
+      { ...player, contract: player.contract ?? null },
+    ]),
+  );
+  return {
+    ...initialGameState,
+    ...gameState,
+    players,
+    payrollSalaryDays: gameState.payrollSalaryDays ?? {},
+  };
 }
 
 const useGameStore = create<GameStore>()(
@@ -92,15 +64,10 @@ const useGameStore = create<GameStore>()(
       return {
         ...initialGameState,
         ...createMarketSlice(...a),
+        ...createCalendarSlice(...a),
 
         loadState: ({ state: savedState }) =>
-          set(() => {
-            return {
-              ...savedState,
-              teams: savedState.teams,
-              players: savedState.players,
-            } as unknown as GameStore;
-          }),
+          set(() => normalizeGameState(savedState)),
         setModality: ({ modality }) =>
           set((state) => {
             state.modality = modality;
@@ -113,52 +80,6 @@ const useGameStore = create<GameStore>()(
           }),
 
         resetGame: () => set(() => ({ ...initialGameState })),
-
-        advanceDay: () => {
-          const currentState = get();
-          const currentDay = currentState.calendar.find(
-            (c) => c.date === currentState.currentDate,
-          );
-          const cpuMatches = currentDay
-            ? currentDay.matches.filter(
-                (match) =>
-                  !match.simulated &&
-                  match.homeTeamId !== currentState.userTeamId &&
-                  match.awayTeamId !== currentState.userTeamId,
-              )
-            : [];
-          const cpuResults = simulateCPUMatches({
-            pendingMatches: cpuMatches,
-            teams: currentState.teams,
-          });
-          set((state) => {
-            const gameState = state as unknown as GameState;
-            cpuResults.forEach((result) => {
-              processMatchResults({
-                gameState,
-                payload: {
-                  matchId: result.matchId,
-                  homeGoals: result.homeGoals,
-                  awayGoals: result.awayGoals,
-                  events: result.events,
-                },
-              });
-            });
-            const nextDateStr = addOneDay(state.currentDate);
-            state.currentDate = nextDateStr;
-            const [_, newMonth, newDay] = nextDateStr.split("-");
-            const isNewMonth = newDay === "01";
-            const isNewYear = newMonth === "01" && newDay === "01";
-            Object.values(state.players).forEach((player) => {
-              let updatedPlayer = advanceDay({ player });
-              if (isNewYear)
-                updatedPlayer = advanceYear({ player: updatedPlayer });
-              if (isNewMonth)
-                updatedPlayer = advanceMonth({ player: updatedPlayer });
-              state.players[player.id] = updatedPlayer;
-            });
-          });
-        },
 
         changeTactics: ({ teamId, payload }) => {
           set((state) => {
@@ -189,6 +110,7 @@ const useGameStore = create<GameStore>()(
           const cpuResults = simulateCPUMatches({
             pendingMatches: cpuMatches,
             teams: currentState.teams,
+            players: currentState.players,
           });
           set((state) => {
             const gameState = state as unknown as GameState;
@@ -227,7 +149,7 @@ const useGameStore = create<GameStore>()(
           toast({ message: `Temporada iniciada!`, type: "ok" });
         },
 
-        simulateNextMatch: () => {
+        getNextMatch: () => {
           const gameState = get();
 
           if (!gameState.userTeamId) {
@@ -252,12 +174,15 @@ const useGameStore = create<GameStore>()(
             );
           }
 
-          useUIStore.getState().openMatchModal(nextMatch);
+          return nextMatch;
         },
       };
     }),
     {
       name: "game-save",
+      version: 2,
+      migrate: (persistedState) =>
+        normalizeGameState(persistedState) as GameStore,
       storage: createJSONStorage(() => localStorage),
     },
   ),

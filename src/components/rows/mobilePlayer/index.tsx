@@ -3,6 +3,7 @@ import styles from "./mobilePlayer.module.css";
 import { NationalityBadge, OverallBadge, PositionBadge } from "../../badges";
 import { Player } from "../../../types/player";
 import ShirtIcon, { Uniform } from "../../football-badges/shirts";
+import useUIStore from "../../../stores/useUIStore";
 
 interface MobilePlayerCardProps {
   player: Player;
@@ -13,6 +14,7 @@ interface MobilePlayerCardProps {
   actionButton?: {
     action: () => void;
     type: "buy" | "sell";
+    label?: string;
   };
   customValue?: ReactNode;
 }
@@ -26,11 +28,20 @@ export default function MobilePlayerCard({
   actionButton,
   customValue,
 }: MobilePlayerCardProps) {
+  const openPlayerModal = useUIStore((state) => state.openPlayerModal);
+
   return (
     <div className={`${styles.card} ${isDisabled ? styles.disabled : ""}`}>
       <div className={styles.header}>
         <div className={styles.info}>
-          <strong className={styles.name}>{player.name}</strong>
+          <button
+            type="button"
+            className={styles.playerNameButton}
+            onClick={() => openPlayerModal(player.id)}
+            aria-label={`Ver detalhes de ${player.name}`}
+          >
+            <strong className={styles.name}>{player.name}</strong>
+          </button>
           <div className={styles.badges}>
             <PositionBadge position={player.position} isMobile={true} />
             <OverallBadge overall={player.overall} />
@@ -53,7 +64,8 @@ export default function MobilePlayerCard({
           onClick={actionButton.action}
           className={styles[actionButton.type]}
         >
-          {actionButton.type === "buy" ? "COMPRAR" : "VENDER"}
+          {actionButton.label ??
+            (actionButton.type === "buy" ? "COMPRAR" : "VENDER")}
         </button>
       )}
     </div>

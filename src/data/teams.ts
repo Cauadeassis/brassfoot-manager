@@ -677,7 +677,7 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: 68,
       feminine: 55,
     },
-        uniformDesign: {
+    uniformDesign: {
       design: "verticalLines",
       colors: {
         primary: BASE_TEAM_COLORS.red,
@@ -696,7 +696,7 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "B",
     },
-        uniformDesign: {
+    uniformDesign: {
       design: "verticalLines",
       colors: {
         primary: BASE_TEAM_COLORS.white,
@@ -720,7 +720,7 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "B",
     },
-        uniformDesign: {
+    uniformDesign: {
       design: "verticalLines",
       colors: {
         primary: BASE_TEAM_COLORS.green,
@@ -821,7 +821,7 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: 75,
       feminine: 74,
     },
-        uniformDesign: {
+    uniformDesign: {
       design: "verticalLines",
       colors: {
         primary: BASE_TEAM_COLORS.skyBlue,
@@ -999,7 +999,7 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: 74,
       feminine: 58,
     },
-        uniformDesign: {
+    uniformDesign: {
       design: "verticalLines",
       colors: {
         primary: BASE_TEAM_COLORS.red,
@@ -1056,7 +1056,7 @@ const BR_CLUBS: RawTeamData[] = [
       masculine: "A",
       feminine: "A",
     },
-            uniformDesign: {
+    uniformDesign: {
       design: "monoColor",
       colors: {
         primary: BASE_TEAM_COLORS.red,

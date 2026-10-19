@@ -1,5 +1,6 @@
 import { Nationality } from "../data/nationalities";
 import { Trophies } from "./competition";
+import { PlayerContract } from "./contract";
 import { HistoryKey } from "./team";
 
 export type Skill =
@@ -23,6 +24,7 @@ export interface Player {
   currentSkills: PlayerSkills;
   potentialSkills: PlayerSkills;
   value: number;
+  contract: PlayerContract | null;
   stamina: number;
   history: PlayerHistoryMap;
   trophies: Trophies;

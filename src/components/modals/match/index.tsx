@@ -17,6 +17,7 @@ export default function MatchModal() {
   const awayTeam = useGameStore((state) =>
     activeMatch ? state.teams[activeMatch.awayTeamId] : null,
   );
+  const playersMap = useGameStore((state) => state.players);
   const initialMatchState = {
     statistics: {
       currentMinute: 0,
@@ -46,7 +47,7 @@ export default function MatchModal() {
   const engineRef = useRef<MatchEngine | null>(null);
   useEffect(() => {
     if (status.isFinished || !activeMatch || !homeTeam || !awayTeam) return;
-    const engine = new MatchEngine(homeTeam, awayTeam, {
+    const engine = new MatchEngine(homeTeam, awayTeam, playersMap, {
       onTick: (newState) => setState(newState),
       onLog: (newLog) => setLogs((prev) => [newLog, ...prev]),
       onFinish: (finalState, msg, events) => {
@@ -67,7 +68,14 @@ export default function MatchModal() {
       engine.stop();
       engineRef.current = null;
     };
-  }, [activeMatch, homeTeam, awayTeam, processMatchResults, status.isFinished]);
+  }, [
+    activeMatch,
+    homeTeam,
+    awayTeam,
+    playersMap,
+    processMatchResults,
+    status.isFinished,
+  ]);
   useEffect(() => {
     setState(initialMatchState);
     setLogs([]);

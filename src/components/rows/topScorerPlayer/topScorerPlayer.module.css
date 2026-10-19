@@ -1,3 +1,20 @@
+.playerNameButton {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--yellow);
+    outline: none;
+  }
+}
+
 .playerGoals {
   font-size: 16px;
   color: var(--green);

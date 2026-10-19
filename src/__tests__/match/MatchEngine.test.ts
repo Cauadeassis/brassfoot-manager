@@ -3,7 +3,6 @@ import { processEvent } from "../../gameEngine/match/events/manager";
 import MatchEngine from "../../gameEngine/match/MatchEngine";
 import { getMatchResult } from "../../gameEngine/match/progression";
 import { createMatchState } from "../../gameEngine/match/state";
-import useGameStore from "../../stores/useGameStore";
 
 jest.mock("../../gameEngine/match/events/generator", () => ({
   generateEvents: jest.fn(),
@@ -21,15 +20,12 @@ jest.mock("../../gameEngine/match/progression", () => ({
   getMatchResult: jest.fn(),
 }));
 
-jest.mock("../../stores/useGameStore", () => ({
-  getState: jest.fn(),
-}));
-
 describe("MatchEngine", () => {
   let mockHomeTeam: any;
   let mockAwayTeam: any;
   let mockCallbacks: any;
   let mockState: any;
+  let playersMap: Record<string, any>;
   let mathRandomSpy: jest.SpyInstance;
   beforeEach(() => {
     jest.clearAllMocks();
@@ -49,11 +45,14 @@ describe("MatchEngine", () => {
         goals: { home: 0, away: 0 },
       },
     };
+    playersMap = { player1: { id: "player1" } };
 
     (createMatchState as jest.Mock).mockReturnValue(mockState);
     (generateEvents as jest.Mock).mockReturnValue([]);
-    (useGameStore.getState as jest.Mock).mockReturnValue({ players: {} });
   });
+
+  const createEngine = () =>
+    new MatchEngine(mockHomeTeam, mockAwayTeam, playersMap, mockCallbacks);
 
   afterEach(() => {
     mathRandomSpy.mockRestore();
@@ -61,20 +60,24 @@ describe("MatchEngine", () => {
   });
 
   describe("Inicialização", () => {
-    it("deve inicializar o estado, gerar eventos e pegar jogadores da store", () => {
-      new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+    it("deve inicializar o estado e gerar eventos com o mapa de jogadores recebido", () => {
+      createEngine();
       expect(createMatchState).toHaveBeenCalledWith({
         homeTeam: mockHomeTeam,
         awayTeam: mockAwayTeam,
       });
-      expect(useGameStore.getState).toHaveBeenCalled();
-      expect(generateEvents).toHaveBeenCalled();
+      expect(generateEvents).toHaveBeenCalledWith({
+        homeTeam: mockHomeTeam,
+        awayTeam: mockAwayTeam,
+        possession: mockState.statistics.possession,
+        playersMap,
+      });
     });
   });
 
   describe("start(), stop() e tick() em tempo real", () => {
     it("deve avançar 1 minuto a cada tick (150ms) e chamar onTick", () => {
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       engine.start();
       jest.advanceTimersByTime(150);
       expect(mockState.statistics.currentMinute).toBe(1);
@@ -85,7 +88,7 @@ describe("MatchEngine", () => {
     });
 
     it("não deve acumular múltiplos intervalos se start() for chamado várias vezes", () => {
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       engine.start();
       engine.start();
       jest.advanceTimersByTime(150);
@@ -96,7 +99,7 @@ describe("MatchEngine", () => {
       const mockEvent = { minute: 1, type: "goal" };
       (generateEvents as jest.Mock).mockReturnValue([mockEvent]);
       (processEvent as jest.Mock).mockReturnValue({ text: "Gooool!" });
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       engine.start();
       jest.advanceTimersByTime(150);
       expect(processEvent).toHaveBeenCalledWith({
@@ -111,7 +114,7 @@ describe("MatchEngine", () => {
 
   describe("accelerate()", () => {
     it("deve avançar 5 minutos por tick quando acelerado", () => {
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       engine.accelerate();
       engine.start();
       jest.advanceTimersByTime(150);
@@ -123,7 +126,7 @@ describe("MatchEngine", () => {
     it("deve parar o motor e emitir onFinish de VITÓRIA em casa corretamente aos 90 min", () => {
       (getMatchResult as jest.Mock).mockReturnValue("win");
       mockState.statistics.goals = { home: 2, away: 0 };
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       mockState.statistics.currentMinute = 89;
       engine.start();
       jest.advanceTimersByTime(150);
@@ -138,7 +141,7 @@ describe("MatchEngine", () => {
     it("deve parar o motor e emitir onFinish de EMPATE corretamente", () => {
       (getMatchResult as jest.Mock).mockReturnValue("draw");
       mockState.statistics.goals = { home: 1, away: 1 };
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       mockState.statistics.currentMinute = 89;
       engine.start();
       jest.advanceTimersByTime(150);
@@ -151,7 +154,7 @@ describe("MatchEngine", () => {
 
     it("deve parar o motor e emitir onFinish de DERROTA corretamente", () => {
       (getMatchResult as jest.Mock).mockReturnValue("defeat");
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       mockState.statistics.currentMinute = 89;
       engine.start();
       jest.advanceTimersByTime(150);
@@ -168,7 +171,7 @@ describe("MatchEngine", () => {
       const mockEvent = { minute: 45, type: "foul" };
       (generateEvents as jest.Mock).mockReturnValue([mockEvent]);
       mockState.statistics.goals = { home: 3, away: 1 };
-      const engine = new MatchEngine(mockHomeTeam, mockAwayTeam, mockCallbacks);
+      const engine = createEngine();
       const result = engine.simulateBackground();
       expect(mockState.statistics.currentMinute).toBe(90);
       expect(processEvent).toHaveBeenCalledTimes(1);

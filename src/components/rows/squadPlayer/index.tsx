@@ -8,6 +8,7 @@ import { PositionBadge, NationalityBadge, OverallBadge } from "../../badges";
 import { LayoutMode } from "../../../app/(game)/transfers/page";
 import MobilePlayerCard from "../mobilePlayer";
 import ShirtIcon, { Uniform } from "../../football-badges/shirts";
+import useUIStore from "../../../stores/useUIStore";
 
 interface SquadPlayerRowProps {
   player: Player;
@@ -27,6 +28,7 @@ export default function SquadPlayerRow({
   layoutMode = "desktop",
 }: SquadPlayerRowProps) {
   const sellPlayer = useGameStore((state) => state.sellPlayer);
+  const openPlayerModal = useUIStore((state) => state.openPlayerModal);
   const handleSellClick = () => {
     if (sellPlayer) sellPlayer(player.id);
     else
@@ -70,10 +72,17 @@ export default function SquadPlayerRow({
       {shirtNumber !== undefined && (
         <ShirtIcon label={String(shirtNumber)} uniform={uniformDesign} />
       )}
-      <p className={styles.name}>
-        {player.name}
-        {!isCompact && isStarter && <span>TITULAR</span>}
-      </p>
+      <button
+        type="button"
+        className={styles.playerNameButton}
+        onClick={() => openPlayerModal(player.id)}
+        aria-label={`Ver detalhes de ${player.name}`}
+      >
+        <span className={styles.name}>
+          {player.name}
+          {!isCompact && isStarter && <span>TITULAR</span>}
+        </span>
+      </button>
       <span className={styles.age}>{player.age}</span>
       <NationalityBadge nationality={player.nationality} />
       <OverallBadge overall={player.overall} />
@@ -87,7 +96,15 @@ export default function SquadPlayerRow({
           >
             {formatMoney(player.value)}
           </span>
-          {!isCompact && <button onClick={handleSellClick}>VENDER</button>}
+          {!isCompact && (
+            <button
+              type="button"
+              className={styles.sellButton}
+              onClick={handleSellClick}
+            >
+              VENDER
+            </button>
+          )}
         </>
       )}
     </div>

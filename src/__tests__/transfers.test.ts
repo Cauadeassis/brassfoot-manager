@@ -1,5 +1,8 @@
 import {
+  evaluateTransferProposal,
   generateOffer,
+  getTransferWindowEnd,
+  isTransferWindowOpen,
   makeTransfer,
   processAITransfers,
 } from "../gameEngine/market";
@@ -16,6 +19,7 @@ const createMockPlayer = (
   currentTeamId,
   overall,
   value,
+  age: 25,
   position,
 });
 const createMockTeam = (
@@ -25,11 +29,13 @@ const createMockTeam = (
 ): any => ({
   id,
   name: `Team ${id}`,
+  type: "club",
   money,
   squad: { playerIds: [...playerIds] },
 });
 
 const createMockGameState = (userTeamId: string = "team1"): any => ({
+  currentDate: "2026-01-15",
   userTeamId,
   modality: "masculine",
   teams: {
@@ -48,6 +54,143 @@ describe("Market Logic (market.ts)", () => {
   beforeEach(() => {
     jest.restoreAllMocks();
     draft = createMockGameState();
+  });
+  describe("transfer windows", () => {
+    it.each([
+      ["2026-01-01", true],
+      ["2026-02-28", true],
+      ["2026-03-01", false],
+      ["2026-07-01", true],
+      ["2026-08-31", true],
+      ["2026-09-01", false],
+    ])("checks whether %s is in a transfer window", (date, expected) => {
+      expect(isTransferWindowOpen(date)).toBe(expected);
+    });
+
+    it("returns the correct last day for leap-year February", () => {
+      expect(getTransferWindowEnd("2024-02-15")).toBe("2024-02-29");
+    });
+  });
+  describe("evaluateTransferProposal", () => {
+    it("allows a free-agent signing outside a transfer window", () => {
+      draft.currentDate = "2026-04-15";
+      const result = evaluateTransferProposal({
+        draft,
+        buyerTeamId: "team1",
+        proposal: {
+          playerId: "freeAgent",
+          sellerTeamId: null,
+          transferFee: 0,
+          contractOffer: {
+            durationInMonths: 48,
+            salary: 6_250,
+            signingBonus: 0,
+          },
+        },
+      });
+
+      expect(result.status).toBe("accepted");
+      expect(draft.players.freeAgent.currentTeamId).toBe("team1");
+    });
+
+    it("rejects a club transfer outside a transfer window without mutation", () => {
+      draft.currentDate = "2026-04-15";
+      const result = evaluateTransferProposal({
+        draft,
+        buyerTeamId: "team1",
+        proposal: {
+          playerId: "p2",
+          sellerTeamId: "team2",
+          transferFee: 1_000_000,
+          contractOffer: {
+            durationInMonths: 48,
+            salary: 4_167,
+            signingBonus: 0,
+          },
+        },
+      });
+
+      expect(result.status).toBe("rejected");
+      expect(draft.players.p2.currentTeamId).toBe("team2");
+      expect(draft.teams.team1.money).toBe(10_000_000);
+    });
+
+    it("keeps the club's acceptance separate when the player rejects the contract", () => {
+      const result = evaluateTransferProposal({
+        draft,
+        buyerTeamId: "team1",
+        proposal: {
+          playerId: "p2",
+          sellerTeamId: "team2",
+          transferFee: 1_000_000,
+          contractOffer: {
+            durationInMonths: 48,
+            salary: 1_000,
+            signingBonus: 0,
+          },
+        },
+      });
+
+      expect(result).toMatchObject({
+        status: "rejected",
+        clubAccepted: true,
+        playerAccepted: false,
+      });
+      expect(draft.teams.team1.money).toBe(10_000_000);
+      expect(draft.teams.team2.money).toBe(5_000_000);
+      expect(draft.players.p2.currentTeamId).toBe("team2");
+    });
+    it("Should reject an offer below the player's estimated value without changing state", () => {
+      const result = evaluateTransferProposal({
+        draft,
+        buyerTeamId: "team1",
+        proposal: {
+          playerId: "p2",
+          sellerTeamId: "team2",
+          transferFee: 900_000,
+          contractOffer: {
+            durationInMonths: 48,
+            salary: 4_167,
+            signingBonus: 0,
+          },
+        },
+      });
+
+      expect(result.status).toBe("rejected");
+      expect(result.clubAccepted).toBe(false);
+      expect(result.playerAccepted).toBe(true);
+      expect(draft.teams.team1.money).toBe(10_000_000);
+      expect(draft.teams.team2.money).toBe(5_000_000);
+      expect(draft.players.p2.currentTeamId).toBe("team2");
+    });
+
+    it("Should accept an offer at the estimated value and complete the transfer", () => {
+      const result = evaluateTransferProposal({
+        draft,
+        buyerTeamId: "team1",
+        proposal: {
+          playerId: "p2",
+          sellerTeamId: "team2",
+          transferFee: 1_000_000,
+          contractOffer: {
+            durationInMonths: 48,
+            salary: 4_167,
+            signingBonus: 100_000,
+          },
+        },
+      });
+
+      expect(result.status).toBe("accepted");
+      expect(draft.teams.team1.money).toBe(8_900_000);
+      expect(draft.teams.team2.money).toBe(6_000_000);
+      expect(draft.players.p2.currentTeamId).toBe("team1");
+      expect(draft.players.p2.contract).toMatchObject({
+        startDate: "2026-01-15",
+        endDate: "2030-01-15",
+        salary: 4_167,
+        signingBonus: 100_000,
+      });
+    });
   });
   describe("makeTransfer", () => {
     it("Should throw error if no buyer and seller", () => {
@@ -106,18 +249,19 @@ describe("Market Logic (market.ts)", () => {
       }).toThrow();
     });
 
-    it("Should throw missing money error", () => {
-      expect(() => {
-        makeTransfer({
-          draft,
-          transferOffer: {
-            playerId: "p2",
-            value: 20000000,
-            buyerTeamId: "team1",
-            sellerTeamId: "team2",
-          },
-        });
-      }).toThrow();
+    it("Should not allow a user transfer to bypass offer evaluation", () => {
+      const result = makeTransfer({
+        draft,
+        transferOffer: {
+          playerId: "p2",
+          value: 20000000,
+          buyerTeamId: "team1",
+          sellerTeamId: "team2",
+        },
+      });
+      expect(result).toBeNull();
+      expect(draft.teams.team1.money).toBe(10_000_000);
+      expect(draft.players.p2.currentTeamId).toBe("team2");
     });
 
     it("Should return null if NPC team does not have enough money", () => {
@@ -134,7 +278,7 @@ describe("Market Logic (market.ts)", () => {
     });
 
     it("Should buy player from another team", () => {
-      makeTransfer({
+      const result = makeTransfer({
         draft,
         transferOffer: {
           playerId: "p2",
@@ -143,14 +287,13 @@ describe("Market Logic (market.ts)", () => {
           sellerTeamId: "team2",
         },
       });
-      expect(draft.teams.team1.money).toBe(9_000_000);
-      expect(draft.teams.team2.money).toBe(6_000_000);
-      expect(draft.teams.team1.squad.playerIds).toContain("p2");
-      expect(draft.teams.team2.squad.playerIds).not.toContain("p2");
-      expect(draft.players["p2"].currentTeamId).toBe("team1");
+      expect(result).toBeNull();
+      expect(draft.teams.team1.money).toBe(10_000_000);
+      expect(draft.teams.team2.money).toBe(5_000_000);
+      expect(draft.players["p2"].currentTeamId).toBe("team2");
     });
     it("Should buy player from free market", () => {
-      makeTransfer({
+      const result = makeTransfer({
         draft,
         transferOffer: {
           playerId: "freeAgent",
@@ -159,8 +302,9 @@ describe("Market Logic (market.ts)", () => {
           sellerTeamId: null,
         },
       });
-      expect(draft.teams.team1.money).toBe(9500000);
-      expect(draft.players["freeAgent"].currentTeamId).toBe("team1");
+      expect(result).toBeNull();
+      expect(draft.teams.team1.money).toBe(10_000_000);
+      expect(draft.players["freeAgent"].currentTeamId).toBeNull();
     });
     it("Should sell player", () => {
       makeTransfer({
@@ -186,7 +330,7 @@ describe("Market Logic (market.ts)", () => {
       });
       processAITransfers(draft);
       expect(draft.players["ata_22"].currentTeamId).toBeNull();
-      expect(draft.teams.team2.money).toBe(5000000 + 1000);
+      expect(draft.teams.team2.money).toBe(5000000);
     });
 
     it("Should buy free agent", () => {
@@ -215,6 +359,7 @@ describe("Market Logic (market.ts)", () => {
         players: draft.players,
         userTeamId: "team1",
         currentCount: 3,
+        currentDate: "2026-01-15",
       });
       expect(offer).toBeNull();
     });
@@ -226,6 +371,7 @@ describe("Market Logic (market.ts)", () => {
         players: draft.players,
         userTeamId: "team1",
         currentCount: 0,
+        currentDate: "2026-01-15",
       });
       expect(offer).toBeNull();
     });
@@ -237,6 +383,7 @@ describe("Market Logic (market.ts)", () => {
         players: draft.players,
         userTeamId: "team1",
         currentCount: 0,
+        currentDate: "2026-01-15",
       });
       expect(offer).toBeNull();
     });
@@ -248,6 +395,7 @@ describe("Market Logic (market.ts)", () => {
         players: draft.players,
         userTeamId: "team1",
         currentCount: 0,
+        currentDate: "2026-01-15",
       });
       expect(offer).not.toBeNull();
       expect(offer?.playerId).toBe("p1");

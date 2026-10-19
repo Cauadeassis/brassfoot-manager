@@ -5,6 +5,7 @@ import MenuModal from "../../components/modals/menu";
 import styles from "./game.module.css";
 import MatchModal from "../../components/modals/match";
 import ScoutModal from "../../components/modals/scout";
+import PlayerModal from "../../components/modals/player";
 import Toast from "../../components/toast";
 import { useIsMobile } from "../../hooks";
 import TopBar from "./_components/topBar";
@@ -39,6 +40,7 @@ export default function GameLayout({
       <MatchModal />
       <ScoutModal />
       <MenuModal />
+      <PlayerModal />
     </section>
   );
 }

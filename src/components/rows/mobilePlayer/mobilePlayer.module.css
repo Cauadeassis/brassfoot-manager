@@ -10,7 +10,7 @@
   width: 100%;
   box-sizing: border-box;
 
-  button {
+  > button:not(.playerNameButton) {
     font-size: 11px;
     font-weight: bold;
     background: rgba(255, 61, 61, 0.05);
@@ -38,6 +38,23 @@
       color: var(--red);
       border: 1px solid var(--red);
     }
+  }
+}
+
+.playerNameButton {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--yellow);
+    outline: none;
   }
 }
 
