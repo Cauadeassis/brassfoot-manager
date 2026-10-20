@@ -17,34 +17,24 @@ import {
   validateContractOffer,
 } from "./contracts";
 import { ContractOffer } from "../types/contract";
+import { getTransferWindowEnd, isTransferWindowOpen } from "./transferWindow";
+
+export { getTransferWindowEnd, isTransferWindowOpen } from "./transferWindow";
 
 interface MakeTransferProps {
   draft: GameState;
   transferOffer: TransferOffer;
 }
 
-export function isTransferWindowOpen(date: string): boolean {
-  const month = Number(date.slice(5, 7));
-  return month === 1 || month === 2 || month === 7 || month === 8;
-}
-
-export function getTransferWindowEnd(date: string): string | null {
-  const [year, month] = date.split("-").map(Number);
-  if (!isTransferWindowOpen(date)) return null;
-  if (month <= 2) {
-    const lastDay = new Date(year, 2, 0).getDate();
-    return `${year}-02-${String(lastDay).padStart(2, "0")}`;
-  }
-  return `${year}-08-31`;
-}
-
 function getAIContractOffer(player: Player): ContractOffer | null {
-  return generateAIContractOffer({
+  const offer = generateAIContractOffer({
     age: player.age,
     overall: player.overall,
     value: player.value,
     maxWageCommitment: player.value * 0.25,
+    isFreeAgent: player.currentTeamId === null,
   });
+  return offer;
 }
 
 interface GenerateTransferMessageProps {
@@ -102,12 +92,14 @@ const completeTransfer = ({
     buyer.money -= value + signingBonus;
     buyer.squad.playerIds.push(player.id);
     player.currentTeamId = buyer.id;
+    player.market = { isTransferListed: false };
     player.contract =
       buyer.type === "club" && contractOffer
         ? createContractFromOffer(contractOffer, draft.currentDate)
         : null;
   } else {
     player.currentTeamId = null;
+    player.market = { isTransferListed: false };
     player.contract = null;
   }
   if (seller && buyer) seller.money += value;
@@ -142,12 +134,7 @@ export const makeTransfer = ({
 
   if (!Number.isSafeInteger(value) || value < 0) return null;
   if (buyer && buyer.id === draft.userTeamId) return null;
-  if (
-    buyer &&
-    seller?.type === "club" &&
-    buyer.type === "club" &&
-    !isTransferWindowOpen(draft.currentDate)
-  ) {
+  if (buyer?.type === "club" && !isTransferWindowOpen(draft.currentDate)) {
     return null;
   }
   if (buyer?.type === "club") {
@@ -158,6 +145,7 @@ export const makeTransfer = ({
         overall: player.overall,
         value: player.value,
         offer: contractOffer,
+        isFreeAgent: player.currentTeamId === null,
       }).accepted
     ) {
       return null;
@@ -216,11 +204,7 @@ export const evaluateTransferProposal = ({
     return rejected("Apenas clubes podem contratar jogadores.");
   }
 
-  if (
-    seller &&
-    seller.type === "club" &&
-    !isTransferWindowOpen(draft.currentDate)
-  ) {
+  if (!isTransferWindowOpen(draft.currentDate)) {
     return rejected("A janela de transferências está fechada.");
   }
   if (
@@ -240,6 +224,7 @@ export const evaluateTransferProposal = ({
         overall: player.overall,
         value: player.value,
         offer: proposal.contractOffer,
+        isFreeAgent: !seller,
       });
   const playerAccepted = playerEvaluation.accepted;
 
@@ -273,6 +258,7 @@ export const evaluateTransferProposal = ({
 };
 
 export const processAITransfers = (gameState: GameState): void => {
+  if (!isTransferWindowOpen(gameState.currentDate)) return;
   const teamsList = Object.values(gameState.teams);
   const POSITIONS_DATA = getPositionsData(gameState.modality!);
   const freeAgents = Object.values(gameState.players).filter(
@@ -354,6 +340,7 @@ interface GenerateOfferProps {
   players: Record<string, Player>;
   userTeamId: string | null;
   currentCount: number;
+  pendingPlayerIds?: string[];
   currentDate: string;
 }
 
@@ -362,6 +349,7 @@ export const generateOffer = ({
   players,
   userTeamId,
   currentCount,
+  pendingPlayerIds = [],
   currentDate,
 }: GenerateOfferProps) => {
   if (currentCount >= 3 || !userTeamId || !isTransferWindowOpen(currentDate))
@@ -370,12 +358,22 @@ export const generateOffer = ({
   if (!userTeam) return null;
   const buyablePlayers = userTeam.squad.playerIds
     .map((id) => players[id])
-    .filter((player) => player && player.overall >= 72);
-  if (!buyablePlayers.length || Math.random() >= 0.4) return null;
-  const targetPlayer = getRandom({ array: buyablePlayers });
+    .filter((player) => player && !pendingPlayerIds.includes(player.id));
+  const listedPlayers = buyablePlayers.filter(
+    (player) => player.market?.isTransferListed,
+  );
+  const unsolicitedPlayers = buyablePlayers.filter(
+    (player) => !player.market?.isTransferListed && player.overall >= 80,
+  );
+  const candidates = listedPlayers.length ? listedPlayers : unsolicitedPlayers;
+  if (!candidates.length) return null;
+  if (Math.random() >= (listedPlayers.length ? 0.4 : 0.05)) return null;
+  const targetPlayer = getRandom({ array: candidates });
   const contractOffer = getAIContractOffer(targetPlayer);
   if (!contractOffer) return null;
-  const value = Math.floor(targetPlayer.value * (1.1 + Math.random() * 0.5));
+  const value = listedPlayers.length
+    ? Math.round(targetPlayer.value * (1 + Math.random() * 0.1))
+    : Math.round(targetPlayer.value * (1.15 + Math.random() * 0.25));
   const otherTeams = teams.filter(
     (team) =>
       team.id !== userTeamId &&

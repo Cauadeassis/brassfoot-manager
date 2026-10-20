@@ -27,13 +27,20 @@ export default function SquadPlayerRow({
   uniformDesign,
   layoutMode = "desktop",
 }: SquadPlayerRowProps) {
-  const sellPlayer = useGameStore((state) => state.sellPlayer);
+  const toggleTransferListing = useGameStore(
+    (state) => state.toggleTransferListing,
+  );
   const openPlayerModal = useUIStore((state) => state.openPlayerModal);
-  const handleSellClick = () => {
-    if (sellPlayer) sellPlayer(player.id);
+  const handleTransferListingClick = () => {
+    if (toggleTransferListing) toggleTransferListing(player.id);
     else
-      console.warn(`Ação de venda não mapeada para o jogador: ${player.name}`);
+      console.warn(
+        `Ação de listagem não mapeada para o jogador: ${player.name}`,
+      );
   };
+  const transferListingLabel = player.market?.isTransferListed
+    ? "RETIRAR DA LISTA"
+    : "VENDER";
   if (layoutMode === "card") {
     return (
       <MobilePlayerCard
@@ -49,7 +56,13 @@ export default function SquadPlayerRow({
           )
         }
         actionButton={
-          showAction ? { action: handleSellClick, type: "sell" } : undefined
+          showAction
+            ? {
+                action: handleTransferListingClick,
+                type: "sell",
+                label: transferListingLabel,
+              }
+            : undefined
         }
       />
     );
@@ -106,11 +119,15 @@ export default function SquadPlayerRow({
               isCompact
                 ? (event) => {
                     event.stopPropagation();
-                    handleSellClick();
+                    handleTransferListingClick();
                   }
                 : undefined
             }
-            title={isCompact ? "Clique para vender" : undefined}
+            title={
+              isCompact
+                ? `Clique para ${transferListingLabel.toLowerCase()}`
+                : undefined
+            }
           >
             {formatMoney(player.value)}
           </span>
@@ -118,9 +135,9 @@ export default function SquadPlayerRow({
             <button
               type="button"
               className={styles.sellButton}
-              onClick={handleSellClick}
+              onClick={handleTransferListingClick}
             >
-              VENDER
+              {transferListingLabel}
             </button>
           )}
         </>

@@ -138,7 +138,10 @@ describe("Player Logic", () => {
       expect(player.contract).toMatchObject({
         startDate: "2026-03-15",
         salary: Math.round((player.value * 0.05) / 12),
-        signingBonus: 0,
+        signingBonus: Math.round(player.value * 0.1),
+      });
+      expect(player.market).toEqual({
+        isTransferListed: false,
       });
     });
 

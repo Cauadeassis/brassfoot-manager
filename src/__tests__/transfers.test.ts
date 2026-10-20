@@ -58,7 +58,7 @@ describe("Market Logic (market.ts)", () => {
   describe("transfer windows", () => {
     it.each([
       ["2026-01-01", true],
-      ["2026-02-28", true],
+      ["2026-02-28", false],
       ["2026-03-01", false],
       ["2026-07-01", true],
       ["2026-08-31", true],
@@ -67,12 +67,16 @@ describe("Market Logic (market.ts)", () => {
       expect(isTransferWindowOpen(date)).toBe(expected);
     });
 
-    it("returns the correct last day for leap-year February", () => {
-      expect(getTransferWindowEnd("2024-02-15")).toBe("2024-02-29");
+    it.each([
+      ["2026-01-15", "2026-01-31"],
+      ["2026-07-15", "2026-08-31"],
+      ["2026-08-15", "2026-08-31"],
+    ])("returns the last day of the window for %s", (date, endDate) => {
+      expect(getTransferWindowEnd(date)).toBe(endDate);
     });
   });
   describe("evaluateTransferProposal", () => {
-    it("allows a free-agent signing outside a transfer window", () => {
+    it("rejects a free-agent signing outside the transfer window", () => {
       draft.currentDate = "2026-04-15";
       const result = evaluateTransferProposal({
         draft,
@@ -84,13 +88,14 @@ describe("Market Logic (market.ts)", () => {
           contractOffer: {
             durationInMonths: 48,
             salary: 6_250,
-            signingBonus: 0,
+            signingBonus: 300_000,
           },
         },
       });
 
-      expect(result.status).toBe("accepted");
-      expect(draft.players.freeAgent.currentTeamId).toBe("team1");
+      expect(result.status).toBe("rejected");
+      expect(result.message).toBe("A janela de transferências está fechada.");
+      expect(draft.players.freeAgent.currentTeamId).toBeNull();
     });
 
     it("rejects a club transfer outside a transfer window without mutation", () => {
@@ -105,7 +110,7 @@ describe("Market Logic (market.ts)", () => {
           contractOffer: {
             durationInMonths: 48,
             salary: 4_167,
-            signingBonus: 0,
+            signingBonus: 100_000,
           },
         },
       });
@@ -140,6 +145,7 @@ describe("Market Logic (market.ts)", () => {
       expect(draft.teams.team2.money).toBe(5_000_000);
       expect(draft.players.p2.currentTeamId).toBe("team2");
     });
+
     it("Should reject an offer below the player's estimated value without changing state", () => {
       const result = evaluateTransferProposal({
         draft,
@@ -151,7 +157,7 @@ describe("Market Logic (market.ts)", () => {
           contractOffer: {
             durationInMonths: 48,
             salary: 4_167,
-            signingBonus: 0,
+            signingBonus: 100_000,
           },
         },
       });
@@ -335,11 +341,12 @@ describe("Market Logic (market.ts)", () => {
 
     it("Should buy free agent", () => {
       draft.teams.team2.squad.playerIds = [];
-      draft.teams.team2.money = 3000000;
+      draft.teams.team2.money = 4_000_000;
       processAITransfers(draft);
       expect(draft.teams.team2.squad.playerIds).toContain("freeAgent");
       expect(draft.players["freeAgent"].currentTeamId).toBe("team2");
-      expect(draft.teams.team2.money).toBe(1500000);
+      expect(draft.teams.team2.money).toBe(2_200_000);
+      expect(draft.players["freeAgent"].contract.signingBonus).toBe(300_000);
     });
 
     it("Should not affect other teams", () => {
@@ -378,6 +385,7 @@ describe("Market Logic (market.ts)", () => {
 
     it("Should not generate an offer if random factor >= 0.5", () => {
       jest.spyOn(Math, "random").mockReturnValue(0.5);
+      draft.players["p1"].overall = 82;
       const offer = generateOffer({
         teams: Object.values(draft.teams),
         players: draft.players,
@@ -390,6 +398,8 @@ describe("Market Logic (market.ts)", () => {
 
     it("Should generate an offer", () => {
       jest.spyOn(Math, "random").mockReturnValue(0.2);
+      draft.players.p1.overall = 80;
+      draft.players.p1.market = { isTransferListed: true };
       const offer = generateOffer({
         teams: Object.values(draft.teams),
         players: draft.players,
@@ -401,7 +411,48 @@ describe("Market Logic (market.ts)", () => {
       expect(offer?.playerId).toBe("p1");
       expect(offer?.sellerTeamId).toBe("team1");
       expect(offer?.buyerTeamId).toBe("team2");
-      expect(offer?.value).toBe(2400000);
+      expect(offer?.value).toBe(2040000);
+    });
+
+    it("uses market value for listed players and skips pending offers", () => {
+      jest.spyOn(Math, "random").mockReturnValue(0);
+      draft.players.p1.market = {
+        isTransferListed: true,
+      };
+      const offer = generateOffer({
+        teams: Object.values(draft.teams),
+        players: draft.players,
+        userTeamId: "team1",
+        currentCount: 0,
+        currentDate: "2026-01-15",
+      });
+
+      expect(offer?.value).toBe(2_000_000);
+      expect(
+        generateOffer({
+          teams: Object.values(draft.teams),
+          players: draft.players,
+          userTeamId: "team1",
+          currentCount: 1,
+          pendingPlayerIds: ["p1"],
+          currentDate: "2026-01-15",
+        }),
+      ).toBeNull();
+    });
+
+    it("can make a low-probability premium offer for an unlisted star", () => {
+      jest.spyOn(Math, "random").mockReturnValue(0);
+      draft.players.p1.overall = 82;
+      const offer = generateOffer({
+        teams: Object.values(draft.teams),
+        players: draft.players,
+        userTeamId: "team1",
+        currentCount: 0,
+        currentDate: "2026-01-15",
+      });
+
+      expect(offer?.playerId).toBe("p1");
+      expect(offer?.value).toBe(2_300_000);
     });
   });
 });

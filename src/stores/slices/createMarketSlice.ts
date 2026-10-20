@@ -59,33 +59,6 @@ export const createMarketSlice: StateCreator<
     });
   },
 
-  sellPlayer: (playerId) => {
-    const state = get();
-    const userTeam = state.teams[state.userTeamId!];
-    if (!userTeam) return;
-
-    if (userTeam.squad.playerIds.length <= 11) {
-      toast({ message: "Elenco muito pequeno para vender!", type: "error" });
-      return;
-    }
-
-    const player = state.players[playerId];
-    if (!player) {
-      toast({
-        message: "Erro! Jogador não encontrado no elenco.",
-        type: "error",
-      });
-      return;
-    }
-
-    get().makeTransfer({
-      buyerTeamId: null,
-      sellerTeamId: state.userTeamId,
-      playerId,
-      value: player.value,
-    });
-  },
-
   makeTransfer: (transferOffer) =>
     set((gameState) => {
       try {
@@ -106,6 +79,9 @@ export const createMarketSlice: StateCreator<
       players,
       userTeamId,
       currentCount: notifications.length,
+      pendingPlayerIds: notifications
+        .filter((offer) => offer.sellerTeamId === userTeamId)
+        .map((offer) => offer.playerId),
       currentDate,
     });
 
@@ -113,13 +89,49 @@ export const createMarketSlice: StateCreator<
       set((gameState) => {
         gameState.notifications.push(newOffer);
       });
-      toast({ message: "New transfer offer received!", type: "info" });
+      toast({
+        message: "Nova proposta de transferência recebida.",
+        type: "info",
+      });
     }
   },
 
   aiManageMarket: () => {
     set((gameState) => {
       processAITransfers(gameState as unknown as GameState);
+    });
+  },
+
+  toggleTransferListing: (playerId) => {
+    const { players, userTeamId } = get();
+    const player = players[playerId];
+    const userTeam = userTeamId ? get().teams[userTeamId] : undefined;
+    if (
+      !userTeamId ||
+      userTeam?.type !== "club" ||
+      !player ||
+      player.currentTeamId !== userTeamId
+    ) {
+      toast({
+        message: "Só é possível alterar o mercado de jogadores do seu clube.",
+        type: "error",
+      });
+      return;
+    }
+
+    set((gameState) => {
+      const current = gameState.players[playerId].market ?? {
+        isTransferListed: false,
+      };
+      gameState.players[playerId].market = {
+        isTransferListed: !current.isTransferListed,
+      };
+    });
+    toast({
+      message: player.market?.isTransferListed
+        ? "Jogador removido da lista de transferências."
+        : "Jogador listado para transferência.",
+      type: "ok",
     });
   },
 

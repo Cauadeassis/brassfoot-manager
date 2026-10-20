@@ -15,8 +15,25 @@ describe("contract logic", () => {
         overall: 88,
         value: 100_000_000,
         maxWageCommitment: 30_000_000,
+        isFreeAgent: false,
       }),
-    ).toEqual({ durationInMonths: 54, salary: 416_667, signingBonus: 0 });
+    ).toEqual({
+      durationInMonths: 54,
+      salary: 416_667,
+      signingBonus: 10_000_000,
+    });
+  });
+
+  it("sets free-agent signing bonus to 20% of market value", () => {
+    expect(
+      generateAIContractOffer({
+        age: 24,
+        overall: 88,
+        value: 1_500_000,
+        maxWageCommitment: 30_000_000,
+        isFreeAgent: true,
+      })?.signingBonus,
+    ).toBe(300_000);
   });
 
   it("limits the contract duration to the AI wage commitment", () => {
@@ -26,8 +43,13 @@ describe("contract logic", () => {
         overall: 92,
         value: 100_000_000,
         maxWageCommitment: 1_250_001,
+        isFreeAgent: false,
       }),
-    ).toEqual({ durationInMonths: 3, salary: 416_667, signingBonus: 0 });
+    ).toEqual({
+      durationInMonths: 3,
+      salary: 416_667,
+      signingBonus: 10_000_000,
+    });
   });
 
   it("returns no offer when fewer than three months are affordable", () => {
@@ -37,6 +59,7 @@ describe("contract logic", () => {
         overall: 92,
         value: 100_000_000,
         maxWageCommitment: 1_250_000,
+        isFreeAgent: false,
       }),
     ).toBeNull();
   });
@@ -57,10 +80,11 @@ describe("contract logic", () => {
         age: 24,
         overall: 88,
         value: 100_000_000,
+        isFreeAgent: false,
         offer: {
           durationInMonths: 54,
           salary: 416_667,
-          signingBonus: 0,
+          signingBonus: 10_000_000,
         },
       }).accepted,
     ).toBe(true);
@@ -72,6 +96,7 @@ describe("contract logic", () => {
         age: 24,
         overall: 88,
         value: 100_000_000,
+        isFreeAgent: false,
         offer: {
           durationInMonths: 54,
           salary: 100_000,
@@ -113,7 +138,7 @@ describe("contract logic", () => {
       contract: null,
     };
     const draft = {
-      currentDate: "2026-04-01",
+      currentDate: "2026-01-01",
       players: { player },
       teams: {
         seller: { id: "seller", money: 0, squad: { playerIds: ["player"] } },
@@ -136,13 +161,13 @@ describe("contract logic", () => {
         contractOffer: {
           durationInMonths: 54,
           salary: 416_667,
-          signingBonus: 0,
+          signingBonus: 10_000_000,
         },
       },
     });
 
     expect(player.contract).toMatchObject({
-      startDate: "2026-04-01",
+      startDate: "2026-01-01",
       salary: 416_667,
     });
   });

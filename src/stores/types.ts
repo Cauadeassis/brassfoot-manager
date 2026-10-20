@@ -58,7 +58,7 @@ export interface CalendarActions {
 export interface MarketActions {
   acceptOffer: (index: number) => void;
   rejectOffer: (index: number) => void;
-  sellPlayer: (playerId: string) => void;
+  toggleTransferListing: (playerId: string) => void;
   makeTransfer: (transfer: TransferOffer) => void;
   generateOffer: () => void;
   aiManageMarket: () => void;

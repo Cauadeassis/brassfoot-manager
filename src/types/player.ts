@@ -13,6 +13,10 @@ export interface PlayerTournamentStatistics {
   assists: number;
 }
 
+export interface PlayerMarketData {
+  isTransferListed: boolean;
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -24,6 +28,7 @@ export interface Player {
   currentSkills: PlayerSkills;
   potentialSkills: PlayerSkills;
   value: number;
+  market?: PlayerMarketData;
   contract: PlayerContract | null;
   stamina: number;
   history: PlayerHistoryMap;

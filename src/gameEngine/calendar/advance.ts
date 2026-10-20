@@ -108,10 +108,18 @@ export function advanceUntilEventOrMatch(
       players: state.players,
       userTeamId: state.userTeamId,
       currentCount: state.notifications.length,
+      pendingPlayerIds: state.notifications
+        .filter((offer) => offer.sellerTeamId === state.userTeamId)
+        .map((offer) => offer.playerId),
       currentDate: state.currentDate,
     });
     if (newOffer) {
       state.notifications.push(newOffer);
+      return {
+        stoppedAtDate: state.currentDate,
+        reason: "TRANSFER_OFFER",
+        eventPayload: newOffer,
+      };
     }
   }
 

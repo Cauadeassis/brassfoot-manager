@@ -142,6 +142,7 @@ export default function TransferProposalModal({
         overall,
         value: estimatedValue,
         maxWageCommitment: estimatedValue * 0.25,
+        isFreeAgent: sellerTeamId === null,
       }) ?? { durationInMonths: 12, salary: 0, signingBonus: 0 },
   );
   const [transferFee, setTransferFee] = useState(

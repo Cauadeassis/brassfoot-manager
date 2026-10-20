@@ -45,6 +45,49 @@ describe("advanceUntilEventOrMatch", () => {
     expect(useGameStore.getState().currentDate).toBe("2026-01-03");
   });
 
+  it("interrupts before the next match when the AI makes a transfer offer", () => {
+    useGameStore.setState({
+      teams: {
+        "user-team": {
+          id: "user-team",
+          type: "club",
+          money: 5_000_000,
+          squad: { playerIds: ["player"] },
+        },
+        opponent: {
+          id: "opponent",
+          type: "club",
+          money: 5_000_000,
+          squad: { playerIds: [] },
+        },
+      } as any,
+      players: {
+        player: {
+          id: "player",
+          name: "Player",
+          currentTeamId: "user-team",
+          age: 24,
+          overall: 80,
+          value: 2_000_000,
+          market: { isTransferListed: true },
+          stamina: 80,
+          currentSkills: { physical: 80 },
+        },
+      } as any,
+    });
+    jest.spyOn(Math, "random").mockReturnValue(0);
+
+    const result = useGameStore.getState().advanceUntilEventOrMatch();
+
+    expect(result).toMatchObject({
+      stoppedAtDate: "2026-01-02",
+      reason: "TRANSFER_OFFER",
+    });
+    expect(result.eventPayload?.playerId).toBe("player");
+    expect(useGameStore.getState().currentDate).toBe("2026-01-02");
+    expect(useGameStore.getState().notifications).toHaveLength(1);
+  });
+
   it("remove o modal legado ao carregar um save antigo", () => {
     useGameStore.getState().loadState({
       state: {
@@ -57,7 +100,33 @@ describe("advanceUntilEventOrMatch", () => {
     expect(useGameStore.getState().currentDate).toBe("2026-01-02");
     expect("activeMatch" in useGameStore.getState()).toBe(false);
     expect(useGameStore.getState().players.legacy.contract).toBeNull();
+    expect(useGameStore.getState().players.legacy.market).toEqual({
+      isTransferListed: false,
+    });
     expect(useGameStore.getState().payrollSalaryDays).toEqual({});
+  });
+
+  it("toggles transfer listing for the user's player", () => {
+    useGameStore.setState({
+      userTeamId: "user-team",
+      teams: {
+        "user-team": { id: "user-team", type: "club" },
+      } as any,
+      players: {
+        player: { id: "player", currentTeamId: "user-team" },
+      } as any,
+    });
+
+    useGameStore.getState().toggleTransferListing("player");
+
+    expect(useGameStore.getState().players.player.market).toEqual({
+      isTransferListed: true,
+    });
+
+    useGameStore.getState().toggleTransferListing("player");
+    expect(useGameStore.getState().players.player.market).toEqual({
+      isTransferListed: false,
+    });
   });
 
   it("libera o jogador quando o contrato vence", () => {
@@ -173,7 +242,7 @@ describe("advanceUntilEventOrMatch", () => {
     expect(state.notifications).toEqual([]);
   });
 
-  it("ignora ofertas pendentes e avança até o dia da partida", () => {
+  it("does not generate duplicate offers for players with pending proposals", () => {
     useGameStore.setState({
       teams: {
         "user-team": {
@@ -195,8 +264,9 @@ describe("advanceUntilEventOrMatch", () => {
           name: "Player",
           currentTeamId: "user-team",
           age: 25,
-          overall: 75,
+          overall: 82,
           value: 1_000_000,
+          market: { isTransferListed: false },
           stamina: 80,
           currentSkills: { physical: 80 },
         },
@@ -224,6 +294,6 @@ describe("advanceUntilEventOrMatch", () => {
     expect(result.reason).toBe("MATCH_DAY");
     expect(result.stoppedAtDate).toBe("2026-01-03");
     expect(useGameStore.getState().currentDate).toBe("2026-01-03");
-    expect(useGameStore.getState().notifications).toHaveLength(3);
+    expect(useGameStore.getState().notifications).toHaveLength(1);
   });
 });

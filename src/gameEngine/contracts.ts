@@ -15,6 +15,7 @@ interface GenerateAIContractOfferProps {
   overall: number;
   value: number;
   maxWageCommitment: number;
+  isFreeAgent: boolean;
 }
 
 export interface EvaluatePlayerContractOfferProps {
@@ -22,6 +23,7 @@ export interface EvaluatePlayerContractOfferProps {
   overall: number;
   value: number;
   offer: ContractOffer;
+  isFreeAgent: boolean;
 }
 
 export interface PlayerContractEvaluation {
@@ -94,6 +96,7 @@ export function generateAIContractOffer({
   overall,
   value,
   maxWageCommitment,
+  isFreeAgent,
 }: GenerateAIContractOfferProps): ContractOffer | null {
   if (
     !Number.isFinite(age) ||
@@ -107,14 +110,18 @@ export function generateAIContractOffer({
     return null;
   }
 
-  const salary = Math.round((value * 0.05) / 12);
+  const salary = Math.max(Math.round((value * 0.05) / 12), 1621);
   const preferredDuration = getPreferredDuration(age, overall);
   const affordableDuration =
     salary === 0 ? preferredDuration : Math.floor(maxWageCommitment / salary);
   const durationInMonths = Math.min(preferredDuration, affordableDuration);
   if (durationInMonths < 3) return null;
 
-  return { durationInMonths, salary, signingBonus: 0 };
+  return {
+    durationInMonths,
+    salary,
+    signingBonus: Math.round(value * (isFreeAgent ? 0.2 : 0.1)),
+  };
 }
 
 export function evaluatePlayerContractOffer({
@@ -122,6 +129,7 @@ export function evaluatePlayerContractOffer({
   overall,
   value,
   offer,
+  isFreeAgent,
 }: EvaluatePlayerContractOfferProps): PlayerContractEvaluation {
   const offerError = validateContractOffer(offer);
   if (offerError) {
@@ -136,6 +144,7 @@ export function evaluatePlayerContractOffer({
     overall,
     value,
     maxWageCommitment: value * 0.25,
+    isFreeAgent,
   });
   if (!expectedOffer) {
     return {
@@ -144,17 +153,10 @@ export function evaluatePlayerContractOffer({
     };
   }
 
-  const offeredGuaranteedValue =
-    offer.salary * offer.durationInMonths + offer.signingBonus;
-  const expectedGuaranteedValue =
-    expectedOffer.salary * expectedOffer.durationInMonths;
   const salaryFloor = Math.ceil(expectedOffer.salary * 0.8);
-  const guaranteedValueFloor = Math.ceil(expectedGuaranteedValue * 0.8);
+  const signingBonusFloor = Math.ceil(expectedOffer.signingBonus * 0.8);
 
-  if (
-    offer.salary < salaryFloor ||
-    offeredGuaranteedValue < guaranteedValueFloor
-  ) {
+  if (offer.salary < salaryFloor || offer.signingBonus < signingBonusFloor) {
     return {
       accepted: false,
       message: "O jogador recusou os termos do contrato.",

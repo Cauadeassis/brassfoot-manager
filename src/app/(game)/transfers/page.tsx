@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useIsMobile, useTableFilters, useWindowWidth } from "../../../hooks";
 import useGameStore from "../../../stores/useGameStore";
 import TransferPlayerRow, {
@@ -28,10 +29,16 @@ import TransferProposalModal from "../../../components/modals/transferProposal";
 import {
   getTransferWindowEnd,
   isTransferWindowOpen,
-} from "../../../gameEngine/market";
+} from "../../../gameEngine/transferWindow";
 export type LayoutMode = "card" | "compact" | "desktop";
 
+function formatDate(date: string): string {
+  const [year, month, day] = date.split("-");
+  return `${day}/${month}/${year}`;
+}
+
 export default function Transfers() {
+  const router = useRouter();
   const [proposalPlayer, setProposalPlayer] = useState<MarketPlayer | null>(
     null,
   );
@@ -49,6 +56,9 @@ export default function Transfers() {
   const userTeam = userTeamId ? teamsDict[userTeamId] : null;
   const transferWindowOpen = isTransferWindowOpen(currentDate);
   const transferWindowEnd = getTransferWindowEnd(currentDate);
+  useEffect(() => {
+    if (!transferWindowOpen) router.replace("/dashboard");
+  }, [router, transferWindowOpen]);
   const canAffordPlayer = (player: MarketPlayer) => {
     if (userTeam?.type !== "club") return false;
     if (!player.originTeam) return true;
@@ -152,7 +162,8 @@ export default function Transfers() {
     season,
   ]);
 
-  if (!modality || !userTeamId || !POSITIONS_DATA) return null;
+  if (!transferWindowOpen || !modality || !userTeamId || !POSITIONS_DATA)
+    return null;
   const layoutMode = getLayoutMode({ compactWidth: 1000 });
   const isCompact = layoutMode === "compact";
   return (
@@ -163,7 +174,7 @@ export default function Transfers() {
           userTeam?.type === "club"
             ? transferWindowOpen
               ? ` — Janela aberta até ${transferWindowEnd}`
-              : " — Janela fechada para jogadores vinculados; agentes livres disponíveis"
+              : " — Janela fechada"
             : " — Transferências disponíveis apenas para clubes",
           position !== "all"
             ? ` — ${POSITIONS_DATA[position as keyof typeof POSITIONS_DATA].label.plural}`
@@ -176,7 +187,10 @@ export default function Transfers() {
         {notifications.map((notification, index) => (
           <div key={index} className={styles.notification}>
             <span className="icon">📬</span>
-            <span>{notification.text}</span>
+            <span>
+              {notification.text}
+              <small>Válida até {formatDate(notification.expiresAt)}</small>
+            </span>
             <button className="green-button" onClick={() => acceptOffer(index)}>
               ACEITAR
             </button>

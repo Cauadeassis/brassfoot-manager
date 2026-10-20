@@ -3,6 +3,8 @@ import { usePathname } from "next/navigation";
 import styles from "./navigation.module.css";
 import React, { useState } from "react";
 import CompetitionsModal from "../../../../components/modals/competitions";
+import useGameStore from "../../../../stores/useGameStore";
+import { isTransferWindowOpen } from "../../../../gameEngine/transferWindow";
 
 export interface Link {
   href: string;
@@ -69,6 +71,8 @@ const NavLink = ({ item, onClick }: NavLinkProps) => {
 function Navigation({ onItemClick, styleMode }: NavigationProps) {
   const navClass = styleMode === "aside" ? styles.navAside : styles.navModal;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const currentDate = useGameStore((state) => state.currentDate);
+  const transferWindowOpen = isTransferWindowOpen(currentDate);
   const handleOpenCompetitionsModal = () => {
     setIsModalOpen(true);
   };
@@ -91,9 +95,13 @@ function Navigation({ onItemClick, styleMode }: NavigationProps) {
               <h3>{section.title}</h3>
             )}
 
-            {section.items.map((item) => (
-              <NavLink key={item.href} item={item} onClick={onItemClick} />
-            ))}
+            {section.items
+              .filter(
+                (item) => item.href !== "/transfers" || transferWindowOpen,
+              )
+              .map((item) => (
+                <NavLink key={item.href} item={item} onClick={onItemClick} />
+              ))}
           </section>
         ))}
       </nav>

@@ -44,7 +44,13 @@ export type SimulationInterruptType =
 export interface SimulationInterrupt {
   stoppedAtDate: string;
   reason: SimulationInterruptType;
-  eventPayload?: unknown;
+  eventPayload?: TransferNotification | PlayerInjuryEventPayload;
+}
+
+export interface PlayerInjuryEventPayload {
+  playerId?: string;
+  playerName?: string;
+  severity?: string;
 }
 
 export type Style =

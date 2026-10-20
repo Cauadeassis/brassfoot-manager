@@ -326,6 +326,7 @@ export const generatePlayer = async ({
           overall,
           value,
           maxWageCommitment: value * 0.25,
+          isFreeAgent: false,
         })
       : null;
 
@@ -342,6 +343,7 @@ export const generatePlayer = async ({
     potentialSkills: currentSkills,
     history: {},
     value,
+    market: { isTransferListed: false },
     contract: contractOffer
       ? createContractFromOffer(contractOffer, startDate)
       : null,

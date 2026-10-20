@@ -28,6 +28,15 @@ function formatDate(date: string): string {
   return `${day}/${month}/${year}`;
 }
 
+function getRemainingContractMonths(
+  endDate: string,
+  currentDate: string,
+): number {
+  const [endYear, endMonth] = endDate.split("-").map(Number);
+  const [currentYear, currentMonth] = currentDate.split("-").map(Number);
+  return Math.max(0, (endYear - currentYear) * 12 + endMonth - currentMonth);
+}
+
 function getCompetitionLabel(competitionId: string): string {
   try {
     return getCompetitionName({ key: competitionId as CompetitionId });
@@ -41,10 +50,14 @@ export default function PlayerModal() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const playerId = useUIStore((state) => state.activePlayerId);
   const closePlayerModal = useUIStore((state) => state.closePlayerModal);
+  const toggleTransferListing = useGameStore(
+    (state) => state.toggleTransferListing,
+  );
   const player = useGameStore((state) =>
     playerId ? state.players[playerId] : undefined,
   );
   const teams = useGameStore((state) => state.teams);
+  const userTeamId = useGameStore((state) => state.userTeamId);
   const currentDate = useGameStore((state) => state.currentDate);
   const layoutMode = getLayoutMode({ cardWidth: 480, compactWidth: 760 });
 
@@ -73,6 +86,14 @@ export default function PlayerModal() {
   if (!playerId || !player) return null;
 
   const team = player.currentTeamId ? teams[player.currentTeamId] : undefined;
+  const market = player.market ?? {
+    isTransferListed: false,
+  };
+  const canManageMarket =
+    player.currentTeamId === userTeamId && team?.type === "club";
+  const remainingContractMonths = player.contract
+    ? getRemainingContractMonths(player.contract.endDate, currentDate)
+    : 0;
   const shirtNumber = team?.squad.playerShirts[player.id];
   const uniform =
     team?.uniformDesign ?? getDefaultUniformDesign(player.nationality);
@@ -267,35 +288,66 @@ export default function PlayerModal() {
             </section>
           )}
         </main>
-        <footer aria-labelledby="contract-title">
-          <div className={styles.flexDiv}>
-            <h3 id="contract-title">Contrato:</h3>
-            <strong
-              className={
-                isContractActive(player.contract, currentDate)
-                  ? styles.activeContract
-                  : styles.inactiveContract
-              }
-            >
-              {isContractActive(player.contract, currentDate)
-                ? "Ativo"
-                : currentDate < player.contract.startDate
-                  ? "A iniciar"
-                  : "Expirado"}
-            </strong>
-          </div>
-          {player.contract ? (
-            <div className={styles.contractDetails}>
-              <span>
-                {formatDate(player.contract.startDate)} –{" "}
-                {formatDate(player.contract.endDate)}
-              </span>
-              <span>Salário: R$ {formatMoney(player.contract.salary)}</span>
+        {canManageMarket && (
+          <footer aria-labelledby="market-title">
+            <div className={styles.marketSection}>
+              <h3 id="market-title">Mercado</h3>
+              <button
+                type="button"
+                className={
+                  market.isTransferListed ? "outline-button" : "green-button"
+                }
+                onClick={() => toggleTransferListing(player.id)}
+              >
+                {market.isTransferListed
+                  ? "Remover da lista de transferências"
+                  : "Listar para transferência"}
+              </button>
+              <p>
+                {market.isTransferListed
+                  ? "Jogador listado para transferência."
+                  : "Jogador não listado; ainda pode receber ofertas não solicitadas."}
+              </p>
             </div>
-          ) : (
-            <p className={styles.emptyMessage}>Sem contrato registrado.</p>
-          )}
-        </footer>
+          </footer>
+        )}
+        {player.contract && (
+          <footer aria-labelledby="contract-title">
+            <div className={styles.flexDiv}>
+              <h3 id="contract-title">Contrato:</h3>
+              <strong
+                className={
+                  isContractActive(player.contract, currentDate)
+                    ? styles.activeContract
+                    : styles.inactiveContract
+                }
+              >
+                {isContractActive(player.contract, currentDate)
+                  ? "Ativo"
+                  : currentDate < player.contract.startDate
+                    ? "A iniciar"
+                    : "Expirado"}
+              </strong>
+            </div>
+            {player.contract ? (
+              <div className={styles.contractDetails}>
+                <span>
+                  {formatDate(player.contract.startDate)} –{" "}
+                  {formatDate(player.contract.endDate)}
+                </span>
+                <span>
+                  {remainingContractMonths}{" "}
+                  {remainingContractMonths === 1
+                    ? "mês restante"
+                    : "meses restantes"}
+                </span>
+                <span>Salário: R$ {formatMoney(player.contract.salary)}</span>
+              </div>
+            ) : (
+              <p className={styles.emptyMessage}>Sem contrato registrado.</p>
+            )}
+          </footer>
+        )}
       </article>
     </section>
   );

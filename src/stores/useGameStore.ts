@@ -46,7 +46,13 @@ function normalizeGameState(savedState: unknown): GameState {
   const players = Object.fromEntries(
     Object.entries(gameState.players ?? {}).map(([playerId, player]) => [
       playerId,
-      { ...player, contract: player.contract ?? null },
+      {
+        ...player,
+        market: {
+          isTransferListed: player.market?.isTransferListed ?? false,
+        },
+        contract: player.contract ?? null,
+      },
     ]),
   );
   return {
@@ -180,7 +186,7 @@ const useGameStore = create<GameStore>()(
     }),
     {
       name: "game-save",
-      version: 2,
+      version: 3,
       migrate: (persistedState) =>
         normalizeGameState(persistedState) as GameStore,
       storage: createJSONStorage(() => localStorage),
