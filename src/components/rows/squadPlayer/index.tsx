@@ -64,7 +64,18 @@ export default function SquadPlayerRow({
     .filter(Boolean)
     .join(" ");
   return (
-    <div className={`${rowClasses} ${layoutMode}`}>
+    <div
+      className={`${rowClasses} ${layoutMode}`}
+      onClick={(event) => {
+        if (
+          event.target instanceof Element &&
+          event.target.closest("button, a, input, select, textarea")
+        ) {
+          return;
+        }
+        openPlayerModal(player.id);
+      }}
+    >
       <span>
         <PositionBadge position={player.position} isMobile={isCompact} />
       </span>
@@ -91,7 +102,14 @@ export default function SquadPlayerRow({
         <>
           <span
             className={`${styles.value}`}
-            onClick={isCompact ? handleSellClick : undefined}
+            onClick={
+              isCompact
+                ? (event) => {
+                    event.stopPropagation();
+                    handleSellClick();
+                  }
+                : undefined
+            }
             title={isCompact ? "Clique para vender" : undefined}
           >
             {formatMoney(player.value)}

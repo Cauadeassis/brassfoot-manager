@@ -9,6 +9,7 @@
   gap: 10px;
   width: 100%;
   box-sizing: border-box;
+  cursor: pointer;
 
   > button:not(.playerNameButton) {
     font-size: 11px;

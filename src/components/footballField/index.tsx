@@ -12,6 +12,7 @@ import { Team } from "../../types/team";
 import { Badge, getBadgeLabel, getBadgeLabels } from "./badges";
 import styles from "./footballField.module.css";
 import useFootballFieldData from "./useFootballFieldData";
+import useUIStore from "../../stores/useUIStore";
 
 interface FootballFieldProps {
   team: Team;
@@ -22,6 +23,7 @@ interface FootballFieldProps {
 
 interface PlayerMarkerProps {
   slot: PlayerSlot;
+  playerId: string | null;
   name: string | null;
   number?: number;
   shirtLabelMode: "number" | "position";
@@ -38,6 +40,7 @@ const badgeComponentMap: Partial<Record<Badge, React.FC>> = {
 const PlayerMarker = React.memo(
   ({
     slot,
+    playerId,
     name,
     number,
     shirtLabelMode,
@@ -45,6 +48,7 @@ const PlayerMarker = React.memo(
     badges,
   }: PlayerMarkerProps) => {
     const [tooltipVisible, setTooltipVisible] = React.useState(false);
+    const openPlayerModal = useUIStore((state) => state.openPlayerModal);
     const shirtLabel =
       shirtLabelMode === "position" ? slot.role : String(number ?? 10);
     return (
@@ -52,10 +56,18 @@ const PlayerMarker = React.memo(
         className={styles.player}
         style={{ top: `${slot.y}%`, left: `${slot.x}%` }}
       >
-        <div className={styles.shirtWrapper}>
-          <ShirtIcon label={shirtLabel} uniform={uniform} size={48} />
-        </div>
-        <div className={styles.name}>{name ? name.split(" ")[0] : "—"}</div>
+        <button
+          type="button"
+          className={styles.playerButton}
+          disabled={!playerId}
+          onClick={() => playerId && openPlayerModal(playerId)}
+          aria-label={playerId ? `Ver detalhes de ${name}` : undefined}
+        >
+          <div className={styles.shirtWrapper}>
+            <ShirtIcon label={shirtLabel} uniform={uniform} size={48} />
+          </div>
+          <div className={styles.name}>{name ? name.split(" ")[0] : "—"}</div>
+        </button>
 
         {badges.some((badge) => badgeComponentMap[badge]) && (
           <div
@@ -156,6 +168,7 @@ export default function FootballField({
             <PlayerMarker
               key={`${slot.role}-${index}`}
               slot={slot}
+              playerId={player?.id ?? null}
               name={player?.name ?? null}
               badges={badges}
               number={shirtNumber}

@@ -60,7 +60,18 @@ function TopScorerRow({
   }
 
   return (
-    <tr>
+    <tr
+      className={styles.scorerRow}
+      onClick={(event) => {
+        if (
+          event.target instanceof Element &&
+          event.target.closest("button, a, input, select, textarea")
+        ) {
+          return;
+        }
+        openPlayerModal(scorerPlayer.id);
+      }}
+    >
       <td className="dim-color">{index + 1}</td>
       <td>
         <button

@@ -72,82 +72,83 @@
       flex-direction: column;
       align-items: center;
       gap: 1rem;
-      >div {
-      display: grid;
-      grid-template: "label label" auto "input steps" auto / 9rem 1fr;
-      align-items: center;
-      gap: 0.5rem;
+      > div {
+        display: grid;
+        grid-template: "label label" auto "input steps" auto / 9rem 1fr;
+        align-items: center;
+        gap: 0.5rem;
 
-      & label,
-      & small {
-        grid-area: label;
-      }
+        & label,
+        & small {
+          grid-area: label;
+        }
 
-      & label {
-        font-size: 14px;
-        font-weight: 600;
+        & label {
+          font-size: 14px;
+          font-weight: 600;
+
+          @media (max-width: 450px) {
+            text-align: center;
+          }
+        }
+
+        & small {
+          justify-self: end;
+          color: var(--text-muted);
+          font-size: 12px;
+        }
+
+        & input {
+          padding: 0.75rem;
+          color: var(--text-main);
+          background: var(--bg-card2);
+          border: 1px solid var(--border);
+          border-radius: 0.8rem;
+          font: inherit;
+          font-variant-numeric: tabular-nums;
+        }
+
+        & div {
+          grid-area: steps;
+          display: flex;
+          gap: 6px;
+
+          & button {
+            width: 4rem;
+            display: flex;
+            justify-content: center;
+            color: var(--tone);
+            background: transparent;
+            border: 1px solid color-mix(in srgb, var(--tone) 40%, transparent);
+            border-radius: 0.8rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+
+            &:hover,
+            &:focus-visible {
+              background: color-mix(in srgb, var(--tone) 14%, transparent);
+              outline: none;
+            }
+
+            &:active {
+              transform: translateY(1px);
+            }
+          }
+        }
 
         @media (max-width: 450px) {
-          text-align: center;
-        }
-      }
-
-      & small {
-        justify-self: end;
-        color: var(--text-muted);
-        font-size: 12px;
-      }
-
-      & input {
-        padding: 0.75rem;
-        color: var(--text-main);
-        background: var(--bg-card2);
-        border: 1px solid var(--border);
-        border-radius: 0.8rem;
-        font: inherit;
-        font-variant-numeric: tabular-nums;
-      }
-
-      & div {
-        grid-area: steps;
-        display: flex;
-        gap: 6px;
-
-        & button {
-          width: 4rem;
-          display: flex;
-          justify-content: center;
-          color: var(--tone);
-          background: transparent;
-          border: 1px solid color-mix(in srgb, var(--tone) 40%, transparent);
-          border-radius: 0.8rem;
-          font-family: var(--font-mono);
-          font-size: 0.75rem;
-          font-weight: 700;
-
-          &:hover,
-          &:focus-visible {
-            background: color-mix(in srgb, var(--tone) 14%, transparent);
-            outline: none;
+          grid-template: "label" auto "input" auto "steps" auto / 1fr;
+          & div label {
+            text-align: center;
           }
-
-          &:active {
-            transform: translateY(1px);
+          & div button {
+            flex: 1;
+            width: auto;
           }
         }
       }
-
-      @media (max-width: 450px) {
-        grid-template: "label" auto "input" auto "steps" auto / 1fr;
-        & div label {
-          text-align: center;
-        }
-        & div button {
-          flex: 1;
-          width: auto;
-        }
-      }
-    }}
+    }
 
     & output {
       display: flex;

@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import useGameStore from "../../../stores/useGameStore";
 import useUIStore from "../../../stores/useUIStore";
 import { getDefaultUniformDesign } from "../../../data/uniforms";
-import NATIONALITIES_DATA from "../../../data/nationalities";
 import { getCompetitionName } from "../../../filters/labels";
 import { isContractActive } from "../../../gameEngine/contracts";
 import { Skill } from "../../../types/player";
@@ -12,6 +11,7 @@ import { CompetitionId } from "../../../types/competition";
 import { formatMoney } from "../../../utils";
 import { PositionBadge, NationalityBadge, OverallBadge } from "../../badges";
 import ShirtIcon from "../../football-badges/shirts";
+import { getLayoutMode } from "../../../app/(game)/dashboard/_components/matchList";
 import styles from "./player.module.css";
 
 const SKILL_LABELS: Record<Skill, string> = {
@@ -46,7 +46,7 @@ export default function PlayerModal() {
   );
   const teams = useGameStore((state) => state.teams);
   const currentDate = useGameStore((state) => state.currentDate);
-  const modality = useGameStore((state) => state.modality);
+  const layoutMode = getLayoutMode({ cardWidth: 480, compactWidth: 760 });
 
   useEffect(() => {
     if (!playerId) return;
@@ -76,7 +76,6 @@ export default function PlayerModal() {
   const shirtNumber = team?.squad.playerShirts[player.id];
   const uniform =
     team?.uniformDesign ?? getDefaultUniformDesign(player.nationality);
-  const nationality = NATIONALITIES_DATA[player.nationality];
   const position = player.position;
   const historyEntries = Object.entries(player.history ?? {}).sort(
     ([first], [second]) => second.localeCompare(first),
@@ -112,7 +111,7 @@ export default function PlayerModal() {
         if (event.target === event.currentTarget) closePlayerModal();
       }}
     >
-      <article className={styles.modal} ref={modalRef}>
+      <article className={styles.modal} data-layout={layoutMode} ref={modalRef}>
         <header>
           <ShirtIcon
             label={shirtNumber === undefined ? "—" : String(shirtNumber)}
@@ -120,11 +119,26 @@ export default function PlayerModal() {
             size={48}
           />
           <div className={styles.identity}>
-            <h2 id="player-modal-title">{player.name}</h2>
+            <div className={styles.identityTitle}>
+              <h2 id="player-modal-title">{player.name}</h2>
+              <span
+                className={styles.identityFlag}
+                role="img"
+                aria-label={`Nacionalidade: ${player.nationality}`}
+              >
+                <NationalityBadge nationality={player.nationality} />
+              </span>
+              <span
+                className={styles.identityOverall}
+                aria-label={`Overall ${player.overall}`}
+              >
+                <OverallBadge overall={player.overall} />
+              </span>
+            </div>
             <div className={styles.identityMeta}>
               <PositionBadge position={position} />
-              <span>Nº {shirtNumber ?? "—"}</span>
-              {team && <span>{team.name}</span>}
+              <strong>N° {shirtNumber ?? "—"}</strong>
+              <strong>{team?.name ?? "Time"}</strong>
             </div>
           </div>
           <button
@@ -143,17 +157,6 @@ export default function PlayerModal() {
             <div>
               <span>Idade</span>
               <strong>{player.age} anos</strong>
-            </div>
-            <div>
-              <span>Nacionalidade</span>
-              <strong className={styles.nationality}>
-                <NationalityBadge nationality={player.nationality} />
-                {nationality?.demonym[modality] ?? player.nationality}
-              </strong>
-            </div>
-            <div>
-              <span>Overall</span>
-              <OverallBadge overall={player.overall} />
             </div>
             <div>
               <span>Valor estimado</span>
@@ -189,13 +192,13 @@ export default function PlayerModal() {
                         <span
                           className={styles.skillPotential}
                           style={{
-                            left: `${Math.min(current, potential)}%`,
-                            width: `${Math.max(0, potential - current)}%`,
+                            bottom: `${current}%`,
+                            height: `${Math.max(0, potential - current)}%`,
                           }}
                         />
                         <span
                           className={styles.skillCurrent}
-                          style={{ width: `${current}%` }}
+                          style={{ height: `${current}%` }}
                         />
                       </div>
                       <span className={styles.skillValues}>
@@ -207,47 +210,6 @@ export default function PlayerModal() {
                 },
               )}
             </div>
-            <div className={styles.legend}>
-              <span>
-                <i className={styles.legendCurrent} /> Atual
-              </span>
-              <span>
-                <i className={styles.legendPotential} /> Potencial
-              </span>
-            </div>
-          </section>
-
-          <section className={styles.section} aria-labelledby="contract-title">
-            <h3 id="contract-title">Contrato</h3>
-            {player.contract ? (
-              <div className={styles.contractDetails}>
-                <strong
-                  className={
-                    isContractActive(player.contract, currentDate)
-                      ? styles.activeContract
-                      : styles.inactiveContract
-                  }
-                >
-                  {isContractActive(player.contract, currentDate)
-                    ? "Ativo"
-                    : currentDate < player.contract.startDate
-                      ? "A iniciar"
-                      : "Expirado"}
-                </strong>
-                <span>
-                  {formatDate(player.contract.startDate)} –{" "}
-                  {formatDate(player.contract.endDate)}
-                </span>
-                <span>
-                  Salário mensal: R$ {formatMoney(player.contract.salary)}
-                </span>
-                <span>
-                  Bônus: R$ {formatMoney(player.contract.signingBonus)}
-                </span>
-              </div>
-            ) : (
-              <p className={styles.emptyMessage}>Sem contrato registrado.</p>
-            )}
           </section>
 
           {historyEntries.length > 0 && (
@@ -305,6 +267,35 @@ export default function PlayerModal() {
             </section>
           )}
         </main>
+        <footer aria-labelledby="contract-title">
+          <div className={styles.flexDiv}>
+            <h3 id="contract-title">Contrato:</h3>
+            <strong
+              className={
+                isContractActive(player.contract, currentDate)
+                  ? styles.activeContract
+                  : styles.inactiveContract
+              }
+            >
+              {isContractActive(player.contract, currentDate)
+                ? "Ativo"
+                : currentDate < player.contract.startDate
+                  ? "A iniciar"
+                  : "Expirado"}
+            </strong>
+          </div>
+          {player.contract ? (
+            <div className={styles.contractDetails}>
+              <span>
+                {formatDate(player.contract.startDate)} –{" "}
+                {formatDate(player.contract.endDate)}
+              </span>
+              <span>Salário: R$ {formatMoney(player.contract.salary)}</span>
+            </div>
+          ) : (
+            <p className={styles.emptyMessage}>Sem contrato registrado.</p>
+          )}
+        </footer>
       </article>
     </section>
   );

@@ -211,44 +211,41 @@ export default function TransferProposalModal({
         <h2>{playerName}</h2>
       </header>
 
-      <form
-        data-sign={sign === 1 ? "add" : "subtract"}
-        onSubmit={handleSubmit}
-      >
+      <form data-sign={sign === 1 ? "add" : "subtract"} onSubmit={handleSubmit}>
         <div>
-        {sellerTeamId && (
+          {sellerTeamId && (
+            <Field
+              label="Taxa de transferência"
+              value={transferFee}
+              onChange={setTransferFee}
+              steps={STEPS.fee}
+              sign={sign}
+            />
+          )}
           <Field
-            label="Taxa de transferência"
-            value={transferFee}
-            onChange={setTransferFee}
-            steps={STEPS.fee}
+            label="Salário mensal"
+            value={salary}
+            onChange={setSalary}
+            steps={STEPS.salary}
             sign={sign}
           />
-        )}
-        <Field
-          label="Salário mensal"
-          value={salary}
-          onChange={setSalary}
-          steps={STEPS.salary}
-          sign={sign}
-        />
-        <Field
-          label="Luvas"
-          value={signingBonus}
-          onChange={setSigningBonusOverride}
-          steps={STEPS.signingBonus}
-          sign={sign}
-          decimals={2}
-        />
-        <Field
-          label="Duração em meses"
-          value={durationInMonths}
-          onChange={setDurationInMonths}
-          steps={STEPS.months}
-          sign={sign}
-          min={MIN_MONTHS}
-          max={MAX_MONTHS}
-        />
+          <Field
+            label="Luvas"
+            value={signingBonus}
+            onChange={setSigningBonusOverride}
+            steps={STEPS.signingBonus}
+            sign={sign}
+            decimals={2}
+          />
+          <Field
+            label="Duração em meses"
+            value={durationInMonths}
+            onChange={setDurationInMonths}
+            steps={STEPS.months}
+            sign={sign}
+            min={MIN_MONTHS}
+            max={MAX_MONTHS}
+          />
         </div>
 
         <output>

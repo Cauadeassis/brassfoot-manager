@@ -86,7 +86,18 @@ function TransferPlayerRow({
 
   const isCompact = layoutMode === "compact";
   return (
-    <tr className={styles.transferPlayerRow}>
+    <tr
+      className={styles.transferPlayerRow}
+      onClick={(event) => {
+        if (
+          event.target instanceof Element &&
+          event.target.closest("button, a, input, select, textarea")
+        ) {
+          return;
+        }
+        openPlayerModal(id);
+      }}
+    >
       <td>
         <button
           type="button"
@@ -125,7 +136,14 @@ function TransferPlayerRow({
               ? `${styles.valueTag} ${canAfford ? styles.canBuy : styles.noFunds}`
               : ""
           }
-          onClick={isCompact && canAfford ? handleBuyClick : undefined}
+          onClick={
+            isCompact && canAfford
+              ? (event) => {
+                  event.stopPropagation();
+                  handleBuyClick();
+                }
+              : undefined
+          }
           title={
             isCompact
               ? canAfford

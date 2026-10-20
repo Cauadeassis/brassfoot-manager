@@ -31,7 +31,18 @@ export default function MobilePlayerCard({
   const openPlayerModal = useUIStore((state) => state.openPlayerModal);
 
   return (
-    <div className={`${styles.card} ${isDisabled ? styles.disabled : ""}`}>
+    <div
+      className={`${styles.card} ${isDisabled ? styles.disabled : ""}`}
+      onClick={(event) => {
+        if (
+          event.target instanceof Element &&
+          event.target.closest("button, a, input, select, textarea")
+        ) {
+          return;
+        }
+        openPlayerModal(player.id);
+      }}
+    >
       <div className={styles.header}>
         <div className={styles.info}>
           <button
