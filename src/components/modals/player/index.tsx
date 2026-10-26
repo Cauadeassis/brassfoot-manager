@@ -173,181 +173,178 @@ export default function PlayerModal() {
           </button>
         </header>
 
-        <main>
-          <section className={styles.overview} aria-label="Dados do jogador">
-            <div>
-              <span>Idade</span>
-              <strong>{player.age} anos</strong>
-            </div>
-            <div>
-              <span>Valor estimado</span>
-              <strong>R$ {formatMoney(player.value)}</strong>
-            </div>
-            <div>
-              <span>Stamina</span>
-              <strong>{Math.round(player.stamina)}%</strong>
-            </div>
-          </section>
+        {/* Só esta área rola; o <header> fica fixo no topo. */}
+        <div>
+          <main>
+            <section className={styles.overview} aria-label="Dados do jogador">
+              <div>
+                <span>Idade</span>
+                <strong>{player.age} anos</strong>
+              </div>
+              <div>
+                <span>Valor estimado</span>
+                <strong>R$ {formatMoney(player.value)}</strong>
+              </div>
+              <div>
+                <span>Stamina</span>
+                <strong>{Math.round(player.stamina)}%</strong>
+              </div>
+            </section>
 
-          <section className={styles.section} aria-labelledby="skills-title">
-            <div className={styles.skillList}>
-              {(Object.entries(player.currentSkills) as [Skill, number][]).map(
-                ([skill, currentValue]) => {
-                  const potentialValue =
-                    player.potentialSkills[
-                      skill as keyof typeof player.potentialSkills
-                    ] ?? currentValue;
-                  const current = Math.max(0, Math.min(100, currentValue));
-                  const potential = Math.max(0, Math.min(100, potentialValue));
+            <section className={styles.section} aria-labelledby="skills-title">
+              <div className={styles.skillList}>
+                {(Object.entries(player.currentSkills) as [Skill, number][]).map(
+                  ([skill, currentValue]) => {
+                    const potentialValue =
+                      player.potentialSkills[
+                        skill as keyof typeof player.potentialSkills
+                      ] ?? currentValue;
+                    const current = Math.max(0, Math.min(100, currentValue));
+                    const potential = Math.max(0, Math.min(100, potentialValue));
 
-                  return (
-                    <div className={styles.skillRow} key={skill}>
-                      <span className={styles.skillName}>
-                        {SKILL_LABELS[skill]}
-                      </span>
-                      <div
-                        className={styles.skillTrack}
-                        role="img"
-                        aria-label={`${SKILL_LABELS[skill]}: atual ${currentValue}, potencial ${potentialValue}`}
-                      >
-                        <span
-                          className={styles.skillPotential}
-                          style={{
-                            bottom: `${current}%`,
-                            height: `${Math.max(0, potential - current)}%`,
-                          }}
-                        />
-                        <span
-                          className={styles.skillCurrent}
-                          style={{ height: `${current}%` }}
-                        />
+                    return (
+                      <div className={styles.skillRow} key={skill}>
+                        <span className={styles.skillName}>
+                          {SKILL_LABELS[skill]}
+                        </span>
+                        <div
+                          className={styles.skillTrack}
+                          role="img"
+                          aria-label={`${SKILL_LABELS[skill]}: atual ${currentValue}, potencial ${potentialValue}`}
+                        >
+                          <span
+                            className={styles.skillPotential}
+                            style={{
+                              bottom: `${current}%`,
+                              height: `${Math.max(0, potential - current)}%`,
+                            }}
+                          />
+                          <span
+                            className={styles.skillCurrent}
+                            style={{ height: `${current}%` }}
+                          />
+                        </div>
+                        <span className={styles.skillValues}>
+                          {currentValue}
+                          <span aria-hidden="true"> / {potentialValue}</span>
+                        </span>
                       </div>
-                      <span className={styles.skillValues}>
-                        {currentValue}
-                        <span aria-hidden="true"> / {potentialValue}</span>
-                      </span>
-                    </div>
-                  );
-                },
-              )}
-            </div>
-          </section>
-
-          {historyEntries.length > 0 && (
-            <section className={styles.section} aria-labelledby="history-title">
-              <h3 id="history-title">Histórico</h3>
-              <div className={styles.recordList}>
-                {historyEntries.map(([historyKey, stats]) => {
-                  const separator = historyKey.indexOf("_");
-                  const season = historyKey.slice(0, separator);
-                  const competitionId = historyKey.slice(separator + 1);
-                  const contributions =
-                    stats.role === "attacker"
-                      ? `${stats.goals} gols · ${stats.assists} assistências`
-                      : `${stats.defenses} defesas`;
-
-                  return (
-                    <div className={styles.recordRow} key={historyKey}>
-                      <strong>
-                        {season} · {getCompetitionLabel(competitionId)}
-                      </strong>
-                      <span>
-                        {stats.matchesPlayed} jogos · {contributions} ·{" "}
-                        {stats.yellowCards} amarelos · {stats.redCards}{" "}
-                        vermelhos
-                      </span>
-                      {teams[stats.teamId] && (
-                        <small>{teams[stats.teamId].name}</small>
-                      )}
-                    </div>
-                  );
-                })}
+                    );
+                  },
+                )}
               </div>
             </section>
-          )}
 
-          {trophyEntries.length > 0 && (
-            <section
-              className={styles.section}
-              aria-labelledby="trophies-title"
-            >
-              <h3 id="trophies-title">Troféus</h3>
-              <div className={styles.recordList}>
-                {trophyEntries.map(([competitionId, years]) => (
-                  <div className={styles.recordRow} key={competitionId}>
-                    <strong>{getCompetitionLabel(competitionId)}</strong>
-                    <span>
-                      {years
-                        ?.slice()
-                        .sort((a, b) => b - a)
-                        .join(", ")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-        </main>
-        {canManageMarket && (
-          <footer aria-labelledby="market-title">
-            <div className={styles.marketSection}>
-              <h3 id="market-title">Mercado</h3>
-              <button
-                type="button"
-                className={
-                  market.isTransferListed ? "outline-button" : "green-button"
-                }
-                onClick={() => toggleTransferListing(player.id)}
-              >
-                {market.isTransferListed
-                  ? "Remover da lista de transferências"
-                  : "Listar para transferência"}
-              </button>
-              <p>
-                {market.isTransferListed
-                  ? "Jogador listado para transferência."
-                  : "Jogador não listado; ainda pode receber ofertas não solicitadas."}
-              </p>
-            </div>
-          </footer>
-        )}
-        {player.contract && (
-          <footer aria-labelledby="contract-title">
-            <div className={styles.flexDiv}>
-              <h3 id="contract-title">Contrato:</h3>
-              <strong
-                className={
-                  isContractActive(player.contract, currentDate)
-                    ? styles.activeContract
-                    : styles.inactiveContract
-                }
-              >
-                {isContractActive(player.contract, currentDate)
-                  ? "Ativo"
-                  : currentDate < player.contract.startDate
-                    ? "A iniciar"
-                    : "Expirado"}
-              </strong>
-            </div>
-            {player.contract ? (
-              <div className={styles.contractDetails}>
-                <span>
-                  {formatDate(player.contract.startDate)} –{" "}
-                  {formatDate(player.contract.endDate)}
-                </span>
-                <span>
-                  {remainingContractMonths}{" "}
-                  {remainingContractMonths === 1
-                    ? "mês restante"
-                    : "meses restantes"}
-                </span>
-                <span>Salário: R$ {formatMoney(player.contract.salary)}</span>
-              </div>
-            ) : (
-              <p className={styles.emptyMessage}>Sem contrato registrado.</p>
+            {historyEntries.length > 0 && (
+              <section className={styles.section} aria-labelledby="history-title">
+                <h3 id="history-title">Histórico</h3>
+                <div className={styles.recordList}>
+                  {historyEntries.map(([historyKey, stats]) => {
+                    const separator = historyKey.indexOf("_");
+                    const season = historyKey.slice(0, separator);
+                    const competitionId = historyKey.slice(separator + 1);
+                    const contributions =
+                      stats.role === "attacker"
+                        ? `${stats.goals} gols · ${stats.assists} assistências`
+                        : `${stats.defenses} defesas`;
+
+                    return (
+                      <div className={styles.recordRow} key={historyKey}>
+                        <strong>
+                          {season} · {getCompetitionLabel(competitionId)}
+                        </strong>
+                        <span>
+                          {stats.matchesPlayed} jogos · {contributions} ·{" "}
+                          {stats.yellowCards} amarelos · {stats.redCards}{" "}
+                          vermelhos
+                        </span>
+                        {teams[stats.teamId] && (
+                          <small>{teams[stats.teamId].name}</small>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
             )}
-          </footer>
-        )}
+
+            {trophyEntries.length > 0 && (
+              <section
+                className={styles.section}
+                aria-labelledby="trophies-title"
+              >
+                <h3 id="trophies-title">Troféus</h3>
+                <div className={styles.recordList}>
+                  {trophyEntries.map(([competitionId, years]) => (
+                    <div className={styles.recordRow} key={competitionId}>
+                      <strong>{getCompetitionLabel(competitionId)}</strong>
+                      <span>
+                        {years
+                          ?.slice()
+                          .sort((a, b) => b - a)
+                          .join(", ")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </main>
+          {canManageMarket && (
+            <footer aria-labelledby="market-title">
+              <div className={styles.marketSection}>
+                <button
+                  type="button"
+                  className={
+                    market.isTransferListed ? "outline-button" : "green-button"
+                  }
+                  onClick={() => toggleTransferListing(player.id)}
+                >
+                  {market.isTransferListed
+                    ? "Remover da lista de transferências"
+                    : "Listar para transferência"}
+                </button>
+              </div>
+            </footer>
+          )}
+          {player.contract && (
+            <footer aria-labelledby="contract-title">
+              <div className={styles.flexDiv}>
+                <h3 id="contract-title">Contrato:</h3>
+                <strong
+                  className={
+                    isContractActive(player.contract, currentDate)
+                      ? styles.activeContract
+                      : styles.inactiveContract
+                  }
+                >
+                  {isContractActive(player.contract, currentDate)
+                    ? "Ativo"
+                    : currentDate < player.contract.startDate
+                      ? "A iniciar"
+                      : "Expirado"}
+                </strong>
+              </div>
+              {player.contract ? (
+                <div className={styles.contractDetails}>
+                  <span>
+                    {formatDate(player.contract.startDate)} –{" "}
+                    {formatDate(player.contract.endDate)}
+                  </span>
+                  <span>
+                    {remainingContractMonths}{" "}
+                    {remainingContractMonths === 1
+                      ? "mês restante"
+                      : "meses restantes"}
+                  </span>
+                  <span>Salário: R$ {formatMoney(player.contract.salary)}</span>
+                </div>
+              ) : (
+                <p className={styles.emptyMessage}>Sem contrato registrado.</p>
+              )}
+            </footer>
+          )}
+        </div>
       </article>
     </section>
   );

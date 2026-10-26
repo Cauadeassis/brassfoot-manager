@@ -40,7 +40,7 @@ export default function SquadPlayerRow({
   };
   const transferListingLabel = player.market?.isTransferListed
     ? "RETIRAR DA LISTA"
-    : "VENDER";
+    : "LISTAR";
   if (layoutMode === "card") {
     return (
       <MobilePlayerCard

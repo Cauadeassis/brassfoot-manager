@@ -1,23 +1,36 @@
 .backdrop {
+  --gap: 1rem;
+  /* Altura da topBar fixa do jogo: o modal começa abaixo dela. */
+  --top-bar-height: 60px;
   position: fixed;
   inset: 0;
   z-index: 40;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: calc(var(--top-bar-height) + var(--gap)) var(--gap) var(--gap);
   background: rgba(0, 0, 0, 0.6);
   transition: 0.5s;
 }
 
 .modal {
-  width: fit-content;
-  max-height: 90vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 100%);
+  max-height: 100%;
+  overflow: hidden;
   background: var(--bg-card);
   border: 1px solid var(--border-accent);
   border-radius: 0.5rem;
   box-shadow: 0 20px 70px rgba(0, 0, 0, 0.55);
+
+  /* O header fica fixo; só esta área rola. */
+  & > div {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
 
   main,
   header,
@@ -55,6 +68,8 @@
 
     .contractDetails {
       display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1rem;
       justify-content: space-between;
       align-items: center;
       color: var(--dim-color);
@@ -63,7 +78,8 @@
   }
 
   header {
-    grid-template-columns: 48px minmax(0, 1fr) 40px;
+    flex: none;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     border-bottom: 1px solid var(--border);
 
@@ -162,6 +178,7 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
   margin-top: 0.3125rem;
   color: var(--dim-color);
   font-size: 0.9rem;
@@ -356,24 +373,34 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+/* 3 cards em 2 colunas: o último ocupa a linha toda */
+[data-layout="card"] .overview > div:last-child {
+  grid-column: 1 / -1;
+}
+
 @media (max-width: 640px) {
   .backdrop {
-    padding: 12px;
+    --gap: 12px;
   }
 
   .modal {
-    width: calc(100vw - 24px);
-    max-height: 90vh;
-
     main {
       gap: 18px;
       padding: 16px 14px 20px;
     }
 
+    footer {
+      padding-inline: 14px;
+    }
+
     header {
-      grid-template-columns: 40px minmax(0, 1fr) 36px;
       gap: 10px;
       padding: 14px;
+
+      & > svg {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
     }
   }
 
