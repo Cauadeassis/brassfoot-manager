@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import useUIStore from "../../stores/useUIStore";
 import NATIONALITIES_DATA, { Nationality } from "../../data/nationalities";
@@ -12,6 +12,7 @@ import TEAMS from "../../data/teams";
 import {
   FiltersContainer,
   FormButton,
+  FormInput,
   FormSelect,
 } from "../../filters/components";
 import {
@@ -39,6 +40,7 @@ const teamTypeMap = {
 };
 
 export default function NewGame() {
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const openModal = useUIStore((state) => state.openCardModal);
   const modality = useGameStore((state) => state.modality);
@@ -103,6 +105,9 @@ export default function NewGame() {
       .filter((team) => {
         if (team.type !== teamType) return false;
         if (teamType === "club" && team.division !== division) return false;
+        if (!team.name.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())) {
+          return false;
+        }
         if (nationality !== "all") {
           if (team.nationality !== nationality) return false;
         } else if (region !== "all") {
@@ -113,7 +118,7 @@ export default function NewGame() {
 
         return true;
       });
-  }, [teams, teamType, division, region, nationality]);
+  }, [teams, teamType, division, region, nationality, searchQuery]);
   const startGame = useCallback(
     async (chosenTeam: Team) => {
       if (!modality) return;
@@ -199,6 +204,13 @@ export default function NewGame() {
       </header>
 
       <FiltersContainer ariaLabel="Filtros de Equipe">
+        <FormInput
+          aria-label="Pesquisar time"
+          placeholder="Buscar time..."
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+        />
+
         {1 + 1 === 3 && (
           <FormButton isActive={true} onClick={handleChangeTeamType}>
             {teamTypeMap[teamType]}
